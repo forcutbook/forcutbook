@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-object DiaryFixture{
+object DiaryFixture {
 
     fun get(): List<Diary> = listOf(
         Diary(
@@ -15,7 +15,8 @@ object DiaryFixture{
                 LocalDate.now(),
                 LocalTime.now()
             )
-        ), Diary(
+        ),
+        Diary(
             title = "호수에 산책을 갔다.",
             contents = "가족들과 함께 집 뒤에 있는 호수에..",
             date = LocalDateTime.of(
@@ -38,7 +39,8 @@ object DiaryFixture{
                 LocalDate.now(),
                 LocalTime.now()
             )
-        ), Diary(
+        ),
+        Diary(
             title = "호수에 산책을 갔다.",
             contents = "가족들과 함께 집 뒤에 있는 호수에..",
             date = LocalDateTime.of(
@@ -53,6 +55,6 @@ object DiaryFixture{
                 LocalDate.now(),
                 LocalTime.of(9, 45)
             )
-        ),
+        )
     )
 }

@@ -13,7 +13,7 @@ const val HOME_ROUTE = "HOME_ROUTE"
 
 fun NavController.navigateToHome(
     diary: Diary? = null,
-    navOptions: NavOptions? = null,
+    navOptions: NavOptions? = null
 ) {
     this.navigate("$HOME_ROUTE/${diary?.title ?: "X"} /${diary?.contents ?: "X"}/${diary?.date ?: "X"}")
 }
@@ -29,12 +29,12 @@ fun NavGraphBuilder.homeNavGraph() {
     ) { navBackStackEntry ->
         val title = navBackStackEntry.arguments?.getString("title")
 
-        if(title == "X" || title == null) HomeRoute()
-        else {
+        if (title == "X" || title == null) {
+            HomeRoute()
+        } else {
             val body = navBackStackEntry.arguments?.getString("body")
             val dateTime = navBackStackEntry.arguments?.getString("dateTime")
             HomeRoute(newDiary = Diary(title = title, contents = body!!, date = LocalDateTime.parse(dateTime)))
         }
     }
 }
-

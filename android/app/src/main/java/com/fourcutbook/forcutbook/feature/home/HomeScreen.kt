@@ -60,18 +60,18 @@ fun HomeRoute(newDiary: Diary? = null) {
 @Composable
 fun HomeScreen(
     diaries: List<Diary> = DiaryFixture.get(),
-    newDiary: Diary? = null,
+    newDiary: Diary? = null
 ) {
-
-
     Column(
         modifier = Modifier
             .fillMaxHeight()
     ) {
         HomeCalendar()
-        HomeDiariesColumn(diaries = newDiary?.run {
-            listOf(this) + diaries
-        } ?: diaries)
+        HomeDiariesColumn(
+            diaries = newDiary?.run {
+                listOf(this) + diaries
+            } ?: diaries
+        )
     }
 }
 
@@ -79,7 +79,7 @@ fun HomeScreen(
 @Composable
 fun HomeDiariesColumn(
     diaries: List<Diary>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -94,7 +94,7 @@ fun HomeDiariesColumn(
 @Composable
 fun HomeDiaryItem(
     diary: Diary,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier
@@ -135,9 +135,9 @@ fun HomeDiaryItem(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeCalendar(
-    //calendarState: CalendarState
+    // calendarState: CalendarState
 ) {
-    //todo: ViewModel로 분리
+    // todo: ViewModel로 분리
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
@@ -147,12 +147,12 @@ fun HomeCalendar(
         startMonth = startMonth,
         endMonth = endMonth,
         firstVisibleMonth = currentMonth,
-        firstDayOfWeek = firstDayOfWeek,
+        firstDayOfWeek = firstDayOfWeek
     )
     Box(
         modifier = Modifier
             .padding(top = 16.dp, start = 30.dp, end = 30.dp)
-            //todo: clip, background 차이 구분
+            // todo: clip, background 차이 구분
             .clip(RoundedCornerShape(10.dp))
             .background(Color.White)
     ) {
@@ -181,10 +181,9 @@ fun HomeCalendar(
                     // Render the provided content!
                     content()
                 }
-            },
+            }
         )
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -197,7 +196,7 @@ fun Day(day: CalendarDay) {
                 .background(
                     shape = CircleShape,
                     color = Color(0xFF1DA1F2)
-                ),// This is important for square sizing!
+                ), // This is important for square sizing!
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -231,11 +230,10 @@ fun Month(month: CalendarMonth) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = month.toString(),
+            text = month.toString()
         )
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -246,7 +244,7 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
                 fontSize = 16.sp,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             )
         }
     }

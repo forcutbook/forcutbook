@@ -6,16 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
@@ -31,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -75,14 +71,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     modifier = Modifier
                         .offset(y = 50.dp)
                         .align(Alignment.Center)
-                        .size(60.dp),
+                        .size(60.dp)
                 ) {
                     Icon(
                         modifier = Modifier
                             .size(30.dp),
                         painter = painterResource(id = R.drawable.ic_register_diary),
                         tint = Color.White,
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
             }
@@ -138,19 +134,18 @@ fun HomeForCutBookLogo(modifier: Modifier = Modifier) {
             )
         }
     }
-
 }
 
 @Composable
 fun MainBottomAppBar(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(65.dp),
-        containerColor = Color.White,
+        containerColor = Color.White
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -158,7 +153,8 @@ fun MainBottomAppBar(
         ) {
             IconButton(
                 modifier = Modifier.padding(start = 30.dp),
-                onClick = { /*TODO*/ }) {
+                onClick = { /*TODO*/ }
+            ) {
                 Icon(
                     tint = Color(0xFF545454),
                     modifier = Modifier.size(45.dp),
@@ -180,7 +176,6 @@ fun MainBottomAppBar(
         }
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(widthDp = 360, heightDp = 640)

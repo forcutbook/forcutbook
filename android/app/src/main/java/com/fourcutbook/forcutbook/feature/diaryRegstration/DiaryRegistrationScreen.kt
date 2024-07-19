@@ -54,7 +54,7 @@ private val takePhotoFromAlbumIntent =
 
 @Composable
 fun DiaryRegistrationRoute(
-    onDiaryRegistry: (photo: Bitmap) -> Unit = {},
+    onDiaryRegistry: (photo: Bitmap) -> Unit = {}
 ) {
     DiaryRegistrationScreen(onDiaryRegistry)
 }
@@ -113,13 +113,12 @@ fun DiaryRegistrationScreen(onDiaryRegistry: (photo: Bitmap) -> Unit = {}) {
             Text(text = "수동 일기")
         }
     }
-
 }
 
 @Composable
 fun DiaryRegistrationTargetImage(
     onClick: () -> Unit,
-    bitmap: Bitmap? = null,
+    bitmap: Bitmap? = null
 ) {
     val painter: Painter = painterResource(R.drawable.ic_empty_image)
     Box(
@@ -136,7 +135,7 @@ fun DiaryRegistrationTargetImage(
                     .fillMaxSize()
                     .clip(RoundedCornerShape(10.dp)),
                 bitmap = it.asImageBitmap(),
-                contentDescription = null,
+                contentDescription = null
             )
         } ?: Image(
             modifier = Modifier
@@ -145,11 +144,10 @@ fun DiaryRegistrationTargetImage(
                     onClick()
                 },
             painter = painter,
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }
-
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable

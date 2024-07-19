@@ -14,12 +14,12 @@ fun NavController.navigateToDiary(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.diaryNavGraph(
     navigateToHome: (diary: Diary) -> Unit,
-    onShowSnackBar: (message: String) -> Unit,
+    onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = DIARY_ROUTE) {
         DiaryRoute(
             onShowSnackBar = onShowSnackBar,
-            navigateToHomeScreen = navigateToHome,
+            navigateToHomeScreen = navigateToHome
         )
     }
 }

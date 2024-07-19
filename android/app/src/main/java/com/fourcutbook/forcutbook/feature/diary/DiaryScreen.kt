@@ -38,7 +38,7 @@ import java.time.LocalDateTime
 @Composable
 fun DiaryRoute(
     onShowSnackBar: (message: String) -> Unit,
-    navigateToHomeScreen: (newDiary: Diary) -> Unit = {},
+    navigateToHomeScreen: (newDiary: Diary) -> Unit = {}
 ) {
     var state by remember {
         mutableStateOf<Boolean>(false)
@@ -59,7 +59,7 @@ fun DiaryScreen(
     modifier: Modifier = Modifier,
     state: Boolean = false,
     onShowSnackBar: (message: String) -> Unit = {},
-    navigateToHomeScreen: (newDiary: Diary) -> Unit = {},
+    navigateToHomeScreen: (newDiary: Diary) -> Unit = {}
 ) {
     val diary = Diary(
         title = "호수에서 헤엄치는 오리 두마리",
@@ -68,8 +68,10 @@ fun DiaryScreen(
     )
     if (!state) {
         onShowSnackBar("이미지를 바탕으로 일기를 생성중입니다.")
-        Box(modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center){
+        Box(
+            modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             LinearProgressIndicator(color = Color.White, trackColor = Color(0xFF1DA1F2))
         }
     } else {
@@ -116,7 +118,6 @@ fun DiaryScreen(
             }
         }
     }
-
 }
 
 @Preview(widthDp = 320, heightDp = 640)
