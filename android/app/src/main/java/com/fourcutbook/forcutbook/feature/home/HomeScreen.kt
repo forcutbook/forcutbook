@@ -1,8 +1,5 @@
 package com.fourcutbook.forcutbook.feature.home
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.util.DiaryFixture
@@ -50,32 +51,38 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeRoute(newDiary: Diary? = null) {
-    HomeScreen(newDiary = newDiary)
+fun HomeRoute(homeViewModel: HomeViewModel = hiltViewModel()) {
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = null) {
+        homeViewModel.event.collect { event ->
+            when (event) {
+                is HomeEvent.DiaryDetails -> {
+                }
+            }
+        }
+    }
+    HomeScreen(uiState)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    diaries: List<Diary> = DiaryFixture.get(),
-    newDiary: Diary? = null
+    uiState: HomeUiState
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-    ) {
-        HomeCalendar()
-        HomeDiariesColumn(
-            diaries = newDiary?.run {
-                listOf(this) + diaries
-            } ?: diaries
-        )
+    when (uiState) {
+        is HomeUiState.Default -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+            ) {
+                HomeCalendar()
+                HomeDiariesColumn(uiState.diaries)
+            }
+        }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeDiariesColumn(
     diaries: List<Diary>,
@@ -90,7 +97,6 @@ fun HomeDiariesColumn(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeDiaryItem(
     diary: Diary,
@@ -131,8 +137,6 @@ fun HomeDiaryItem(
     }
 }
 
-@SuppressLint("RememberReturnType")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeCalendar(
     // calendarState: CalendarState
@@ -186,7 +190,6 @@ fun HomeCalendar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Day(day: CalendarDay) {
     if (day.date == LocalDate.now()) {
@@ -221,7 +224,6 @@ fun Day(day: CalendarDay) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Month(month: CalendarMonth) {
     Box(
@@ -235,7 +237,6 @@ fun Month(month: CalendarMonth) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -250,16 +251,14 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun HomePreview() {
     HomeScreen(
-        diaries = DiaryFixture.get()
+        uiState = HomeUiState.Default(DiaryFixture.get())
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview()
 @Composable
 fun DiaryPreview() {

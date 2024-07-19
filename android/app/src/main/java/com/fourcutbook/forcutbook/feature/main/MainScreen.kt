@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.feature.main
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -94,19 +93,15 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 .padding(top = 50.dp),
             navController = navController,
             startDestination = LOGIN_ROUTE
-//            startDestination = "$HOME_ROUTE/{title}/{body}/{dateTime}"
         ) {
+            Log.d("woogi", "MainScreen: asdas")
             loginNavGraph(navController::navigateToHome)
 
             homeNavGraph()
 
-            diaryRegistrationNavGraph {
-                navController.navigateToDiary()
-            }
-            diaryNavGraph(
-                navigateToHome = navController::navigateToHome,
-                onShowSnackBar = onShowSnackBar
-            )
+            diaryRegistrationNavGraph { navController.navigateToDiary() }
+
+            diaryNavGraph(onShowSnackBar = onShowSnackBar)
         }
         padding
     }
@@ -182,7 +177,6 @@ fun MainBottomAppBar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun MainPreview() {
