@@ -43,9 +43,10 @@ import com.fourcutbook.forcutbook.feature.diary.diaryNavGraph
 import com.fourcutbook.forcutbook.feature.diary.navigateToDiary
 import com.fourcutbook.forcutbook.feature.diaryRegstration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryRegstration.navigateToDiaryRegistration
-import com.fourcutbook.forcutbook.feature.home.HOME_ROUTE
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
+import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
+import com.fourcutbook.forcutbook.feature.login.loginNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -92,9 +93,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 .background(color = Color(0xFFEDEDED))
                 .padding(top = 50.dp),
             navController = navController,
-            startDestination = "$HOME_ROUTE/{title}/{body}/{dateTime}"
+            startDestination = LOGIN_ROUTE
+//            startDestination = "$HOME_ROUTE/{title}/{body}/{dateTime}"
         ) {
+            loginNavGraph(navController::navigateToHome)
+
             homeNavGraph()
+
             diaryRegistrationNavGraph {
                 navController.navigateToDiary()
             }

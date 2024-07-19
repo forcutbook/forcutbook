@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "forcutbook"
 include(":app")
- 
+include(":domain")
