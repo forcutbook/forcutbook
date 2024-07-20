@@ -12,11 +12,11 @@ fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.diaryRegistrationNavGraph(
-    onDiaryRegistry: () -> Unit
+    navigateToDiaryScreen: () -> Unit
 ) {
     composable(route = DIARY_REGISTRATION_ROUTE) {
         DiaryRegistrationRoute {
-            onDiaryRegistry()
+            navigateToDiaryScreen()
         }
     }
 }

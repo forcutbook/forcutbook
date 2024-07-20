@@ -38,6 +38,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.util.parseBitmap
 
@@ -54,63 +56,91 @@ private val takePhotoFromAlbumIntent =
 
 @Composable
 fun DiaryRegistrationRoute(
-    onDiaryRegistry: (photo: Bitmap) -> Unit = {}
+    diaryRegistrationViewModel: DiaryRegistrationViewModel = hiltViewModel(),
+    navigateToDiaryScreen: () -> Unit = {}
 ) {
-    DiaryRegistrationScreen(onDiaryRegistry)
+    val uiState by diaryRegistrationViewModel.uiState.collectAsStateWithLifecycle()
+
+    DiaryRegistrationScreen(
+        uiState = uiState,
+        onDiaryRegistry = { image ->
+            diaryRegistrationViewModel.createAIDiaries(image)
+        },
+        navigateToDiaryScreen = navigateToDiaryScreen
+    )
 }
 
 @Composable
-fun DiaryRegistrationScreen(onDiaryRegistry: (photo: Bitmap) -> Unit = {}) {
-    Column(
-        modifier = Modifier
-            .padding(top = 20.dp, start = 30.dp, end = 30.dp)
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        val context = LocalContext.current
-        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+fun DiaryRegistrationScreen(
+    uiState: DiaryRegistrationUiState,
+    onDiaryRegistry: (photo: Bitmap) -> Unit = {},
+    navigateToDiaryScreen: () -> Unit = {}
+) {
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-        val takePhotoFromAlbumLauncher =
-            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    result.data?.data?.let { uri ->
-                        bitmap = uri.parseBitmap(context)
-                        Log.d("woogi", "DiaryRegistrationScreen: $uri")
-                    } ?: run {
-                        Toast.makeText(context, "error taking photo", Toast.LENGTH_SHORT).show()
+    when (uiState) {
+        is DiaryRegistrationUiState.Created -> navigateToDiaryScreen()
+
+        is DiaryRegistrationUiState.Entering -> {
+            Column(
+                modifier = Modifier
+                    .padding(top = 20.dp, start = 30.dp, end = 30.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                val context = LocalContext.current
+
+                val takePhotoFromAlbumLauncher =
+                    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                        if (result.resultCode == Activity.RESULT_OK) {
+                            result.data?.data?.let { uri ->
+                                bitmap = uri.parseBitmap(context)
+                                Log.d("woogi", "DiaryRegistrationScreen: $uri")
+                            } ?: run {
+                                Toast.makeText(context, "error taking photo", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        } else if (result.resultCode != Activity.RESULT_CANCELED) {
+                            Toast.makeText(context, "cancel taking photo", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                } else if (result.resultCode != Activity.RESULT_CANCELED) {
-                    Toast.makeText(context, "cancel taking photo", Toast.LENGTH_SHORT).show()
+
+                DiaryRegistrationTargetImage(
+                    onClick = {
+                        takePhotoFromAlbumLauncher.launch(
+                            takePhotoFromAlbumIntent
+                        )
+                    },
+                    bitmap = bitmap
+                )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    onClick = { onDiaryRegistry(bitmap!!) },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
+                ) {
+                    Text(text = "AI 일기")
+                }
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp),
+                    onClick = { /*TODO*/ },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
+                ) {
+                    Text(text = "수동 일기")
                 }
             }
-
-        DiaryRegistrationTargetImage(
-            onClick = {
-                takePhotoFromAlbumLauncher.launch(
-                    takePhotoFromAlbumIntent
-                )
-            },
-            bitmap = bitmap
-        )
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            onClick = { onDiaryRegistry(bitmap!!) },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
-        ) {
-            Text(text = "AI 일기")
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp),
-            onClick = { /*TODO*/ },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
-        ) {
-            Text(text = "수동 일기")
+
+        is DiaryRegistrationUiState.Loading -> {
+        }
+
+        is DiaryRegistrationUiState.Done -> {
         }
     }
 }
@@ -152,5 +182,5 @@ fun DiaryRegistrationTargetImage(
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun DiaryRegistrationPreview() {
-    DiaryRegistrationScreen()
+    DiaryRegistrationScreen(DiaryRegistrationUiState.Entering)
 }

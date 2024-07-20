@@ -104,7 +104,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
             diaryRegistrationNavGraph { navController.navigateToDiary() }
 
-            diaryNavGraph(onShowSnackBar = onShowSnackBar)
+            diaryNavGraph(
+                navController = navController,
+                onShowSnackBar = onShowSnackBar
+            )
         }
         padding
     }
