@@ -97,7 +97,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             Log.d("woogi", "MainScreen: asdas")
             loginNavGraph(navController::navigateToHome)
 
-            homeNavGraph()
+            homeNavGraph(
+                navigateToDiaryRegistration = navController::navigateToDiaryRegistration,
+                navigateToDiaryDetails = {}
+            )
 
             diaryRegistrationNavGraph { navController.navigateToDiary() }
 

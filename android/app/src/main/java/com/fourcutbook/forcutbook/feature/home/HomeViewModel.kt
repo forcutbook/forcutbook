@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private val _event: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
-    val event: SharedFlow<HomeEvent> = _event.asSharedFlow()
+    val event: SharedFlow<HomeEvent>
+        get() = _event.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -35,5 +37,21 @@ class HomeViewModel @Inject constructor(
                 _uiState.value = HomeUiState.Default(diaries)
             }
         }
+    }
+
+    fun fetchDiaryDetails(diaryId: Long) {
+        viewModelScope.launch {
+            flow {
+                emit(diaryRepository)
+            }.onStart {
+                _uiState.value = HomeUiState.Loading
+            }.collect {
+                _uiState.value = HomeUiState.DiaryDetails
+            }
+        }
+    }
+
+    fun tryDiaryRegistration() {
+        _uiState.value = HomeUiState.DiaryRegistration
     }
 }

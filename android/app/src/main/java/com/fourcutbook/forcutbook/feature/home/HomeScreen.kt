@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -52,23 +51,23 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun HomeRoute(homeViewModel: HomeViewModel = hiltViewModel()) {
+fun HomeRoute(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    navigateToDiaryRegistration: () -> Unit = {},
+    navigateToDiaryDetails: () -> Unit = {}
+) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = null) {
-        homeViewModel.event.collect { event ->
-            when (event) {
-                is HomeEvent.DiaryDetails -> {
-                }
-            }
-        }
-    }
-    HomeScreen(uiState)
+    HomeScreen(
+        uiState = uiState,
+        navigateToDiaryRegistration = navigateToDiaryRegistration
+    )
 }
 
 @Composable
 fun HomeScreen(
-    uiState: HomeUiState
+    uiState: HomeUiState,
+    navigateToDiaryRegistration: () -> Unit = {}
 ) {
     when (uiState) {
         is HomeUiState.Default -> {
@@ -80,6 +79,16 @@ fun HomeScreen(
                 HomeDiariesColumn(uiState.diaries)
             }
         }
+
+        is HomeUiState.Loading -> {
+            // todo: change progress bar visibility
+        }
+
+        is HomeUiState.DiaryDetails -> {
+            // todo: navigate to diary detail screen
+        }
+
+        is HomeUiState.DiaryRegistration -> navigateToDiaryRegistration()
     }
 }
 
@@ -254,9 +263,7 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun HomePreview() {
-    HomeScreen(
-        uiState = HomeUiState.Default(DiaryFixture.get())
-    )
+    HomeScreen(HomeUiState.Default(DiaryFixture.get()))
 }
 
 @Preview()
