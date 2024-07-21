@@ -6,6 +6,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ApiSignupRequest {
-    private String name;
+    private String userName;
     private String password;
 }

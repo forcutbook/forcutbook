@@ -18,10 +18,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public long createUser(ApiSignupRequest apiSignupRequest) {
-        log.info("Creating user: {}", apiSignupRequest.getName());
+        log.info("Creating user: {}", apiSignupRequest.getUserName());
 
         User user = new User();
-        user.setName(apiSignupRequest.getName());
+        user.setUserName(apiSignupRequest.getUserName());
         user.setPassword(apiSignupRequest.getPassword());
 
         user = userRepository.save(user);
@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public Optional<User> login(ApiLoginRequest loginRequest) {
-        return userRepository.findByNameAndPassword(loginRequest.getName(), loginRequest.getPassword());
+        return userRepository.findByUserNameAndPassword(loginRequest.getUserName(), loginRequest.getPassword());
     }
 
 }
