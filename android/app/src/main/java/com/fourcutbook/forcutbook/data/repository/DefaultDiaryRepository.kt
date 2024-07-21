@@ -17,7 +17,7 @@ class DefaultDiaryRepository @Inject constructor(
         return DiaryFixture.get().first()
     }
 
-    override suspend fun createAIDiaries(image: Bitmap): Diary {
+    override suspend fun postImage(image: Bitmap): Diary {
         return DiaryFixture.get().first().copy(image = image)
     }
 }

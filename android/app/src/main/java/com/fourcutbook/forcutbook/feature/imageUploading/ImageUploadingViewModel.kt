@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.diaryRegstration
+package com.fourcutbook.forcutbook.feature.imageUploading
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -17,27 +17,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DiaryRegistrationViewModel @Inject constructor(
+class ImageUploadingViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<DiaryRegistrationUiState> =
-        MutableStateFlow(DiaryRegistrationUiState.Entering)
-    val uiState: StateFlow<DiaryRegistrationUiState>
+    private val _uiState: MutableStateFlow<ImageUploadingUiState> =
+        MutableStateFlow(ImageUploadingUiState.Default)
+    val uiState: StateFlow<ImageUploadingUiState>
         get() = _uiState.asStateFlow()
 
-    private val _event: MutableSharedFlow<DiaryRegistrationEvent> = MutableSharedFlow()
-    val event: SharedFlow<DiaryRegistrationEvent>
+    private val _event: MutableSharedFlow<ImageUploadingEvent> = MutableSharedFlow()
+    val event: SharedFlow<ImageUploadingEvent>
         get() = _event.asSharedFlow()
 
-    fun createAIDiaries(image: Bitmap) {
+    fun uploadImage(image: Bitmap) {
         viewModelScope.launch {
             flow {
-                emit(diaryRepository.createAIDiaries(image))
+                emit(diaryRepository.postImage(image))
             }.onStart {
-                _uiState.emit(DiaryRegistrationUiState.Loading)
+                _uiState.emit(ImageUploadingUiState.Loading)
             }.collect { diary ->
-                _uiState.emit(DiaryRegistrationUiState.Created(diary))
+                _uiState.emit(ImageUploadingUiState.Uploaded(diary))
             }
         }
     }

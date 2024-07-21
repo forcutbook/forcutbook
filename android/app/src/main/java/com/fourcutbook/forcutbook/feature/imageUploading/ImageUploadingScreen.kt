@@ -1,10 +1,9 @@
-package com.fourcutbook.forcutbook.feature.diaryRegstration
+package com.fourcutbook.forcutbook.feature.imageUploading
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,33 +54,33 @@ private val takePhotoFromAlbumIntent =
     }
 
 @Composable
-fun DiaryRegistrationRoute(
-    diaryRegistrationViewModel: DiaryRegistrationViewModel = hiltViewModel(),
+fun ImageUploadingRoute(
+    imageUploadingViewModel: ImageUploadingViewModel = hiltViewModel(),
     navigateToDiaryScreen: () -> Unit = {}
 ) {
-    val uiState by diaryRegistrationViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by imageUploadingViewModel.uiState.collectAsStateWithLifecycle()
 
-    DiaryRegistrationScreen(
+    ImageUploadingScreen(
         uiState = uiState,
         onDiaryRegistry = { image ->
-            diaryRegistrationViewModel.createAIDiaries(image)
+            imageUploadingViewModel.uploadImage(image)
         },
         navigateToDiaryScreen = navigateToDiaryScreen
     )
 }
 
 @Composable
-fun DiaryRegistrationScreen(
-    uiState: DiaryRegistrationUiState,
+fun ImageUploadingScreen(
+    uiState: ImageUploadingUiState,
     onDiaryRegistry: (photo: Bitmap) -> Unit = {},
     navigateToDiaryScreen: () -> Unit = {}
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     when (uiState) {
-        is DiaryRegistrationUiState.Created -> navigateToDiaryScreen()
+        is ImageUploadingUiState.Uploaded -> navigateToDiaryScreen()
 
-        is DiaryRegistrationUiState.Entering -> {
+        is ImageUploadingUiState.Default -> {
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 30.dp, end = 30.dp)
@@ -95,7 +94,6 @@ fun DiaryRegistrationScreen(
                         if (result.resultCode == Activity.RESULT_OK) {
                             result.data?.data?.let { uri ->
                                 bitmap = uri.parseBitmap(context)
-                                Log.d("woogi", "DiaryRegistrationScreen: $uri")
                             } ?: run {
                                 Toast.makeText(context, "error taking photo", Toast.LENGTH_SHORT)
                                     .show()
@@ -106,7 +104,7 @@ fun DiaryRegistrationScreen(
                         }
                     }
 
-                DiaryRegistrationTargetImage(
+                UploadingImage(
                     onClick = {
                         takePhotoFromAlbumLauncher.launch(
                             takePhotoFromAlbumIntent
@@ -137,16 +135,16 @@ fun DiaryRegistrationScreen(
             }
         }
 
-        is DiaryRegistrationUiState.Loading -> {
+        is ImageUploadingUiState.Loading -> {
         }
 
-        is DiaryRegistrationUiState.Done -> {
+        is ImageUploadingUiState.Done -> {
         }
     }
 }
 
 @Composable
-fun DiaryRegistrationTargetImage(
+fun UploadingImage(
     onClick: () -> Unit,
     bitmap: Bitmap? = null
 ) {
@@ -181,6 +179,6 @@ fun DiaryRegistrationTargetImage(
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
-fun DiaryRegistrationPreview() {
-    DiaryRegistrationScreen(DiaryRegistrationUiState.Entering)
+fun ImageUploadingScreenPreview() {
+    ImageUploadingScreen(ImageUploadingUiState.Default)
 }

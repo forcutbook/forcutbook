@@ -38,12 +38,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.forcutbook.forcutbook.R
-import com.fourcutbook.forcutbook.feature.diary.diaryNavGraph
-import com.fourcutbook.forcutbook.feature.diary.navigateToDiary
-import com.fourcutbook.forcutbook.feature.diaryRegstration.diaryRegistrationNavGraph
-import com.fourcutbook.forcutbook.feature.diaryRegstration.navigateToDiaryRegistration
+import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
+import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
+import com.fourcutbook.forcutbook.feature.imageUploading.imageUloadingNavGraph
+import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
 import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
 import com.fourcutbook.forcutbook.feature.login.loginNavGraph
 import kotlinx.coroutines.launch
@@ -65,7 +65,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         floatingActionButton = {
             Box {
                 FloatingActionButton(
-                    onClick = { navController.navigateToDiaryRegistration() },
+                    onClick = { navController.navigateToImageUploading() },
                     shape = CircleShape,
                     containerColor = Color(0xFF1DA1F2),
                     modifier = Modifier
@@ -98,13 +98,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             loginNavGraph(navController::navigateToHome)
 
             homeNavGraph(
-                navigateToDiaryRegistration = navController::navigateToDiaryRegistration,
+                navigateToDiaryRegistration = navController::navigateToImageUploading,
                 navigateToDiaryDetails = {}
             )
 
-            diaryRegistrationNavGraph { navController.navigateToDiary() }
+            imageUloadingNavGraph { navController.navigateToDiaryRegistration() }
 
-            diaryNavGraph(
+            diaryRegistrationNavGraph(
                 navController = navController,
                 onShowSnackBar = onShowSnackBar
             )

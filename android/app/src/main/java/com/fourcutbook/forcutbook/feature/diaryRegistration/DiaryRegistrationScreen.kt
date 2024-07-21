@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.diary
+package com.fourcutbook.forcutbook.feature.diaryRegistration
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,8 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.feature.diaryRegstration.DiaryRegistrationUiState
-import com.fourcutbook.forcutbook.feature.diaryRegstration.DiaryRegistrationViewModel
+import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingUiState
+import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
 import com.fourcutbook.forcutbook.util.DiaryFixture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,12 +43,12 @@ import java.time.LocalDateTime
  * todo: need to change name of screen
  */
 @Composable
-fun DiaryRoute(
+fun DiaryRegistrationRoute(
     onShowSnackBar: (message: String) -> Unit,
     navigateToHomeScreen: (newDiary: Diary) -> Unit = {},
-    diaryRegistrationViewModel: DiaryRegistrationViewModel
+    imageUploadingViewModel: ImageUploadingViewModel
 ) {
-    val uiState by diaryRegistrationViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by imageUploadingViewModel.uiState.collectAsStateWithLifecycle()
 
     var state by remember {
         mutableStateOf<Boolean>(false)
@@ -57,7 +57,7 @@ fun DiaryRoute(
         delay(2000)
         state = true
     }
-    DiaryScreen(
+    DiaryRegistrationScreen(
         state = state,
         onShowSnackBar = onShowSnackBar,
         uiState = uiState,
@@ -66,10 +66,10 @@ fun DiaryRoute(
 }
 
 @Composable
-fun DiaryScreen(
+fun DiaryRegistrationScreen(
     modifier: Modifier = Modifier,
     state: Boolean = false,
-    uiState: DiaryRegistrationUiState,
+    uiState: ImageUploadingUiState,
     onShowSnackBar: (message: String) -> Unit = {},
     navigateToHomeScreen: (newDiary: Diary) -> Unit = {}
 ) {
@@ -89,7 +89,7 @@ fun DiaryScreen(
         }
     } else {
         when (uiState) {
-            is DiaryRegistrationUiState.Created -> Column(
+            is ImageUploadingUiState.Uploaded -> Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 30.dp, end = 30.dp)
                     .fillMaxWidth()
@@ -133,53 +133,12 @@ fun DiaryScreen(
             }
             else -> {}
         }
-//        Column(
-//            modifier = Modifier
-//                .padding(top = 20.dp, start = 30.dp, end = 30.dp)
-//                .fillMaxWidth()
-//                .fillMaxHeight()
-//        ) {
-//            Text(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .background(Color.White, RoundedCornerShape(10.dp))
-//                    .padding(top = 10.dp, start = 20.dp, bottom = 10.dp),
-//                text = diary.title
-//            )
-//            Text(
-//                modifier = Modifier
-//                    .padding(top = 20.dp)
-//                    .fillMaxWidth()
-//                    .background(Color.White, RoundedCornerShape(10.dp))
-//                    .padding(top = 10.dp, start = 20.dp, bottom = 10.dp, end = 20.dp)
-//                    .padding(),
-//                text = diary.contents
-//            )
-//            Image(
-//                modifier = Modifier
-//                    .padding(top = 20.dp)
-//                    .size(100.dp)
-//                    .clip(RoundedCornerShape(10.dp)),
-//                painter = painterResource(id = R.drawable.for_demo),
-//                contentDescription = null
-//            )
-//            Button(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 10.dp)
-//                    .offset(y = 200.dp),
-//                onClick = { navigateToHomeScreen(diary) },
-//                shape = RoundedCornerShape(10.dp),
-//                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
-//            ) {
-//                Text("등록하기")
-//            }
-//        }
+//
     }
 }
 
 @Preview(widthDp = 320, heightDp = 640)
 @Composable
-fun DiaryPreview() {
-    DiaryScreen(uiState = DiaryRegistrationUiState.Created(DiaryFixture.get().first()))
+fun DiaryRegistrationPreview() {
+    DiaryRegistrationScreen(uiState = ImageUploadingUiState.Uploaded(DiaryFixture.get().first()))
 }

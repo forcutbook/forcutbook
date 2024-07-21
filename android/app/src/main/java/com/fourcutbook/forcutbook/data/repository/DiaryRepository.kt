@@ -9,5 +9,5 @@ interface DiaryRepository {
 
     suspend fun fetchDiaryDetails(diaryId: Long): Diary
 
-    suspend fun createAIDiaries(image: Bitmap): Diary
+    suspend fun postImage(image: Bitmap): Diary
 }
