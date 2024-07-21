@@ -21,4 +21,12 @@ interface DiaryService {
         @Part("content") content: String,
         @Part("dateTime") dateTime: LocalDateTime
     )
+
+    @Multipart
+    @POST("/test")
+    suspend fun test(
+        @Part image: MultipartBody.Part,
+        @Part("title") title: String,
+        @Part("content") content: String
+    )
 }

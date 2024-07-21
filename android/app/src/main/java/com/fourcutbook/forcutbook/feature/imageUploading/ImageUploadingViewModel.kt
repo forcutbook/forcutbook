@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.imageUploading
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +30,7 @@ class ImageUploadingViewModel @Inject constructor(
     val event: SharedFlow<ImageUploadingEvent>
         get() = _event.asSharedFlow()
 
-    fun uploadImage(image: Bitmap) {
+    fun uploadImage(image: File) {
         viewModelScope.launch {
             flow {
                 emit(diaryRepository.postImage(image))

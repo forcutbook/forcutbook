@@ -1,9 +1,13 @@
 package com.fourcutbook.forcutbook.feature.imageUploading
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
+import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +45,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.util.parseBitmap
+import com.fourcutbook.forcutbook.util.saveBitmapToJpeg
+import java.io.File
+import java.net.URI
 
 private val takePhotoFromAlbumIntent =
     Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -69,13 +76,28 @@ fun ImageUploadingRoute(
     )
 }
 
+fun absolutelyPath(path: Uri?, context: Context): String {
+    Log.d("woogi", "absolutelyPath: $path")
+    var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+    var c: Cursor? = context.contentResolver.query(path!!, proj, null, null, null)
+    var index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+    c?.moveToFirst()
+
+    var result = c?.getString(index!!)
+
+    return result!!
+}
+
 @Composable
 fun ImageUploadingScreen(
     uiState: ImageUploadingUiState,
-    onDiaryRegistry: (photo: Bitmap) -> Unit = {},
+    onDiaryRegistry: (photo: File) -> Unit = {},
     navigateToDiaryScreen: () -> Unit = {}
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var URI by remember {
+        mutableStateOf<Uri?>(null)
+    }
 
     when (uiState) {
         is ImageUploadingUiState.Uploaded -> navigateToDiaryScreen()
@@ -93,6 +115,7 @@ fun ImageUploadingScreen(
                     rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                         if (result.resultCode == Activity.RESULT_OK) {
                             result.data?.data?.let { uri ->
+                                URI = uri
                                 bitmap = uri.parseBitmap(context)
                             } ?: run {
                                 Toast.makeText(context, "error taking photo", Toast.LENGTH_SHORT)
@@ -116,7 +139,7 @@ fun ImageUploadingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
-                    onClick = { onDiaryRegistry(bitmap!!) },
+                    onClick = { onDiaryRegistry(saveBitmapToJpeg(bitmap!!, context)!!) },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
                 ) {

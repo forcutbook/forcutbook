@@ -1,7 +1,7 @@
 package com.fourcutbook.forcutbook.data.repository
 
-import android.graphics.Bitmap
 import com.fourcutbook.forcutbook.domain.Diary
+import java.io.File
 
 interface DiaryRepository {
 
@@ -9,5 +9,5 @@ interface DiaryRepository {
 
     suspend fun fetchDiaryDetails(diaryId: Long): Diary
 
-    suspend fun postImage(image: Bitmap): Diary
+    suspend fun postImage(image: File): Diary
 }
