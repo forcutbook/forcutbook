@@ -1,8 +1,11 @@
 package com.fourcutbook.forcutbook.data.mapper
 
+import android.graphics.Bitmap
 import com.fourcutbook.forcutbook.data.response.DiariesResponse
+import com.fourcutbook.forcutbook.data.service.AIDiaryResponse
 import com.fourcutbook.forcutbook.domain.Diary
 import kotlinx.datetime.toJavaLocalDateTime
+import java.time.LocalDateTime
 
 object DiaryMapper {
 
@@ -14,4 +17,11 @@ object DiaryMapper {
             image = null
         )
     }
+
+    fun AIDiaryResponse.toDomain(image: Bitmap): Diary = Diary(
+        title = title,
+        contents = content,
+        date = LocalDateTime.now(),
+        image = image
+    )
 }

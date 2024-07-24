@@ -31,7 +31,7 @@ class DefaultUserRepository @Inject constructor(
 
     companion object {
 
-        private const val NO_ACCESSIBLE_USER = "현재 접속된 유저 정보가 존재하지 않습니다."
+        private const val NO_ACCESSIBLE_USER = "There's no accessible user."
         private val USER_ID = longPreferencesKey("USER_ID")
         private val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
     }

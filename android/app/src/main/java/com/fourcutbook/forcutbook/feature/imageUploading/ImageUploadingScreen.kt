@@ -1,13 +1,10 @@
 package com.fourcutbook.forcutbook.feature.imageUploading
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -47,7 +44,6 @@ import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.util.parseBitmap
 import com.fourcutbook.forcutbook.util.saveBitmapToJpeg
 import java.io.File
-import java.net.URI
 
 private val takePhotoFromAlbumIntent =
     Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -70,22 +66,10 @@ fun ImageUploadingRoute(
     ImageUploadingScreen(
         uiState = uiState,
         onDiaryRegistry = { image ->
-            imageUploadingViewModel.uploadImage(image)
+            imageUploadingViewModel.postImage(image)
         },
         navigateToDiaryScreen = navigateToDiaryScreen
     )
-}
-
-fun absolutelyPath(path: Uri?, context: Context): String {
-    Log.d("woogi", "absolutelyPath: $path")
-    var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-    var c: Cursor? = context.contentResolver.query(path!!, proj, null, null, null)
-    var index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-    c?.moveToFirst()
-
-    var result = c?.getString(index!!)
-
-    return result!!
 }
 
 @Composable

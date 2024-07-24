@@ -10,4 +10,7 @@ interface DiaryRepository {
     suspend fun fetchDiaryDetails(diaryId: Long): Diary
 
     suspend fun postImage(image: File): Diary
+
+    // todo: diary와 image file이 각각의 인자로 필요할까?
+    suspend fun postDiary(diary: Diary, image: File)
 }

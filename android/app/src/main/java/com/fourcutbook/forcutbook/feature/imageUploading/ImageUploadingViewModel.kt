@@ -3,6 +3,7 @@ package com.fourcutbook.forcutbook.feature.imageUploading
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
+import com.fourcutbook.forcutbook.domain.Diary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ class ImageUploadingViewModel @Inject constructor(
     val event: SharedFlow<ImageUploadingEvent>
         get() = _event.asSharedFlow()
 
-    fun uploadImage(image: File) {
+    fun postImage(image: File) {
         viewModelScope.launch {
             flow {
                 emit(diaryRepository.postImage(image))
@@ -38,6 +39,18 @@ class ImageUploadingViewModel @Inject constructor(
                 _uiState.emit(ImageUploadingUiState.Loading)
             }.collect { diary ->
                 _uiState.emit(ImageUploadingUiState.Uploaded(diary))
+            }
+        }
+    }
+
+    fun postDiary(diary: Diary, image: File) {
+        viewModelScope.launch {
+            flow {
+                emit(diaryRepository.postDiary(diary = diary, image = image))
+            }.onStart {
+                _uiState.emit(ImageUploadingUiState.Loading)
+            }.collect {
+                _uiState.emit(ImageUploadingUiState.Done)
             }
         }
     }
