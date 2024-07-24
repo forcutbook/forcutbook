@@ -48,7 +48,7 @@ public class DiaryService {
         for (MultipartFile imageFile : imageFiles) {
             String imageName = UUID.randomUUID().toString();
             s3ServiceProvider.uploadImage(imageName, imageFile);
-            imageNames.add(getImageUrl(imageName));
+            imageNames.add(getImageUrl(imageName, imageFile.getOriginalFilename()));
         }
         return imageNames;
     }
@@ -59,8 +59,9 @@ public class DiaryService {
         return new AiDiaryResDto("AI title", "AI content");
     }
 
-    private String getImageUrl(String imageName){
-        return imageUrlPrefix + imageName;
+    private String getImageUrl(String imageName, String originalFilename){
+        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        return imageUrlPrefix + imageName + extension;
     }
 
     public DiaryListResDto getDiaryList(Long userId, String search) {
