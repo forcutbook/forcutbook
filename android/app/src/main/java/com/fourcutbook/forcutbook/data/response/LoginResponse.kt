@@ -12,5 +12,5 @@ data class LoginResponse(
     @SerialName("message")
     val message: String,
     @SerialName("userId")
-    val userId: Int
+    val userId: Long
 )

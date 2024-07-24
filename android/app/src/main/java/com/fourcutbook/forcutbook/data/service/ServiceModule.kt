@@ -19,7 +19,7 @@ object ServiceModule {
     @Singleton
     fun providesRetrofit(converterFactory: Converter.Factory): Retrofit =
         Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("http://13.124.38.77:8080")
             .addConverterFactory(converterFactory)
             .build()
 

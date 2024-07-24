@@ -1,6 +1,8 @@
 package com.fourcutbook.forcutbook.data.service
 
+import com.fourcutbook.forcutbook.data.response.DiariesResponse
 import okhttp3.MultipartBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -9,6 +11,11 @@ import retrofit2.http.Path
 import java.time.LocalDateTime
 
 interface DiaryService {
+
+    @GET("/users/{userId}/diaries")
+    suspend fun fetchDiaries(
+        @Path(value = "userId") userId: Long
+    ): Response<DiariesResponse>
 
     @GET
     @Multipart
@@ -23,10 +30,10 @@ interface DiaryService {
     )
 
     @Multipart
-    @POST("/test")
+    @POST("/users/{userId}/diaries")
     suspend fun test(
         @Part image: MultipartBody.Part,
-        @Part("title") title: String,
+        @Path("userId") userId: Int,
         @Part("content") content: String
     )
 }

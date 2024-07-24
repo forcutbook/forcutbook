@@ -87,4 +87,8 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 }
