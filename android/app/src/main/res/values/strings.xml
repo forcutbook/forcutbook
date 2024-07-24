@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">forcutbook</string>
+    <string name="login_request_enter_id">아이디를 입력해 주세요.</string>
+    <string name="login_request_enter_password">비밀번호를 입력해 주세요.</string>
+</resources>
