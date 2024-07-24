@@ -49,7 +49,7 @@ public class DiaryService {
             String fileExtension = getFileExtension(imageFile.getOriginalFilename());
             String imageName = UUID.randomUUID().toString() + fileExtension;
             s3ServiceProvider.uploadImage(imageName, imageFile);
-            imageNames.add(getImageUrl(imageName, fileExtension));
+            imageNames.add(getImageUrl(imageName));
         }
         return imageNames;
     }
@@ -64,8 +64,8 @@ public class DiaryService {
         return originalFilename.substring(originalFilename.lastIndexOf("."));
     }
 
-    private String getImageUrl(String imageName, String extension){
-        return imageUrlPrefix + imageName + extension;
+    private String getImageUrl(String imageName){
+        return imageUrlPrefix + imageName;
     }
 
     public DiaryListResDto getDiaryList(Long userId, String search) {
