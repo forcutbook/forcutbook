@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.data.service
 
 import com.fourcutbook.forcutbook.data.response.DiariesResponse
+import com.fourcutbook.forcutbook.data.response.DiaryDetailResponse
 import com.fourcutbook.forcutbook.data.response.DiaryRegistrationResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -17,6 +18,12 @@ interface DiaryService {
     suspend fun fetchDiaries(
         @Path(value = "userId") userId: Long
     ): Response<DiariesResponse>
+
+    @GET("/users/{userId}/diaries/{diaryId}")
+    suspend fun fetchDiaryDetails(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "diaryId") diaryId: Long
+    ): Response<DiaryDetailResponse>
 
     @Multipart
     @POST("/users/{userId}/diaries/aiCreate")

@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.feature.diaryRegistration
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingUiState
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
@@ -58,16 +61,16 @@ fun DiaryRegistrationScreen(
     navigateToHomeScreen: () -> Unit = {},
     onShowSnackBar: (message: String) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .padding(top = 20.dp, start = 30.dp, end = 30.dp)
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        val context = LocalContext.current
+    val context = LocalContext.current
 
-        when (uiState) {
-            is ImageUploadingUiState.Uploaded -> {
+    when (uiState) {
+        is ImageUploadingUiState.Uploaded -> {
+            Column(
+                modifier = Modifier
+                    .padding(top = 20.dp, start = 30.dp, end = 30.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
                 DiaryTitle(title = uiState.diary.title)
                 DiaryContents(contents = uiState.diary.contents)
                 uiState.diary.image?.let { image ->
@@ -86,11 +89,11 @@ fun DiaryRegistrationScreen(
                     }
                 )
             }
-
-            is ImageUploadingUiState.Done -> navigateToHomeScreen()
-
-            else -> {}
         }
+
+        is ImageUploadingUiState.Registered -> navigateToHomeScreen()
+
+        else -> {}
     }
 }
 
@@ -127,6 +130,23 @@ fun DiaryImage(image: Bitmap) {
             .clip(RoundedCornerShape(10.dp)),
         bitmap = image.asImageBitmap(),
         contentDescription = null
+    )
+}
+
+@Composable
+fun DiaryImage(imageUrl: String) {
+    val context = LocalContext.current
+
+    Log.d("woogi", "DiaryImage: $imageUrl")
+    AsyncImage(
+        modifier = Modifier
+            .padding(top = 20.dp)
+            .size(100.dp)
+            .clip(RoundedCornerShape(10.dp)),
+        model = imageUrl,
+        contentDescription = null,
+//        placeholder = painterResource(id = R.drawable.demo_image),
+        contentScale = ContentScale.Fit
     )
 }
 

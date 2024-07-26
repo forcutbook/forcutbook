@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
+// todo: DiaryViewModel?
 @HiltViewModel
 class ImageUploadingViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
@@ -54,7 +55,7 @@ class ImageUploadingViewModel @Inject constructor(
             }.onStart {
                 _uiState.emit(ImageUploadingUiState.Loading)
             }.collect {
-                _uiState.emit(ImageUploadingUiState.Done)
+                _uiState.emit(ImageUploadingUiState.Registered)
             }
         }
     }

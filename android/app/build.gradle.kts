@@ -99,4 +99,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore:1.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
+    // coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }

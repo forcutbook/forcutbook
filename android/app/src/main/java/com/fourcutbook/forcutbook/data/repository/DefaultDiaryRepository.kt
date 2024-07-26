@@ -5,7 +5,6 @@ import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.DiaryMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.DiaryService
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.util.DiaryFixture
 import kotlinx.coroutines.flow.first
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -38,7 +37,20 @@ class DefaultDiaryRepository @Inject constructor(
     }
 
     override suspend fun fetchDiaryDetails(diaryId: Long): Diary {
-        return DiaryFixture.get().first()
+        run {
+            val userId = userRepository.fetchUserId().first()
+            val response = diaryService.fetchDiaryDetails(
+                userId = userId,
+                diaryId = diaryId
+            )
+
+            if (response.isSuccessful) {
+                val diaryDetail = response.body()
+
+                return diaryDetail?.toDomain() ?: throw IOException("Response body is null.")
+            }
+            throw IOException("Request failed with code ${response.code()}!")
+        }
     }
 
     override suspend fun postImage(image: File): Diary {

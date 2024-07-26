@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.feature.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,19 +55,23 @@ import java.util.Locale
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToDiaryRegistration: () -> Unit = {},
-    navigateToDiaryDetails: () -> Unit = {}
+    navigateToDiaryDetail: () -> Unit = {}
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
-        navigateToDiaryRegistration = navigateToDiaryRegistration
+        onDiaryClick = homeViewModel::fetchDiaryDetail,
+        navigateToDiaryRegistration = navigateToDiaryRegistration,
+        navigateToDiaryDetail = navigateToDiaryDetail
     )
 }
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    onDiaryClick: (diaryId: Long) -> Unit = {},
+    navigateToDiaryDetail: () -> Unit = {},
     navigateToDiaryRegistration: () -> Unit = {}
 ) {
     when (uiState) {
@@ -76,7 +81,10 @@ fun HomeScreen(
                     .fillMaxHeight()
             ) {
                 HomeCalendar()
-                HomeDiariesColumn(uiState.diaries)
+                HomeDiariesColumn(
+                    diaries = uiState.diaries,
+                    onDiaryClick = onDiaryClick
+                )
             }
         }
 
@@ -84,9 +92,7 @@ fun HomeScreen(
             // todo: change progress bar visibility
         }
 
-        is HomeUiState.DiaryDetails -> {
-            // todo: navigate to diary detail screen
-        }
+        is HomeUiState.DiaryDetail -> navigateToDiaryDetail()
 
         is HomeUiState.DiaryRegistration -> navigateToDiaryRegistration()
     }
@@ -94,22 +100,27 @@ fun HomeScreen(
 
 @Composable
 fun HomeDiariesColumn(
+    modifier: Modifier = Modifier,
     diaries: List<Diary>,
-    modifier: Modifier = Modifier
+    onDiaryClick: (diaryId: Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
         items(diaries) { diary ->
-            HomeDiaryItem(diary = diary)
+            HomeDiaryItem(
+                diary = diary,
+                onClick = onDiaryClick
+            )
         }
     }
 }
 
 @Composable
 fun HomeDiaryItem(
+    modifier: Modifier = Modifier,
     diary: Diary,
-    modifier: Modifier = Modifier
+    onClick: (diaryId: Long) -> Unit = {}
 ) {
     Column(
         modifier
@@ -117,6 +128,7 @@ fun HomeDiaryItem(
             .fillMaxWidth()
             .wrapContentHeight()
             .background(Color.White, shape = RoundedCornerShape(10.dp))
+            .clickable { onClick(diary.id) }
     ) {
         Row(
             modifier = Modifier.padding(top = 16.dp, start = 30.dp, end = 30.dp)
@@ -271,6 +283,7 @@ fun HomePreview() {
 fun DiaryPreview() {
     HomeDiaryItem(
         diary = Diary(
+            id = -1,
             title = "종강하는 날",
             contents = "졸업프로젝트1 최종 발표를 마지막으로..",
             date = LocalDateTime.of(

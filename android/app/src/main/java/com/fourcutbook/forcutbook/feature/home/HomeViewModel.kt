@@ -43,27 +43,23 @@ class HomeViewModel @Inject constructor(
                 Log.d("woogi", "error: $it")
                 _event.emit(HomeEvent.Error)
             }.collect { diaries ->
-                Log.d("woogi", "fetchDiaries: $diaries")
                 _uiState.value = HomeUiState.Default(diaries)
             }
         }
     }
 
-    fun fetchDiaryDetails(diaryId: Long) {
+    fun fetchDiaryDetail(diaryId: Long) {
         viewModelScope.launch {
             flow {
-                emit(diaryRepository)
+                emit(diaryRepository.fetchDiaryDetails(diaryId))
             }.onStart {
                 _uiState.value = HomeUiState.Loading
             }.catch {
                 _event.emit(HomeEvent.Error)
-            }.collect {
-                _uiState.value = HomeUiState.DiaryDetails
+            }.collect { diary ->
+                Log.d("woogi", "fetchDiaryDetail: $diary")
+                _uiState.value = HomeUiState.DiaryDetail(diary)
             }
         }
-    }
-
-    fun tryDiaryRegistration() {
-        _uiState.value = HomeUiState.DiaryRegistration
     }
 }

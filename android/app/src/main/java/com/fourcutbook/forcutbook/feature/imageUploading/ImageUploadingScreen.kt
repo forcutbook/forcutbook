@@ -128,7 +128,7 @@ fun ImageUploadingScreen(
         is ImageUploadingUiState.Loading -> {
         }
 
-        is ImageUploadingUiState.Done -> {
+        is ImageUploadingUiState.Registered -> {
         }
     }
 }
