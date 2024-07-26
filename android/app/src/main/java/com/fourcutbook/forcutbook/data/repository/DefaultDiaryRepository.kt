@@ -24,7 +24,9 @@ class DefaultDiaryRepository @Inject constructor(
     override suspend fun fetchDiaries(): List<Diary> {
         run {
             val userId = userRepository.fetchUserId().first()
+            Log.d("woogi", "fetchDiaries: $userId")
             val response = diaryService.fetchDiaries(userId)
+            Log.d("woogi", "fetchDiaries: ${response.code()}")
 
             if (response.isSuccessful) {
                 val diaries = response.body()
@@ -73,11 +75,10 @@ class DefaultDiaryRepository @Inject constructor(
                 userId = userId,
                 title = title,
                 content = contents,
-                image = listOf(MultipartBody.Part.createFormData("image", image.name, imageFile)),
-                friends = friends,
-                date = date
+                image = listOf(MultipartBody.Part.createFormData("images", image.name, imageFile)),
+                friends = friends
             )
-            Log.d("woogi", "postDiary: ${response.body()}")
+            Log.d("woogi", "postDiary: $response")
         }
     }
 }

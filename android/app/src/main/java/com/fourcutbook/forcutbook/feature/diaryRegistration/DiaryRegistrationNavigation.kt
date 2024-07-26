@@ -18,6 +18,7 @@ fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.diaryRegistrationNavGraph(
     navController: NavController,
+    navigateToHomeScreen: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = DIARY_REGISTRATION_ROUTE) {
@@ -26,6 +27,7 @@ fun NavGraphBuilder.diaryRegistrationNavGraph(
         }
         DiaryRegistrationRoute(
             imageUploadingViewModel = sharedViewModel,
+            navigateToHomeScreen = navigateToHomeScreen,
             onShowSnackBar = onShowSnackBar
         )
     }

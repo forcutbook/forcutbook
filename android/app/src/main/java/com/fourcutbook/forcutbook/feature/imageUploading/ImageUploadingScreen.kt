@@ -54,8 +54,11 @@ fun ImageUploadingRoute(
 
     ImageUploadingScreen(
         uiState = uiState,
-        onDiaryRegistry = { image ->
-            imageUploadingViewModel.postImage(image)
+        onImageUpload = { imageFile, imageBitmap ->
+            imageUploadingViewModel.postImage(
+                imageFile = imageFile,
+                imageBitmap = imageBitmap
+            )
         },
         navigateToDiaryScreen = navigateToDiaryScreen
     )
@@ -64,7 +67,10 @@ fun ImageUploadingRoute(
 @Composable
 fun ImageUploadingScreen(
     uiState: ImageUploadingUiState,
-    onDiaryRegistry: (photo: File) -> Unit = {},
+    onImageUpload: (
+        imageFile: File,
+        imageBitmap: Bitmap
+    ) -> Unit = { _, _ -> },
     navigateToDiaryScreen: () -> Unit = {}
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -98,7 +104,7 @@ fun ImageUploadingScreen(
                         .padding(top = 10.dp),
                     onClick = {
                         bitmap?.let { image ->
-                            onDiaryRegistry(image.toFile(context))
+                            onImageUpload(image.toFile(context), image)
                         }
                     },
                     shape = RoundedCornerShape(10.dp),

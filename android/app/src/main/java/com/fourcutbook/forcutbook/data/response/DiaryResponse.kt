@@ -15,5 +15,5 @@ data class DiaryResponse(
     @SerialName("isImage")
     val includeImage: Boolean,
     @SerialName("date")
-    val date: LocalDateTime
+    val date: LocalDateTime?
 )

@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.feature.diaryRegistration
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -24,10 +23,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingUiState
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
 import com.fourcutbook.forcutbook.util.DiaryFixture
+import com.fourcutbook.forcutbook.util.toFile
+import java.io.File
 
 /**
  * screen we can confirm diary created by artificial intelligence and registry
@@ -36,7 +37,6 @@ import com.fourcutbook.forcutbook.util.DiaryFixture
 @Composable
 fun DiaryRegistrationRoute(
     imageUploadingViewModel: ImageUploadingViewModel,
-    uploadedImage: Bitmap,
     onShowSnackBar: (message: String) -> Unit,
     navigateToHomeScreen: () -> Unit
 ) {
@@ -44,9 +44,9 @@ fun DiaryRegistrationRoute(
 
     DiaryRegistrationScreen(
         uiState = uiState,
-        uploadedImage = uploadedImage,
-        onShowSnackBar = onShowSnackBar,
-        navigateToHomeScreen = navigateToHomeScreen
+        onDiaryRegistry = imageUploadingViewModel::postDiary,
+        navigateToHomeScreen = navigateToHomeScreen,
+        onShowSnackBar = onShowSnackBar
     )
 }
 
@@ -54,9 +54,9 @@ fun DiaryRegistrationRoute(
 fun DiaryRegistrationScreen(
     modifier: Modifier = Modifier,
     uiState: ImageUploadingUiState,
-    uploadedImage: Bitmap,
-    onShowSnackBar: (message: String) -> Unit = {},
-    navigateToHomeScreen: () -> Unit = {}
+    onDiaryRegistry: (diary: Diary, image: File) -> Unit = { _, _ -> },
+    navigateToHomeScreen: () -> Unit = {},
+    onShowSnackBar: (message: String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -64,15 +64,30 @@ fun DiaryRegistrationScreen(
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
+        val context = LocalContext.current
+
         when (uiState) {
             is ImageUploadingUiState.Uploaded -> {
                 DiaryTitle(title = uiState.diary.title)
-                DiaryContents(
-                    contents = uiState.diary.contents,
-                    image = uploadedImage
+                DiaryContents(contents = uiState.diary.contents)
+                uiState.diary.image?.let { image ->
+                    DiaryImage(image = image)
+                }
+                DiaryRegistrationButton(
+                    onDiaryRegistry = {
+                        uiState.diary
+                            .image
+                            ?.let { imageBitmap ->
+                                onDiaryRegistry(
+                                    uiState.diary,
+                                    imageBitmap.toFile(context)
+                                )
+                            }
+                    }
                 )
-                DiaryRegistrationButton(navigateToHomeScreen = navigateToHomeScreen)
             }
+
+            is ImageUploadingUiState.Done -> navigateToHomeScreen()
 
             else -> {}
         }
@@ -91,10 +106,7 @@ fun DiaryTitle(title: String) {
 }
 
 @Composable
-fun DiaryContents(
-    contents: String,
-    image: Bitmap
-) {
+fun DiaryContents(contents: String) {
     Text(
         modifier = Modifier
             .padding(top = 20.dp)
@@ -104,6 +116,10 @@ fun DiaryContents(
             .padding(),
         text = contents
     )
+}
+
+@Composable
+fun DiaryImage(image: Bitmap) {
     Image(
         modifier = Modifier
             .padding(top = 20.dp)
@@ -115,13 +131,13 @@ fun DiaryContents(
 }
 
 @Composable
-fun DiaryRegistrationButton(navigateToHomeScreen: () -> Unit = {}) {
+fun DiaryRegistrationButton(onDiaryRegistry: () -> Unit = {}) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
             .offset(y = 200.dp),
-        onClick = { navigateToHomeScreen() },
+        onClick = { onDiaryRegistry() },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
     ) {
@@ -132,13 +148,5 @@ fun DiaryRegistrationButton(navigateToHomeScreen: () -> Unit = {}) {
 @Preview(widthDp = 320, heightDp = 640)
 @Composable
 fun DiaryRegistrationPreview() {
-    val context = LocalContext.current
-
-    DiaryRegistrationScreen(
-        uiState = ImageUploadingUiState.Uploaded(DiaryFixture.get().first()),
-        uploadedImage = BitmapFactory.decodeResource(
-            context.resources,
-            R.drawable.demo_image
-        )
-    )
+    DiaryRegistrationScreen(uiState = ImageUploadingUiState.Uploaded(DiaryFixture.get().first()))
 }

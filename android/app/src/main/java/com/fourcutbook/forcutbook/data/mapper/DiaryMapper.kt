@@ -13,7 +13,8 @@ object DiaryMapper {
         Diary(
             title = it.title,
             contents = it.content,
-            date = it.date.toJavaLocalDateTime(),
+            // todo: 서버에서 non-nullable 타입으로 처리하도록 만들기ㅅㄷㄴ
+            date = it.date?.toJavaLocalDateTime() ?: LocalDateTime.now(),
             image = null
         )
     }

@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -20,6 +21,7 @@ class DefaultUserRepository @Inject constructor(
     override suspend fun postUserId(id: Long) {
         userDataStore.edit { preferences ->
             preferences[USER_ID] = id
+            Log.d("woogi", "postUserId: $id")
         }
     }
 

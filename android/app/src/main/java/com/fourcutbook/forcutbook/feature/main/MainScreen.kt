@@ -106,6 +106,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
             diaryRegistrationNavGraph(
                 navController = navController,
+                navigateToHomeScreen = navController::navigateToHome,
                 onShowSnackBar = onShowSnackBar
             )
         }

@@ -33,7 +33,6 @@ interface DiaryService {
         @Part("title") title: RequestBody,
         @Part("content") content: RequestBody,
         @Part image: List<MultipartBody.Part>,
-        @Part("friends") friends: RequestBody,
-        @Part("date") date: RequestBody
+        @Part("friends") friends: RequestBody
     ): Response<DiaryRegistrationResponse>
 }
