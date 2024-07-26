@@ -11,7 +11,7 @@ fun NavController.navigateToImageUploading(navOptions: NavOptions? = null) {
     navigate(IMAGE_UPLOADING_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.imageUloadingNavGraph(
+fun NavGraphBuilder.imageUploadingNavGraph(
     navigateToDiaryScreen: () -> Unit
 ) {
     composable(route = IMAGE_UPLOADING_ROUTE) {

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     kotlin("kapt")
     id("com.android.application")
@@ -16,6 +18,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        val properties = Properties()
+        properties.load(rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "SERVER_URL", properties.getProperty("server.url"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,6 +47,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {

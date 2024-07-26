@@ -42,7 +42,7 @@ import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNav
 import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
-import com.fourcutbook.forcutbook.feature.imageUploading.imageUloadingNavGraph
+import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
 import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
 import com.fourcutbook.forcutbook.feature.login.loginNavGraph
@@ -102,7 +102,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 navigateToDiaryDetails = {}
             )
 
-            imageUloadingNavGraph { navController.navigateToDiaryRegistration() }
+            imageUploadingNavGraph { navController.navigateToDiaryRegistration() }
 
             diaryRegistrationNavGraph(
                 navController = navController,

@@ -7,5 +7,5 @@ data class Diary(
     val title: String,
     val contents: String,
     val date: LocalDateTime,
-    val image: Bitmap? = null
+    var image: Bitmap? = null
 )
