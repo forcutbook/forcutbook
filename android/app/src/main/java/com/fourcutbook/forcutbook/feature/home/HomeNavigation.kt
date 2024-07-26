@@ -18,7 +18,7 @@ fun NavGraphBuilder.homeNavGraph(
     composable(route = HOME_ROUTE) {
         HomeRoute(
             navigateToDiaryRegistration = navigateToDiaryRegistration,
-            navigateToDiaryDetails = navigateToDiaryDetails
+            navigateToDiaryDetail = navigateToDiaryDetails
         )
     }
 }

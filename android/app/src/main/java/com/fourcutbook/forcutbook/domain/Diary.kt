@@ -4,8 +4,10 @@ import android.graphics.Bitmap
 import java.time.LocalDateTime
 
 data class Diary(
+    val id: Long,
     val title: String,
     val contents: String,
     val date: LocalDateTime,
-    val image: Bitmap? = null
+    val image: Bitmap? = null,
+    val imageUrl: String = ""
 )

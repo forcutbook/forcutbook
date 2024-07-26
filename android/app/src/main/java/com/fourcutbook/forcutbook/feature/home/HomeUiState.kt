@@ -12,5 +12,5 @@ sealed interface HomeUiState {
 
     data object Loading : HomeUiState
 
-    data object DiaryDetails : HomeUiState
+    data class DiaryDetail(val diary: Diary) : HomeUiState
 }

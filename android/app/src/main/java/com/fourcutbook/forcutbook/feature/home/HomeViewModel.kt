@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -30,28 +32,34 @@ class HomeViewModel @Inject constructor(
         get() = _event.asSharedFlow()
 
     init {
+        fetchDiaries()
+    }
+
+    fun fetchDiaries() {
         viewModelScope.launch {
             flow {
                 emit(diaryRepository.fetchDiaries())
+            }.catch {
+                Log.d("woogi", "error: $it")
+                _event.emit(HomeEvent.Error)
             }.collect { diaries ->
                 _uiState.value = HomeUiState.Default(diaries)
             }
         }
     }
 
-    fun fetchDiaryDetails(diaryId: Long) {
+    fun fetchDiaryDetail(diaryId: Long) {
         viewModelScope.launch {
             flow {
-                emit(diaryRepository)
+                emit(diaryRepository.fetchDiaryDetails(diaryId))
             }.onStart {
                 _uiState.value = HomeUiState.Loading
-            }.collect {
-                _uiState.value = HomeUiState.DiaryDetails
+            }.catch {
+                _event.emit(HomeEvent.Error)
+            }.collect { diary ->
+                Log.d("woogi", "fetchDiaryDetail: $diary")
+                _uiState.value = HomeUiState.DiaryDetail(diary)
             }
         }
-    }
-
-    fun tryDiaryRegistration() {
-        _uiState.value = HomeUiState.DiaryRegistration
     }
 }

@@ -1,15 +1,12 @@
 package com.fourcutbook.forcutbook.feature.imageUploading
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
-import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,20 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.util.parseBitmap
-import com.fourcutbook.forcutbook.util.saveBitmapToJpeg
+import com.fourcutbook.forcutbook.util.toFile
 import java.io.File
-import java.net.URI
-
-private val takePhotoFromAlbumIntent =
-    Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-        type = "image/*"
-        action = Intent.ACTION_GET_CONTENT
-        putExtra(
-            Intent.EXTRA_MIME_TYPES,
-            arrayOf("image/jpeg", "image/png", "image/bmp", "image/webp")
-        )
-        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-    }
 
 @Composable
 fun ImageUploadingRoute(
@@ -69,35 +54,26 @@ fun ImageUploadingRoute(
 
     ImageUploadingScreen(
         uiState = uiState,
-        onDiaryRegistry = { image ->
-            imageUploadingViewModel.uploadImage(image)
+        onImageUpload = { imageFile, imageBitmap ->
+            imageUploadingViewModel.postImage(
+                imageFile = imageFile,
+                imageBitmap = imageBitmap
+            )
         },
         navigateToDiaryScreen = navigateToDiaryScreen
     )
 }
 
-fun absolutelyPath(path: Uri?, context: Context): String {
-    Log.d("woogi", "absolutelyPath: $path")
-    var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-    var c: Cursor? = context.contentResolver.query(path!!, proj, null, null, null)
-    var index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-    c?.moveToFirst()
-
-    var result = c?.getString(index!!)
-
-    return result!!
-}
-
 @Composable
 fun ImageUploadingScreen(
     uiState: ImageUploadingUiState,
-    onDiaryRegistry: (photo: File) -> Unit = {},
+    onImageUpload: (
+        imageFile: File,
+        imageBitmap: Bitmap
+    ) -> Unit = { _, _ -> },
     navigateToDiaryScreen: () -> Unit = {}
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var URI by remember {
-        mutableStateOf<Uri?>(null)
-    }
 
     when (uiState) {
         is ImageUploadingUiState.Uploaded -> navigateToDiaryScreen()
@@ -110,28 +86,15 @@ fun ImageUploadingScreen(
                     .fillMaxHeight()
             ) {
                 val context = LocalContext.current
-
-                val takePhotoFromAlbumLauncher =
-                    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                        if (result.resultCode == Activity.RESULT_OK) {
-                            result.data?.data?.let { uri ->
-                                URI = uri
-                                bitmap = uri.parseBitmap(context)
-                            } ?: run {
-                                Toast.makeText(context, "error taking photo", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        } else if (result.resultCode != Activity.RESULT_CANCELED) {
-                            Toast.makeText(context, "cancel taking photo", Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                val takePhotoFromAlbumLauncher = rememberAlbumLauncher(
+                    onSuccess = { image ->
+                        bitmap = image
                     }
+                )
 
                 UploadingImage(
                     onClick = {
-                        takePhotoFromAlbumLauncher.launch(
-                            takePhotoFromAlbumIntent
-                        )
+                        takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
                     },
                     bitmap = bitmap
                 )
@@ -139,7 +102,11 @@ fun ImageUploadingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
-                    onClick = { onDiaryRegistry(saveBitmapToJpeg(bitmap!!, context)!!) },
+                    onClick = {
+                        bitmap?.let { image ->
+                            onImageUpload(image.toFile(context), image)
+                        }
+                    },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1DA1F2))
                 ) {
@@ -161,7 +128,7 @@ fun ImageUploadingScreen(
         is ImageUploadingUiState.Loading -> {
         }
 
-        is ImageUploadingUiState.Done -> {
+        is ImageUploadingUiState.Registered -> {
         }
     }
 }
@@ -197,6 +164,36 @@ fun UploadingImage(
             painter = painter,
             contentDescription = null
         )
+    }
+}
+
+private val takePhotoFromAlbumIntent =
+    Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+        type = "image/*"
+        action = Intent.ACTION_GET_CONTENT
+        putExtra(
+            Intent.EXTRA_MIME_TYPES,
+            arrayOf("image/jpeg", "image/png", "image/bmp", "image/webp")
+        )
+        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+    }
+
+@Composable
+fun rememberAlbumLauncher(
+    onSuccess: (image: Bitmap) -> Unit,
+    onFailure: () -> Unit = {},
+    onCanceled: () -> Unit = {}
+): ManagedActivityResultLauncher<Intent, ActivityResult> {
+    val context = LocalContext.current
+
+    return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                onSuccess(uri.parseBitmap(context))
+            } ?: onFailure()
+        } else if (result.resultCode != Activity.RESULT_CANCELED) {
+            onCanceled()
+        }
     }
 }
 

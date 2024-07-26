@@ -10,5 +10,5 @@ sealed interface ImageUploadingUiState {
 
     data class Uploaded(val diary: Diary) : ImageUploadingUiState
 
-    data object Done : ImageUploadingUiState
+    data object Registered : ImageUploadingUiState
 }

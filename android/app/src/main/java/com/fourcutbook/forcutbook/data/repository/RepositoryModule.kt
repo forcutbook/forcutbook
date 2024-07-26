@@ -17,4 +17,8 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindsDiaryRepository(diaryRepository: DefaultDiaryRepository): DiaryRepository
+
+    @Binds
+    @Singleton
+    fun bindsUserRepository(userRepository: DefaultUserRepository): UserRepository
 }

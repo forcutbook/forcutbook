@@ -6,11 +6,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 class DefaultLoginRepository @Inject constructor(
+    private val userRepository: UserRepository,
     private val loginService: LoginService
 ) : LoginRepository {
 
     override suspend fun postLogin(id: String, password: String) {
-        return run {
+        run {
             val response = loginService.postLogin(
                 loginRequest = LoginRequest(
                     id = id,
@@ -18,9 +19,12 @@ class DefaultLoginRepository @Inject constructor(
                 )
             )
 
-            if (!response.isSuccessful) {
-                throw IOException("request failed with code: ${response.code()}")
+            if (response.isSuccessful) {
+                return response.body()?.let {
+                    userRepository.postUserId(it.userId)
+                } ?: throw IOException("Request body is null.")
             }
+            throw IOException("Request failed with code ${response.code()}!")
         }
     }
 }

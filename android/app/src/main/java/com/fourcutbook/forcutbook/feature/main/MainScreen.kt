@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.main
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,11 +37,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
+import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
 import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
-import com.fourcutbook.forcutbook.feature.imageUploading.imageUloadingNavGraph
+import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
 import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
 import com.fourcutbook.forcutbook.feature.login.loginNavGraph
@@ -83,9 +84,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 }
             }
         },
-        bottomBar = {
-            MainBottomAppBar(navController = navController)
-        }
+        bottomBar = { MainBottomAppBar() }
     ) { padding ->
         NavHost(
             modifier = Modifier
@@ -94,17 +93,22 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             navController = navController,
             startDestination = LOGIN_ROUTE
         ) {
-            Log.d("woogi", "MainScreen: asdas")
             loginNavGraph(navController::navigateToHome)
 
             homeNavGraph(
                 navigateToDiaryRegistration = navController::navigateToImageUploading,
-                navigateToDiaryDetails = {}
+                navigateToDiaryDetails = navController::navigateToDiaryDetail
             )
 
-            imageUloadingNavGraph { navController.navigateToDiaryRegistration() }
+            imageUploadingNavGraph { navController.navigateToDiaryRegistration() }
 
             diaryRegistrationNavGraph(
+                navController = navController,
+                navigateToHomeScreen = navController::navigateToHome,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            diaryDetailNavGraph(
                 navController = navController,
                 onShowSnackBar = onShowSnackBar
             )
@@ -143,10 +147,7 @@ fun HomeForCutBookLogo(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MainBottomAppBar(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
-) {
+fun MainBottomAppBar(modifier: Modifier = Modifier) {
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()

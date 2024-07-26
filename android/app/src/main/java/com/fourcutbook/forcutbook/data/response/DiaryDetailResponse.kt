@@ -5,15 +5,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DiaryResponse(
+data class DiaryDetailResponse(
     @SerialName("diaryId")
     val diaryId: Long,
     @SerialName("title")
     val title: String,
     @SerialName("content")
-    val content: String,
-    @SerialName("isImage")
-    val includeImage: Boolean,
+    val contents: String,
+    @SerialName("images")
+    val images: List<ImageResponse>,
     @SerialName("createdAt")
     val date: LocalDateTime
 )

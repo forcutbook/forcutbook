@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     kotlin("kapt")
     id("com.android.application")
@@ -16,6 +18,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        val properties = Properties()
+        properties.load(rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "SERVER_URL", properties.getProperty("server.url"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,6 +47,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -87,4 +95,11 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
+    // coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }

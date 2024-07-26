@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DiariesResponse(
-    @SerialName("diaries")
-    val diaries: List<DiaryResponse>
+data class ImageResponse(
+    @SerialName("imageUrl")
+    val imageUrl: String
 )

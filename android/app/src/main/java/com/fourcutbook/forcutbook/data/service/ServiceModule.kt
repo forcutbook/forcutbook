@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.data.service
 
+import com.forcutbook.forcutbook.BuildConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -19,7 +20,7 @@ object ServiceModule {
     @Singleton
     fun providesRetrofit(converterFactory: Converter.Factory): Retrofit =
         Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl(BuildConfig.SERVER_URL)
             .addConverterFactory(converterFactory)
             .build()
 
