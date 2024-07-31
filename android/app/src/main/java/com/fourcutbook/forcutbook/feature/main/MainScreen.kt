@@ -3,6 +3,7 @@ package com.fourcutbook.forcutbook.feature.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,16 +30,15 @@ import androidx.navigation.compose.rememberNavController
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
+import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
 import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
 import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
-import com.fourcutbook.forcutbook.feature.home.HOME_ROUTE
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
 import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
-import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
 import com.fourcutbook.forcutbook.feature.login.loginNavGraph
 import kotlinx.coroutines.launch
 
@@ -55,16 +55,19 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
-        modifier = Modifier,
-        topBar = { FcbTopAppBar(currentRoute = currentRoute) },
+        modifier = Modifier.fillMaxSize(),
+        topBar = { FcbTopAppBar(currentRoute = FcbRoute.find(currentRoute)) },
         bottomBar = { FcbBottomNavigation(navController = navController) }
-    ) { padding ->
+    ) { contentPadding ->
         NavHost(
             modifier = Modifier
                 .background(color = FcbTheme.colors.fcbGray)
-                .padding(top = FcbTheme.padding.basicVerticalPadding),
+                .padding(
+                    top = contentPadding.calculateTopPadding(),
+                    bottom = contentPadding.calculateBottomPadding()
+                ),
             navController = navController,
-            startDestination = LOGIN_ROUTE
+            startDestination = FcbRoute.LOGIN_ROUTE.value
         ) {
             loginNavGraph { navController.navigateToHome() }
 
@@ -86,14 +89,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onShowSnackBar = onShowSnackBar
             )
         }
-        padding
     }
 }
 
 @Composable
 fun FcbTopAppBar(
     modifier: Modifier = Modifier,
-    currentRoute: String?
+    currentRoute: FcbRoute?
 ) {
     Row(
         modifier = Modifier
@@ -111,10 +113,13 @@ fun FcbTopAppBar(
             modifier = modifier
                 .wrapContentWidth(),
             style = FcbTheme.typography.heading,
-            text = currentRoute ?: stringResource(R.string.string_header_of_home_screen)
+            text = currentRoute
+                ?.header
+                ?.let { rid -> stringResource(id = rid) }
+                ?: stringResource(R.string.string_header_of_home_screen)
         )
 
-        if (currentRoute == HOME_ROUTE) {
+        if (currentRoute == FcbRoute.HOME_ROUTE) {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     modifier = modifier

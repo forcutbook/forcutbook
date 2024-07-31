@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.fourcutbook.forcutbook.feature.home.HOME_ROUTE
+import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.home.HomeViewModel
 
 const val DIARY_DETAIL_ROUTE = "DIARY_DETAIL_ROUTE"
@@ -21,7 +21,7 @@ fun NavGraphBuilder.diaryDetailNavGraph(
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = DIARY_DETAIL_ROUTE) {
-        val sharedViewModel = navController.getBackStackEntry(HOME_ROUTE).run {
+        val sharedViewModel = navController.getBackStackEntry(FcbRoute.HOME_ROUTE.value).run {
             hiltViewModel<HomeViewModel>(this)
         }
         DiaryDetailRoute(diaryViewModel = sharedViewModel)

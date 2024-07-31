@@ -6,13 +6,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.fourcutbook.forcutbook.feature.imageUploading.IMAGE_UPLOADING_ROUTE
+import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
 
-const val DIARY_REGISTRATION_ROUTE = "DIARY_REGISTRATION_ROUTE"
-
 fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
-    navigate(DIARY_REGISTRATION_ROUTE, navOptions)
+    navigate(FcbRoute.DIARY_REGISTRATION_ROUTE.value, navOptions)
 }
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -21,8 +19,8 @@ fun NavGraphBuilder.diaryRegistrationNavGraph(
     navigateToHomeScreen: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
-    composable(route = DIARY_REGISTRATION_ROUTE) {
-        val sharedViewModel = navController.getBackStackEntry(IMAGE_UPLOADING_ROUTE).run {
+    composable(route = FcbRoute.DIARY_REGISTRATION_ROUTE.value) {
+        val sharedViewModel = navController.getBackStackEntry(FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value).run {
             hiltViewModel<ImageUploadingViewModel>(this)
         }
         DiaryRegistrationRoute(

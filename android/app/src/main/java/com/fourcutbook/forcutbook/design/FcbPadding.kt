@@ -5,6 +5,6 @@ import androidx.compose.ui.unit.dp
 
 data class FcbPadding(
     val basicHorizontalPadding: Dp = 14.dp,
-    val basicVerticalPadding: Dp = 24.dp,
+    val basicVerticalPadding: Dp = 70.dp,
     val smallVerticalPadding: Dp = 16.dp
 )

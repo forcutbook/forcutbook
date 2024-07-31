@@ -4,17 +4,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-
-const val IMAGE_UPLOADING_ROUTE = "IMAGE_UPLOADING_ROUTE"
+import com.fourcutbook.forcutbook.feature.FcbRoute
 
 fun NavController.navigateToImageUploading(navOptions: NavOptions? = null) {
-    navigate(IMAGE_UPLOADING_ROUTE, navOptions)
+    navigate(FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value, navOptions)
 }
 
 fun NavGraphBuilder.imageUploadingNavGraph(
     navigateToDiaryScreen: () -> Unit
 ) {
-    composable(route = IMAGE_UPLOADING_ROUTE) {
+    composable(route = FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value) {
         ImageUploadingRoute {
             navigateToDiaryScreen()
         }

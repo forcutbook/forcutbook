@@ -1,8 +1,8 @@
 package com.fourcutbook.forcutbook.feature
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -11,12 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
 
 @Composable
 fun FcbBottomNavigation(
@@ -25,12 +23,10 @@ fun FcbBottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    if (currentRoute == LOGIN_ROUTE) return
+    if (currentRoute == FcbRoute.LOGIN_ROUTE.value) return
 
     BottomNavigation(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 14.dp, bottom = 14.dp),
+        modifier = modifier.fillMaxWidth().wrapContentHeight(),
         backgroundColor = FcbTheme.colors.fcbWhite,
         contentColor = FcbTheme.colors.fcbDarkBeige
     ) {
