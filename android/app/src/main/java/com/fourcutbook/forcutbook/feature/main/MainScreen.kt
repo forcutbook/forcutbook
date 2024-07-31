@@ -39,7 +39,7 @@ import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
 import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
-import com.fourcutbook.forcutbook.feature.login.loginNavGraph
+import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,8 +63,11 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             modifier = Modifier
                 .background(color = FcbTheme.colors.fcbGray)
                 .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    bottom = contentPadding.calculateBottomPadding()
+                    top = contentPadding.calculateTopPadding() +
+                        FcbTheme.padding.basicVerticalPadding,
+                    bottom = contentPadding.calculateBottomPadding(),
+                    start = FcbTheme.padding.basicHorizontalPadding,
+                    end = FcbTheme.padding.basicVerticalPadding
                 ),
             navController = navController,
             startDestination = FcbRoute.LOGIN_ROUTE.value
