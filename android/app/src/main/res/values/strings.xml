@@ -2,4 +2,7 @@
     <string name="app_name">forcutbook</string>
     <string name="login_request_enter_id">아이디를 입력해 주세요.</string>
     <string name="login_request_enter_password">비밀번호를 입력해 주세요.</string>
+    <string name="string_header_of_home_screen">그림 일기</string>
+    <string name="string_header_of_image_uploading_screen">일기 생성</string>
+    <string name="string_header_of_diary_registration_screen">일기 등록</string>
 </resources>

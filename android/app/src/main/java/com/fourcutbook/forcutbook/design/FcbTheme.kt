@@ -17,6 +17,10 @@ val LocalCustomPadding =
     staticCompositionLocalOf {
         FcbPadding()
     }
+val LocalCustomShame =
+    staticCompositionLocalOf {
+        FcbShame()
+    }
 
 @Composable
 fun FcbTheme(
@@ -46,4 +50,7 @@ object FcbTheme {
     val padding: FcbPadding
         @Composable
         get() = LocalCustomPadding.current
+    val shame: FcbShame
+        @Composable
+        get() = LocalCustomShame.current
 }
