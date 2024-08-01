@@ -23,7 +23,7 @@ fun FcbBottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    if (currentRoute == FcbRoute.LOGIN_ROUTE.value) return
+    if (currentRoute == FcbRoute.LoginRoute.value) return
 
     BottomNavigation(
         modifier = modifier.fillMaxWidth().wrapContentHeight(),

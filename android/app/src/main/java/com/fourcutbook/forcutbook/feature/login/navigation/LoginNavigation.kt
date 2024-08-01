@@ -8,13 +8,13 @@ import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.login.LoginRoute
 
 fun NavController.navigateToLogin(navOptions: NavOptions? = null) {
-    navigate(FcbRoute.LOGIN_ROUTE.value, navOptions)
+    navigate(FcbRoute.LoginRoute.value, navOptions)
 }
 
 fun NavGraphBuilder.loginNavGraph(
     navigateToHome: () -> Unit
 ) {
-    composable(route = FcbRoute.LOGIN_ROUTE.value) {
+    composable(route = FcbRoute.LoginRoute.value) {
         LoginRoute(navigateToHome = navigateToHome)
     }
 }

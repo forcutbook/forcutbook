@@ -2,34 +2,48 @@ package com.fourcutbook.forcutbook.feature
 
 import com.forcutbook.forcutbook.R
 
-enum class FcbRoute(
-    val header: Int,
+sealed interface FcbRoute {
+
+    val header: Int?
     val value: String
-) {
-    LOGIN_ROUTE(
-        header = R.string.string_header_of_home_screen,
-        value = "LOGIN_ROUTE"
-    ),
 
-    HOME_ROUTE(
-        header = R.string.string_header_of_home_screen,
-        value = "HOME_ROUTE"
-    ),
+    data object LoginRoute : FcbRoute {
 
-    DIARY_IMAGE_UPLOADING_ROUTE(
-        header = R.string.string_header_of_image_uploading_screen,
-        value = "DIARY_IMAGE_UPLOADING_ROUTE"
-    ),
+        override val header = R.string.string_header_of_home_screen
+        override val value = "LOGIN_ROUTE"
+    }
 
-    DIARY_REGISTRATION_ROUTE(
-        header = R.string.string_header_of_diary_registration_screen,
-        value = "DIARY_REGISTRATION_ROUTE"
-    );
+    data object HomeRoute : FcbRoute {
+
+        override val header = R.string.string_header_of_home_screen
+        override val value = "HOME_ROUTE"
+    }
+
+    data object DiaryImageUploadingRoute : FcbRoute {
+
+        override val header = R.string.string_header_of_image_uploading_screen
+        override val value = "DIARY_IMAGE_UPLOADING_ROUTE"
+    }
+
+    data object DiaryRegistrationRoute : FcbRoute {
+
+        override val header = R.string.string_header_of_diary_registration_screen
+        override val value = "DIARY_REGISTRATION_ROUTE"
+    }
 
     companion object {
+
+        private val bottomNavigationItems = listOf(
+            LoginRoute,
+            HomeRoute,
+            DiaryImageUploadingRoute,
+            DiaryRegistrationRoute
+            // todo: settingRoute 추가
+        )
+
         fun find(route: String?): FcbRoute? {
             if (route == null) return null
-            return entries.find { it.value == route }
+            return bottomNavigationItems.find { it.value == route }
         }
     }
 }

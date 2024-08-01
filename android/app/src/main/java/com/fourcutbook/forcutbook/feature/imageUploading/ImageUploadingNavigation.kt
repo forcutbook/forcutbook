@@ -7,13 +7,13 @@ import androidx.navigation.compose.composable
 import com.fourcutbook.forcutbook.feature.FcbRoute
 
 fun NavController.navigateToImageUploading(navOptions: NavOptions? = null) {
-    navigate(FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value, navOptions)
+    navigate(FcbRoute.DiaryImageUploadingRoute.value, navOptions)
 }
 
 fun NavGraphBuilder.imageUploadingNavGraph(
     navigateToDiaryScreen: () -> Unit
 ) {
-    composable(route = FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value) {
+    composable(route = FcbRoute.DiaryImageUploadingRoute.value) {
         ImageUploadingRoute {
             navigateToDiaryScreen()
         }

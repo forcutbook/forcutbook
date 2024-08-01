@@ -7,9 +7,9 @@ enum class FcbBottomNavigationItem(
     val route: String
 ) {
 
-    HOME(R.drawable.ic_home, FcbRoute.HOME_ROUTE.value),
+    HOME(R.drawable.ic_home, FcbRoute.HomeRoute.value),
     SEARCHING(R.drawable.ic_searching, ""),
-    DIARY_IMAGE_UPLOADING(R.drawable.ic_posting, FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value),
+    DIARY_IMAGE_UPLOADING(R.drawable.ic_posting, FcbRoute.DiaryImageUploadingRoute.value),
     MY_PAGE(R.drawable.ic_my_page, ""),
     SETTING(R.drawable.ic_setting, "")
 }

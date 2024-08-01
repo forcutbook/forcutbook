@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +35,7 @@ import java.time.format.DateTimeFormatter
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToDiaryRegistration: () -> Unit = {},
-    navigateToDiaryDetail: () -> Unit = {},
+    navigateToDiaryDetail: () -> Unit = {}
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -54,16 +53,14 @@ fun HomeScreen(
     uiState: HomeUiState,
     onDiaryClick: (diaryId: Long) -> Unit = {},
     navigateToDiaryDetail: () -> Unit = {},
-    navigateToDiaryRegistration: () -> Unit = {},
+    navigateToDiaryRegistration: () -> Unit = {}
 ) {
     when (uiState) {
         is HomeUiState.Default -> {
-            Column(modifier = modifier.fillMaxSize()) {
-                HomeDiariesColumn(
-                    diaries = uiState.diaries,
-                    onDiaryClick = onDiaryClick
-                )
-            }
+            HomeDiariesColumn(
+                diaries = uiState.diaries,
+                onDiaryClick = onDiaryClick
+            )
         }
 
         is HomeUiState.Loading -> {
@@ -80,7 +77,7 @@ fun HomeScreen(
 fun HomeDiariesColumn(
     modifier: Modifier = Modifier,
     diaries: List<Diary>,
-    onDiaryClick: (diaryId: Long) -> Unit,
+    onDiaryClick: (diaryId: Long) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -108,7 +105,7 @@ fun HomeDiariesColumn(
 fun HomeDiaryItem(
     modifier: Modifier = Modifier,
     diary: Diary,
-    onClick: (diaryId: Long) -> Unit = {},
+    onClick: (diaryId: Long) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -128,13 +125,12 @@ fun HomeDiaryItem(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(5.dp))
                 .size(58.dp),
+            // todo: 실제 게시물 이미지로 변경
             painter = painterResource(id = R.drawable.demo_image),
             contentDescription = null
         )
-        Column {
-            Row(
-                modifier = Modifier.padding(start = 16.dp)
-            ) {
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Row {
                 Text(
                     style = FcbTheme.typography.footer,
                     text = diary.date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
@@ -147,9 +143,9 @@ fun HomeDiaryItem(
             }
             Text(
                 modifier = Modifier.padding(
-                    start = 16.dp,
                     top = 16.dp
                 ),
+                style = FcbTheme.typography.body,
                 text = diary.title
             )
         }

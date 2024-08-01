@@ -70,7 +70,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     end = FcbTheme.padding.basicVerticalPadding
                 ),
             navController = navController,
-            startDestination = FcbRoute.LOGIN_ROUTE.value
+            startDestination = FcbRoute.LoginRoute.value
         ) {
             loginNavGraph { navController.navigateToHome() }
 
@@ -122,7 +122,7 @@ fun FcbTopAppBar(
                 ?: stringResource(R.string.string_header_of_home_screen)
         )
 
-        if (currentRoute == FcbRoute.HOME_ROUTE) {
+        if (currentRoute is FcbRoute.HomeRoute) {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     modifier = modifier
