@@ -1,5 +1,7 @@
 package com.fourcutbook.forcutbook.feature.diaryDetail
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +18,16 @@ import com.fourcutbook.forcutbook.feature.home.HomeUiState
 import com.fourcutbook.forcutbook.feature.home.HomeViewModel
 
 @Composable
-fun DiaryDetailRoute(diaryViewModel: HomeViewModel) {
+fun DiaryDetailRoute(
+    diaryViewModel: HomeViewModel,
+    onBackPressed: () -> Unit = {}
+) {
     val uiState by diaryViewModel.uiState.collectAsStateWithLifecycle()
 
+    BackHandler {
+        Log.d("woogi", "DiaryDetailRoute: 뒤로가기")
+        onBackPressed()
+    }
     DiaryDetailScreen(uiState)
 }
 

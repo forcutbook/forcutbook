@@ -72,23 +72,25 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             navController = navController,
             startDestination = FcbRoute.LoginRoute.value
         ) {
-            loginNavGraph { navController.navigateToHome() }
+            loginNavGraph(navigateToHome = navController::navigateToHome)
 
             homeNavGraph(
                 navigateToDiaryRegistration = navController::navigateToImageUploading,
                 navigateToDiaryDetails = navController::navigateToDiaryDetail
             )
 
-            imageUploadingNavGraph { navController.navigateToDiaryRegistration() }
+            imageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
 
             diaryRegistrationNavGraph(
                 navController = navController,
                 navigateToHomeScreen = navController::navigateToHome,
+                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
 
             diaryDetailNavGraph(
                 navController = navController,
+                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }
@@ -100,6 +102,7 @@ fun FcbTopAppBar(
     modifier: Modifier = Modifier,
     currentRoute: FcbRoute?
 ) {
+    if (currentRoute == null) return
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,9 +120,9 @@ fun FcbTopAppBar(
                 .wrapContentWidth(),
             style = FcbTheme.typography.heading,
             text = currentRoute
-                ?.header
+                .header
                 ?.let { rid -> stringResource(id = rid) }
-                ?: stringResource(R.string.string_header_of_home_screen)
+                ?: stringResource(id = R.string.string_header_of_home_screen)
         )
 
         if (currentRoute is FcbRoute.HomeRoute) {

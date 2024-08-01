@@ -36,8 +36,7 @@ sealed interface FcbRoute {
         private val bottomNavigationItems = listOf(
             LoginRoute,
             HomeRoute,
-            DiaryImageUploadingRoute,
-            DiaryRegistrationRoute
+            DiaryImageUploadingRoute
             // todo: settingRoute 추가
         )
 

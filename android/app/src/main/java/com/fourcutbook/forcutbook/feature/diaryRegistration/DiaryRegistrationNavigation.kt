@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.feature.diaryRegistration
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,23 +11,28 @@ import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
 
 fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
-    navigate(FcbRoute.DIARY_REGISTRATION_ROUTE.value, navOptions)
+    navigate(FcbRoute.DiaryRegistrationRoute.value, navOptions)
 }
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.diaryRegistrationNavGraph(
     navController: NavController,
     navigateToHomeScreen: () -> Unit,
+    onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
-    composable(route = FcbRoute.DIARY_REGISTRATION_ROUTE.value) {
-        val sharedViewModel = navController.getBackStackEntry(FcbRoute.DIARY_IMAGE_UPLOADING_ROUTE.value).run {
+    composable(route = FcbRoute.DiaryRegistrationRoute.value) {
+        val sharedViewModel = navController.getBackStackEntry(FcbRoute.DiaryImageUploadingRoute.value).run {
             hiltViewModel<ImageUploadingViewModel>(this)
         }
         DiaryRegistrationRoute(
             imageUploadingViewModel = sharedViewModel,
             navigateToHomeScreen = navigateToHomeScreen,
-            onShowSnackBar = onShowSnackBar
+            onShowSnackBar = onShowSnackBar,
+            onBackPressed = {
+                onBackPressed()
+                Log.d("woogi", "diaryRegistrationNavGraph: ${navController.currentBackStack}")
+            }
         )
     }
 }
