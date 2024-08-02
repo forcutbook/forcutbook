@@ -1,15 +1,13 @@
-package com.fourcutbook.forcutbook.feature.diaryDetail
+package com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.home.HomeViewModel
-import kotlinx.coroutines.flow.toList
+import com.fourcutbook.forcutbook.feature.diaryfeed.DiaryFeedViewModel
 
 const val DIARY_DETAIL_ROUTE = "DIARY_DETAIL_ROUTE"
 
@@ -20,19 +18,18 @@ fun NavController.navigateToDiaryDetail(navOptions: NavOptions? = null) {
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.diaryDetailNavGraph(
     navController: NavController,
+    navigateToDiaryFeed: () -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = DIARY_DETAIL_ROUTE) {
-        val sharedViewModel = navController.getBackStackEntry(FcbRoute.HomeRoute.value).run {
-            hiltViewModel<HomeViewModel>(this)
+        val sharedViewModel = navController.getBackStackEntry(FcbRoute.DiaryFeed.value).run {
+            hiltViewModel<DiaryFeedViewModel>(this)
         }
         DiaryDetailRoute(
-            diaryViewModel = sharedViewModel,
-            onBackPressed = {
-                onBackPressed()
-                Log.d("woogi", "diaryRegistrationNavGraph: ${navController.currentBackStack.value.toList()}")
-            }
+            diaryFeedViewModel = sharedViewModel,
+            navigateToDiaryFeed = navigateToDiaryFeed,
+            onBackPressed = onBackPressed
         )
     }
 }

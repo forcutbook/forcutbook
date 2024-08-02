@@ -83,7 +83,7 @@ fun DiaryRegistrationScreen(
             Column(
                 modifier = modifier
                     .padding(
-                        top = FcbTheme.padding.basicVerticalPadding,
+                        top = FcbTheme.padding.smallVerticalPadding,
                         start = FcbTheme.padding.basicHorizontalPadding,
                         end = FcbTheme.padding.basicHorizontalPadding
                     )

@@ -128,11 +128,9 @@ fun DiaryImageUploadingScreen(
         }
 
         is DiaryPostingUiState.LoadingForUploading -> {
-
         }
 
         else -> {
-
         }
     }
 }

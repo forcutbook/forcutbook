@@ -1,10 +1,10 @@
-package com.fourcutbook.forcutbook.feature.home
+package com.fourcutbook.forcutbook.feature.diaryfeed
 
 import com.fourcutbook.forcutbook.domain.Diary
 
-sealed interface HomeUiState {
+sealed interface DiaryFeedUiState {
 
-    data class Default(private val _diaries: List<Diary>) : HomeUiState {
+    data class Feed(private val _diaries: List<Diary>) : DiaryFeedUiState {
         val diaries = _diaries.sortedByDescending { it.date }
     }
     /*
@@ -13,9 +13,9 @@ sealed interface HomeUiState {
           또다서 화면으로 넘어가는 문제가 발생했다!!!
      */
 
-    data object DiaryRegistration : HomeUiState
+    data object DiaryRegistration : DiaryFeedUiState
 
-    data object Loading : HomeUiState
+    data object Loading : DiaryFeedUiState
 
-    data class DiaryDetail(val diary: Diary) : HomeUiState
+    data class DiaryDetail(val diary: Diary) : DiaryFeedUiState
 }

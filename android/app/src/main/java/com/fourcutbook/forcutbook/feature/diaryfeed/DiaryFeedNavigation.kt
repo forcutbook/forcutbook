@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.home
+package com.fourcutbook.forcutbook.feature.diaryfeed
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -6,16 +6,16 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.fourcutbook.forcutbook.feature.FcbRoute
 
-fun NavController.navigateToHome(navOptions: NavOptions? = null) {
-    this.navigate(FcbRoute.HomeRoute.value, navOptions)
+fun NavController.navigateToDiaryFeed(navOptions: NavOptions? = null) {
+    this.navigate(FcbRoute.DiaryFeed.value, navOptions)
 }
 
-fun NavGraphBuilder.homeNavGraph(
+fun NavGraphBuilder.diaryFeedNavGraph(
     navigateToDiaryRegistration: () -> Unit = {},
     navigateToDiaryDetails: () -> Unit = {}
 ) {
-    composable(route = FcbRoute.HomeRoute.value) {
-        HomeRoute(
+    composable(route = FcbRoute.DiaryFeed.value) {
+        DiaryFeedRoute(
             navigateToDiaryRegistration = navigateToDiaryRegistration,
             navigateToDiaryDetail = navigateToDiaryDetails
         )

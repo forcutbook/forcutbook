@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.home
+package com.fourcutbook.forcutbook.feature.diaryfeed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,17 +17,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class DiaryFeedViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(
-        HomeUiState.Default(listOf())
+    private val _uiState: MutableStateFlow<DiaryFeedUiState> = MutableStateFlow(
+        DiaryFeedUiState.Feed(listOf())
     )
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<DiaryFeedUiState> = _uiState.asStateFlow()
 
-    private val _event: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
-    val event: SharedFlow<HomeEvent>
+    private val _event: MutableSharedFlow<DiaryFeedEvent> = MutableSharedFlow()
+    val event: SharedFlow<DiaryFeedEvent>
         get() = _event.asSharedFlow()
 
     init {
@@ -39,9 +39,9 @@ class HomeViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.fetchDiaries())
             }.catch {
-                _event.emit(HomeEvent.Error)
+                _event.emit(DiaryFeedEvent.Error)
             }.collect { diaries ->
-                _uiState.value = HomeUiState.Default(diaries)
+                _uiState.value = DiaryFeedUiState.Feed(diaries)
             }
         }
     }
@@ -51,11 +51,11 @@ class HomeViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.fetchDiaryDetails(diaryId))
             }.onStart {
-                _uiState.value = HomeUiState.Loading
+                _uiState.value = DiaryFeedUiState.Loading
             }.catch {
-                _event.emit(HomeEvent.Error)
+                _event.emit(DiaryFeedEvent.Error)
             }.collect { diary ->
-                _uiState.value = HomeUiState.DiaryDetail(diary)
+                _uiState.value = DiaryFeedUiState.DiaryDetail(diary)
             }
         }
     }

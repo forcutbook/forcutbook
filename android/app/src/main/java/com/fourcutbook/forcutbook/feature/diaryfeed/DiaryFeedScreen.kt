@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.home
+package com.fourcutbook.forcutbook.feature.diaryfeed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,49 +32,49 @@ import com.fourcutbook.forcutbook.util.DiaryFixture
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HomeRoute(
-    homeViewModel: HomeViewModel = hiltViewModel(),
+fun DiaryFeedRoute(
+    diaryFeedViewModel: DiaryFeedViewModel = hiltViewModel(),
     navigateToDiaryRegistration: () -> Unit = {},
     navigateToDiaryDetail: () -> Unit = {}
 ) {
-    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
 
-    HomeScreen(
+    DiaryFeedScreen(
         uiState = uiState,
-        onDiaryClick = homeViewModel::fetchDiaryDetail,
+        onDiaryClick = diaryFeedViewModel::fetchDiaryDetail,
         navigateToDiaryRegistration = navigateToDiaryRegistration,
         navigateToDiaryDetail = navigateToDiaryDetail
     )
 }
 
 @Composable
-fun HomeScreen(
+fun DiaryFeedScreen(
     modifier: Modifier = Modifier,
-    uiState: HomeUiState,
+    uiState: DiaryFeedUiState,
     onDiaryClick: (diaryId: Long) -> Unit = {},
     navigateToDiaryDetail: () -> Unit = {},
     navigateToDiaryRegistration: () -> Unit = {}
 ) {
     when (uiState) {
-        is HomeUiState.Default -> {
-            HomeDiariesColumn(
+        is DiaryFeedUiState.Feed -> {
+            DiariesColumn(
                 diaries = uiState.diaries,
                 onDiaryClick = onDiaryClick
             )
         }
 
-        is HomeUiState.Loading -> {
+        is DiaryFeedUiState.Loading -> {
             // todo: change progress bar visibility
         }
 
-        is HomeUiState.DiaryDetail -> navigateToDiaryDetail()
+        is DiaryFeedUiState.DiaryDetail -> navigateToDiaryDetail()
 
-        is HomeUiState.DiaryRegistration -> navigateToDiaryRegistration()
+        is DiaryFeedUiState.DiaryRegistration -> navigateToDiaryRegistration()
     }
 }
 
 @Composable
-fun HomeDiariesColumn(
+fun DiariesColumn(
     modifier: Modifier = Modifier,
     diaries: List<Diary>,
     onDiaryClick: (diaryId: Long) -> Unit
@@ -82,10 +82,10 @@ fun HomeDiariesColumn(
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .padding(top = FcbTheme.padding.basicVerticalPadding)
     ) {
         itemsIndexed(diaries) { index, diary ->
-            HomeDiaryItem(
+            DiaryItem(
                 diary = diary,
                 onClick = onDiaryClick
             )
@@ -102,7 +102,7 @@ fun HomeDiariesColumn(
 }
 
 @Composable
-fun HomeDiaryItem(
+fun DiaryItem(
     modifier: Modifier = Modifier,
     diary: Diary,
     onClick: (diaryId: Long) -> Unit = {}
@@ -154,12 +154,14 @@ fun HomeDiaryItem(
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
-fun HomePreview() {
-    HomeScreen(uiState = HomeUiState.Default(DiaryFixture.get()))
+fun DiaryFeedPreview() {
+    DiaryFeedScreen(
+        uiState = DiaryFeedUiState.Feed(DiaryFixture.get())
+    )
 }
 
 @Preview()
 @Composable
-fun DiaryPreview() {
-    HomeDiaryItem(diary = DiaryFixture.get().first())
+fun DiaryItemPreview() {
+    DiaryItem(diary = DiaryFixture.get().first())
 }
