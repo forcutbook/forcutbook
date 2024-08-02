@@ -33,12 +33,12 @@ import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
 import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
 import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
+import com.fourcutbook.forcutbook.feature.diaryImageUploading.diaryImageUploadingNavGraph
+import com.fourcutbook.forcutbook.feature.diaryImageUploading.navigateToDiaryImageUploading
 import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
-import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
-import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import kotlinx.coroutines.launch
 
@@ -75,11 +75,11 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             loginNavGraph(navigateToHome = navController::navigateToHome)
 
             homeNavGraph(
-                navigateToDiaryRegistration = navController::navigateToImageUploading,
+                navigateToDiaryRegistration = navController::navigateToDiaryImageUploading,
                 navigateToDiaryDetails = navController::navigateToDiaryDetail
             )
 
-            imageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
+            diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
 
             diaryRegistrationNavGraph(
                 navController = navController,

@@ -8,7 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.imageUploading.ImageUploadingViewModel
+import com.fourcutbook.forcutbook.feature.diaryImageUploading.DiaryImageUploadingViewModel
 
 fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
     navigate(FcbRoute.DiaryRegistrationRoute.value, navOptions)
@@ -23,10 +23,10 @@ fun NavGraphBuilder.diaryRegistrationNavGraph(
 ) {
     composable(route = FcbRoute.DiaryRegistrationRoute.value) {
         val sharedViewModel = navController.getBackStackEntry(FcbRoute.DiaryImageUploadingRoute.value).run {
-            hiltViewModel<ImageUploadingViewModel>(this)
+            hiltViewModel<DiaryImageUploadingViewModel>(this)
         }
         DiaryRegistrationRoute(
-            imageUploadingViewModel = sharedViewModel,
+            diaryImageUploadingViewModel = sharedViewModel,
             navigateToHomeScreen = navigateToHomeScreen,
             onShowSnackBar = onShowSnackBar,
             onBackPressed = {

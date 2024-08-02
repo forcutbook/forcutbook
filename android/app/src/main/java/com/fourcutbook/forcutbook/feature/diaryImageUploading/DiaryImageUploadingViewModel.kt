@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.imageUploading
+package com.fourcutbook.forcutbook.feature.diaryImageUploading
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -20,17 +20,17 @@ import javax.inject.Inject
 
 // todo: DiaryViewModel?
 @HiltViewModel
-class ImageUploadingViewModel @Inject constructor(
+class DiaryImageUploadingViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<ImageUploadingUiState> =
-        MutableStateFlow(ImageUploadingUiState.Default)
-    val uiState: StateFlow<ImageUploadingUiState>
+    private val _uiState: MutableStateFlow<DiaryImageUploadingUiState> =
+        MutableStateFlow(DiaryImageUploadingUiState.Default)
+    val uiState: StateFlow<DiaryImageUploadingUiState>
         get() = _uiState.asStateFlow()
 
-    private val _event: MutableSharedFlow<ImageUploadingEvent> = MutableSharedFlow()
-    val event: SharedFlow<ImageUploadingEvent>
+    private val _event: MutableSharedFlow<DiaryImageUploadingEvent> = MutableSharedFlow()
+    val event: SharedFlow<DiaryImageUploadingEvent>
         get() = _event.asSharedFlow()
 
     fun postImage(
@@ -41,9 +41,9 @@ class ImageUploadingViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.postImage(imageFile))
             }.onStart {
-                _uiState.emit(ImageUploadingUiState.Loading)
+                _uiState.emit(DiaryImageUploadingUiState.Loading)
             }.collect { diary ->
-                _uiState.emit(ImageUploadingUiState.Uploaded(diary.copy(image = imageBitmap)))
+                _uiState.emit(DiaryImageUploadingUiState.Uploaded(diary.copy(image = imageBitmap)))
             }
         }
     }
@@ -53,9 +53,9 @@ class ImageUploadingViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.postDiary(diary = diary, image = image))
             }.onStart {
-                _uiState.emit(ImageUploadingUiState.Loading)
+                _uiState.emit(DiaryImageUploadingUiState.Loading)
             }.collect {
-                _uiState.emit(ImageUploadingUiState.Registered)
+                _uiState.emit(DiaryImageUploadingUiState.Registered)
             }
         }
     }
