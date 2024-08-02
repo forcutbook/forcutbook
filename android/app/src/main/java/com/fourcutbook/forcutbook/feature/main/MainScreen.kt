@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -33,8 +32,8 @@ import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
 import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail.diaryDetailNavGraph
 import com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail.navigateToDiaryDetail
-import com.fourcutbook.forcutbook.feature.diaryfeed.homeNavGraph
-import com.fourcutbook.forcutbook.feature.diaryfeed.navigateToHome
+import com.fourcutbook.forcutbook.feature.diaryfeed.diaryFeedNavGraph
+import com.fourcutbook.forcutbook.feature.diaryfeed.navigateToDiaryFeed
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.diaryImageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.navigateToDiaryImageUploading
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRegistrationNavGraph
@@ -63,18 +62,18 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             modifier = Modifier
                 .background(color = FcbTheme.colors.fcbGray)
                 .padding(
-                    top = contentPadding.calculateTopPadding() +
-                        FcbTheme.padding.basicVerticalPadding,
+                    top = contentPadding.calculateTopPadding(),
                     bottom = contentPadding.calculateBottomPadding(),
                     start = FcbTheme.padding.basicHorizontalPadding,
                     end = FcbTheme.padding.basicVerticalPadding
-                ),
+                )
+                .fillMaxSize(),
             navController = navController,
             startDestination = FcbRoute.LoginRoute.value
         ) {
-            loginNavGraph(navigateToHome = navController::navigateToHome)
+            loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
-            homeNavGraph(
+            diaryFeedNavGraph(
                 navigateToDiaryRegistration = navController::navigateToDiaryImageUploading,
                 navigateToDiaryDetails = navController::navigateToDiaryDetail
             )
@@ -83,13 +82,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
             diaryRegistrationNavGraph(
                 navController = navController,
-                navigateToHomeScreen = navController::navigateToHome,
+                navigateToHomeScreen = navController::navigateToDiaryFeed,
                 onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
 
             diaryDetailNavGraph(
                 navController = navController,
+                navigateToDiaryFeed = navController::navigateToDiaryFeed,
                 onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
@@ -107,17 +107,16 @@ fun FcbTopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = FcbTheme.padding.smallVerticalPadding,
+                top = FcbTheme.padding.basicVerticalPadding,
                 start = FcbTheme.padding.basicHorizontalPadding,
                 end = FcbTheme.padding.basicHorizontalPadding
             ),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         Text(
             textAlign = TextAlign.Center,
-            modifier = modifier
-                .wrapContentWidth(),
+            modifier = modifier.wrapContentWidth(),
             style = FcbTheme.typography.heading,
             text = currentRoute
                 .header
@@ -125,16 +124,14 @@ fun FcbTopAppBar(
                 ?: stringResource(id = R.string.string_header_of_home_screen)
         )
 
-        if (currentRoute is FcbRoute.HomeRoute) {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    modifier = modifier
-                        .wrapContentWidth()
-                        .height(FcbTheme.shame.iconSize),
-                    painter = painterResource(id = R.drawable.ic_alarm),
-                    contentDescription = null
-                )
-            }
+        if (currentRoute is FcbRoute.DiaryFeed) {
+            Icon(
+                modifier = modifier
+                    .wrapContentWidth()
+                    .height(FcbTheme.shame.iconSize),
+                painter = painterResource(id = R.drawable.ic_alarm),
+                contentDescription = null
+            )
         }
     }
 }

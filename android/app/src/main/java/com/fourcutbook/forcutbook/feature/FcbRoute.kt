@@ -13,7 +13,7 @@ sealed interface FcbRoute {
         override val value = "LOGIN_ROUTE"
     }
 
-    data object HomeRoute : FcbRoute {
+    data object DiaryFeed : FcbRoute {
 
         override val header = R.string.string_header_of_home_screen
         override val value = "HOME_ROUTE"
@@ -31,12 +31,31 @@ sealed interface FcbRoute {
         override val value = "DIARY_REGISTRATION_ROUTE"
     }
 
+    data object MyPageRoute : FcbRoute {
+
+        override val header = R.string.header_of_my_page
+        override val value: String = "MY_PAGE"
+    }
+
+    data object SubscribingDiaryRoute : FcbRoute {
+
+        override val header: Int = R.string.header_of_subscribing_diary
+        override val value: String = "SUBSCRIBING_DIARY"
+    }
+
+    data object SubscribedUserRoute : FcbRoute {
+
+        override val header: Int = R.string.header_of_subscribing_diary
+        override val value: String = "SUBSCRIBING_DIARY"
+    }
+
     companion object {
 
         private val bottomNavigationItems = listOf(
-            LoginRoute,
-            HomeRoute,
-            DiaryImageUploadingRoute
+
+            DiaryFeed,
+            DiaryImageUploadingRoute,
+            MyPageRoute
             // todo: settingRoute 추가
         )
 
