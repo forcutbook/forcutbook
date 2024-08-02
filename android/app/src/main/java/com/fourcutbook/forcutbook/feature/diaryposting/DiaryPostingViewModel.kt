@@ -44,7 +44,7 @@ class DiaryPostingViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.postImage(imageFile))
             }.onStart {
-                _uiState.emit(DiaryPostingUiState.Loading)
+                _uiState.emit(DiaryPostingUiState.LoadingForUploading)
             }.collect { diary ->
                 _uiState.emit(DiaryPostingUiState.ImageUploaded(diary.copy(image = imageBitmap)))
             }
@@ -68,7 +68,7 @@ class DiaryPostingViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.postDiary(diary = diary, image = image))
             }.onStart {
-                _uiState.emit(DiaryPostingUiState.Loading)
+                _uiState.emit(DiaryPostingUiState.LoadingForUploading)
             }.collect {
                 _uiState.emit(DiaryPostingUiState.Registered)
             }

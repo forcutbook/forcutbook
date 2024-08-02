@@ -127,10 +127,12 @@ fun DiaryImageUploadingScreen(
             }
         }
 
-        is DiaryPostingUiState.Loading -> {
+        is DiaryPostingUiState.LoadingForUploading -> {
+
         }
 
-        is DiaryPostingUiState.Registered -> {
+        else -> {
+
         }
     }
 }
