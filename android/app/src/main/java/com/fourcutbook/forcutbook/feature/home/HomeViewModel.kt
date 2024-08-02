@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
@@ -40,7 +39,6 @@ class HomeViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.fetchDiaries())
             }.catch {
-                Log.d("woogi", "error: $it")
                 _event.emit(HomeEvent.Error)
             }.collect { diaries ->
                 _uiState.value = HomeUiState.Default(diaries)
@@ -57,7 +55,6 @@ class HomeViewModel @Inject constructor(
             }.catch {
                 _event.emit(HomeEvent.Error)
             }.collect { diary ->
-                Log.d("woogi", "fetchDiaryDetail: $diary")
                 _uiState.value = HomeUiState.DiaryDetail(diary)
             }
         }
