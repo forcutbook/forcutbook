@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.diaryImageUploading
+package com.fourcutbook.forcutbook.feature.diaryposting
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -20,18 +20,21 @@ import javax.inject.Inject
 
 // todo: DiaryViewModel?
 @HiltViewModel
-class DiaryImageUploadingViewModel @Inject constructor(
+class DiaryPostingViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<DiaryImageUploadingUiState> =
-        MutableStateFlow(DiaryImageUploadingUiState.Default)
-    val uiState: StateFlow<DiaryImageUploadingUiState>
+    private val _uiState: MutableStateFlow<DiaryPostingUiState> =
+        MutableStateFlow(DiaryPostingUiState.ImageUploading)
+    val uiState: StateFlow<DiaryPostingUiState>
         get() = _uiState.asStateFlow()
 
-    private val _event: MutableSharedFlow<DiaryImageUploadingEvent> = MutableSharedFlow()
-    val event: SharedFlow<DiaryImageUploadingEvent>
+    private val _event: MutableSharedFlow<DiaryPostingEvent> = MutableSharedFlow()
+    val event: SharedFlow<DiaryPostingEvent>
         get() = _event.asSharedFlow()
+
+    fun tryImageUpload() {
+    }
 
     fun postImage(
         imageFile: File,
@@ -41,21 +44,33 @@ class DiaryImageUploadingViewModel @Inject constructor(
             flow {
                 emit(diaryRepository.postImage(imageFile))
             }.onStart {
-                _uiState.emit(DiaryImageUploadingUiState.Loading)
+                _uiState.emit(DiaryPostingUiState.Loading)
             }.collect { diary ->
-                _uiState.emit(DiaryImageUploadingUiState.Uploaded(diary.copy(image = imageBitmap)))
+                _uiState.emit(DiaryPostingUiState.ImageUploaded(diary.copy(image = imageBitmap)))
             }
         }
     }
 
-    fun postDiary(diary: Diary, image: File) {
+    /**
+     * registration, uploading screen is sharing viewModel so we must change uiState when back again registration to uploading.
+     */
+    fun tryImageUploading() {
+        viewModelScope.launch {
+            _uiState.emit(DiaryPostingUiState.ImageUploading)
+        }
+    }
+
+    fun postDiary(
+        diary: Diary,
+        image: File
+    ) {
         viewModelScope.launch {
             flow {
                 emit(diaryRepository.postDiary(diary = diary, image = image))
             }.onStart {
-                _uiState.emit(DiaryImageUploadingUiState.Loading)
+                _uiState.emit(DiaryPostingUiState.Loading)
             }.collect {
-                _uiState.emit(DiaryImageUploadingUiState.Registered)
+                _uiState.emit(DiaryPostingUiState.Registered)
             }
         }
     }

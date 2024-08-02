@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.diaryImageUploading
+package com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

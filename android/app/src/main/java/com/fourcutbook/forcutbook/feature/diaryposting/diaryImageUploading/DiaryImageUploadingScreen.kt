@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.diaryImageUploading
+package com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading
 
 import android.app.Activity
 import android.content.Intent
@@ -41,21 +41,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingUiState
+import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingViewModel
 import com.fourcutbook.forcutbook.util.parseBitmap
 import com.fourcutbook.forcutbook.util.toFile
 import java.io.File
 
 @Composable
 fun DiaryImageUploadingRoute(
-    diaryImageUploadingViewModel: DiaryImageUploadingViewModel = hiltViewModel(),
+    diaryPostingViewModel: DiaryPostingViewModel = hiltViewModel(),
     navigateToDiaryScreen: () -> Unit = {}
 ) {
-    val uiState by diaryImageUploadingViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by diaryPostingViewModel.uiState.collectAsStateWithLifecycle()
 
     DiaryImageUploadingScreen(
         uiState = uiState,
         onImageUpload = { imageFile, imageBitmap ->
-            diaryImageUploadingViewModel.postImage(
+            diaryPostingViewModel.postImage(
                 imageFile = imageFile,
                 imageBitmap = imageBitmap
             )
@@ -66,7 +68,7 @@ fun DiaryImageUploadingRoute(
 
 @Composable
 fun DiaryImageUploadingScreen(
-    uiState: DiaryImageUploadingUiState,
+    uiState: DiaryPostingUiState,
     onImageUpload: (
         imageFile: File,
         imageBitmap: Bitmap
@@ -76,9 +78,9 @@ fun DiaryImageUploadingScreen(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     when (uiState) {
-        is DiaryImageUploadingUiState.Uploaded -> navigateToDiaryScreen()
+        is DiaryPostingUiState.ImageUploaded -> navigateToDiaryScreen()
 
-        is DiaryImageUploadingUiState.Default -> {
+        is DiaryPostingUiState.ImageUploading -> {
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 30.dp, end = 30.dp)
@@ -125,10 +127,10 @@ fun DiaryImageUploadingScreen(
             }
         }
 
-        is DiaryImageUploadingUiState.Loading -> {
+        is DiaryPostingUiState.Loading -> {
         }
 
-        is DiaryImageUploadingUiState.Registered -> {
+        is DiaryPostingUiState.Registered -> {
         }
     }
 }
@@ -200,5 +202,5 @@ fun rememberAlbumLauncher(
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun ImageUploadingScreenPreview() {
-    DiaryImageUploadingScreen(DiaryImageUploadingUiState.Default)
+    DiaryImageUploadingScreen(DiaryPostingUiState.ImageUploading)
 }

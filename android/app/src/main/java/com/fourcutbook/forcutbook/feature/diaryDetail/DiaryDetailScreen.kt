@@ -11,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fourcutbook.forcutbook.feature.diaryRegistration.DiaryContents
-import com.fourcutbook.forcutbook.feature.diaryRegistration.DiaryImage
-import com.fourcutbook.forcutbook.feature.diaryRegistration.DiaryTitle
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryContents
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryImage
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryTitle
 import com.fourcutbook.forcutbook.feature.home.HomeUiState
 import com.fourcutbook.forcutbook.feature.home.HomeViewModel
 

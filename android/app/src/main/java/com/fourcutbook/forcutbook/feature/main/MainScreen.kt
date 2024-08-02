@@ -33,10 +33,10 @@ import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
 import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
 import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
-import com.fourcutbook.forcutbook.feature.diaryImageUploading.diaryImageUploadingNavGraph
-import com.fourcutbook.forcutbook.feature.diaryImageUploading.navigateToDiaryImageUploading
-import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
-import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.diaryImageUploadingNavGraph
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.navigateToDiaryImageUploading
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRegistrationNavGraph
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.home.homeNavGraph
 import com.fourcutbook.forcutbook.feature.home.navigateToHome
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
