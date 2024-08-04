@@ -1,6 +1,6 @@
-package com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail
+package com.fourcutbook.forcutbook.feature.diaryDetail
 
-import androidx.activity.compose.BackHandler
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,42 +16,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.feature.diaryfeed.DiaryFeedUiState
-import com.fourcutbook.forcutbook.feature.diaryfeed.DiaryFeedViewModel
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryContents
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryImage
 
 @Composable
 fun DiaryDetailRoute(
-    diaryFeedViewModel: DiaryFeedViewModel,
-    navigateToDiaryFeed: () -> Unit = {},
+    diaryDetailViewModel: DiaryDetailViewModel = hiltViewModel(),
+    diaryId: Long?,
     onBackPressed: () -> Unit = {}
 ) {
-    val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by diaryDetailViewModel.uiState.collectAsStateWithLifecycle()
 
-    BackHandler {
-        diaryFeedViewModel.fetchDiaries()
-        navigateToDiaryFeed()
-        onBackPressed()
+    diaryId?.let { id ->
+        diaryDetailViewModel.fetchDiaryDetail(id)
     }
     DiaryDetailScreen(
         uiState = uiState,
-        navigateToDiaryFeed = navigateToDiaryFeed
+        onBackClick = onBackPressed
     )
 }
 
 @Composable
 fun DiaryDetailScreen(
-    uiState: DiaryFeedUiState,
-    navigateToDiaryFeed: () -> Unit
+    uiState: DiaryDetailUiState,
+    onBackClick: () -> Unit
 ) {
+    Log.d("woogi", "DiaryDetailScreen")
     when (uiState) {
-        is DiaryFeedUiState.Feed -> navigateToDiaryFeed()
-
-        is DiaryFeedUiState.DiaryDetail -> {
+        is DiaryDetailUiState.DiaryDetail -> {
             Column(
                 modifier = Modifier
                     .padding(
@@ -64,7 +60,7 @@ fun DiaryDetailScreen(
             ) {
                 DiaryDetailTopAppBar(
                     title = uiState.diary.title,
-                    onBackClick = navigateToDiaryFeed
+                    onBackClick = onBackClick
                 )
                 DiaryContents(contents = uiState.diary.contents)
                 DiaryImage(imageUrl = uiState.diary.imageUrl)

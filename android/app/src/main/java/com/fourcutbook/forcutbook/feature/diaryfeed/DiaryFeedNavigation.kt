@@ -11,12 +11,10 @@ fun NavController.navigateToDiaryFeed(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.diaryFeedNavGraph(
-    navigateToDiaryRegistration: () -> Unit = {},
-    navigateToDiaryDetails: () -> Unit = {}
+    navigateToDiaryDetails: (diaryId: Long) -> Unit = {}
 ) {
     composable(route = FcbRoute.DiaryFeed.value) {
         DiaryFeedRoute(
-            navigateToDiaryRegistration = navigateToDiaryRegistration,
             navigateToDiaryDetail = navigateToDiaryDetails
         )
     }

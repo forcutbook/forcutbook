@@ -30,15 +30,15 @@ import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
 import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail.diaryDetailNavGraph
-import com.fourcutbook.forcutbook.feature.diaryfeed.diaryDetail.navigateToDiaryDetail
+import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
+import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
 import com.fourcutbook.forcutbook.feature.diaryfeed.diaryFeedNavGraph
 import com.fourcutbook.forcutbook.feature.diaryfeed.navigateToDiaryFeed
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.diaryImageUploadingNavGraph
-import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.navigateToDiaryImageUploading
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
+import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,6 +58,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         topBar = { FcbTopAppBar(currentRoute = FcbRoute.find(currentRoute)) },
         bottomBar = { FcbBottomNavigation(navController = navController) }
     ) { contentPadding ->
+
         NavHost(
             modifier = Modifier
                 .background(color = FcbTheme.colors.fcbGray)
@@ -73,10 +74,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         ) {
             loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
-            diaryFeedNavGraph(
-                navigateToDiaryRegistration = navController::navigateToDiaryImageUploading,
-                navigateToDiaryDetails = navController::navigateToDiaryDetail
-            )
+            diaryFeedNavGraph(navigateToDiaryDetails = navController::navigateToDiaryDetail)
 
             diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
 
@@ -88,9 +86,11 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             )
 
             diaryDetailNavGraph(
+                onBackPressed = navController::popBackStack
+            )
+
+            myPageNavGraph(
                 navController = navController,
-                navigateToDiaryFeed = navController::navigateToDiaryFeed,
-                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }
@@ -102,7 +102,6 @@ fun FcbTopAppBar(
     modifier: Modifier = Modifier,
     currentRoute: FcbRoute?
 ) {
-    if (currentRoute == null) return
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,7 +118,7 @@ fun FcbTopAppBar(
             modifier = modifier.wrapContentWidth(),
             style = FcbTheme.typography.heading,
             text = currentRoute
-                .header
+                ?.header
                 ?.let { rid -> stringResource(id = rid) }
                 ?: stringResource(id = R.string.string_header_of_home_screen)
         )

@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.feature.diaryfeed
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,16 +36,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DiaryFeedRoute(
     diaryFeedViewModel: DiaryFeedViewModel = hiltViewModel(),
-    navigateToDiaryRegistration: () -> Unit = {},
-    navigateToDiaryDetail: () -> Unit = {}
+    navigateToDiaryDetail: (diaryId: Long) -> Unit = {}
 ) {
     val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
+    // navigateToDiaryDetail을 remember로 감싸서 메모이제이션
+    val onDiaryClick: (Long) -> Unit = remember(navigateToDiaryDetail) {
+        { diaryId ->
+            navigateToDiaryDetail(diaryId)
+        }
+    }
 
     DiaryFeedScreen(
         uiState = uiState,
-        onDiaryClick = diaryFeedViewModel::fetchDiaryDetail,
-        navigateToDiaryRegistration = navigateToDiaryRegistration,
-        navigateToDiaryDetail = navigateToDiaryDetail
+        // todo: recomposition을 어떻게 막아야할까?
+        onDiaryClick = onDiaryClick
     )
 }
 
@@ -51,10 +57,9 @@ fun DiaryFeedRoute(
 fun DiaryFeedScreen(
     modifier: Modifier = Modifier,
     uiState: DiaryFeedUiState,
-    onDiaryClick: (diaryId: Long) -> Unit = {},
-    navigateToDiaryDetail: () -> Unit = {},
-    navigateToDiaryRegistration: () -> Unit = {}
+    onDiaryClick: (diaryId: Long) -> Unit = {}
 ) {
+    Log.d("woogi", "DiaryFeedScreen")
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
             DiariesColumn(
@@ -67,9 +72,8 @@ fun DiaryFeedScreen(
             // todo: change progress bar visibility
         }
 
-        is DiaryFeedUiState.DiaryDetail -> navigateToDiaryDetail()
-
-        is DiaryFeedUiState.DiaryRegistration -> navigateToDiaryRegistration()
+        else -> {
+        }
     }
 }
 

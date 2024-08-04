@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,20 +41,6 @@ class DiaryFeedViewModel @Inject constructor(
                 _event.emit(DiaryFeedEvent.Error)
             }.collect { diaries ->
                 _uiState.value = DiaryFeedUiState.Feed(diaries)
-            }
-        }
-    }
-
-    fun fetchDiaryDetail(diaryId: Long) {
-        viewModelScope.launch {
-            flow {
-                emit(diaryRepository.fetchDiaryDetails(diaryId))
-            }.onStart {
-                _uiState.value = DiaryFeedUiState.Loading
-            }.catch {
-                _event.emit(DiaryFeedEvent.Error)
-            }.collect { diary ->
-                _uiState.value = DiaryFeedUiState.DiaryDetail(diary)
             }
         }
     }

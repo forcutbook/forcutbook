@@ -47,4 +47,9 @@ object ServiceModule {
     @Singleton
     fun provideDiaryService(retrofit: Retrofit): DiaryService =
         retrofit.create(DiaryService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserService(retrofit: Retrofit): UserService =
+        retrofit.create(UserService::class.java)
 }
