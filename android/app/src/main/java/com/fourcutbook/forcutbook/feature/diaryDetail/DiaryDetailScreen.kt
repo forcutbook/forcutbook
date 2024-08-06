@@ -62,6 +62,7 @@ fun DiaryDetailScreen(
                     title = uiState.diary.title,
                     onBackClick = onBackClick
                 )
+                Log.d("woogi", "DiaryDetailScreen: ${uiState.diary.imageUrl}")
                 DiaryContents(contents = uiState.diary.contents)
                 DiaryImage(imageUrl = uiState.diary.imageUrl)
             }
@@ -71,6 +72,7 @@ fun DiaryDetailScreen(
     }
 }
 
+// todo: 계속해서 반복되는 코드 공통적인 component로 분리가 필요
 @Composable
 fun DiaryDetailTopAppBar(
     title: String,

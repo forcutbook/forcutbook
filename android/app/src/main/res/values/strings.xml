@@ -11,4 +11,6 @@
     <string name="subscribing_diary_description">구독중인 일기</string>
     <string name="subscribing_user_description">나를 구독한 유저</string>
     <string name="count_of_diaries">작성한 일기</string>
+    <string name="subscribing_cancel">구독 취소</string>
+    <string name="subscribing_request">구독 신청</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.mypage
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +36,6 @@ fun MyPageRoute(
     onBackPressed: () -> Unit = {}
 ) {
     val uiState: MyPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
-    Log.d("woogi", "MyPageRoute: $uiState")
 
     MyPageScreen(
         modifier = Modifier,

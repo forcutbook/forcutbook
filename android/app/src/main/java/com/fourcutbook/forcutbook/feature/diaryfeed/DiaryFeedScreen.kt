@@ -83,6 +83,7 @@ fun DiariesColumn(
     diaries: List<Diary>,
     onDiaryClick: (diaryId: Long) -> Unit
 ) {
+    Log.d("woogi", "DiariesColumn: $diaries")
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()

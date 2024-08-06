@@ -39,6 +39,9 @@ import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRe
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
+import com.fourcutbook.forcutbook.feature.mypage.navigateToMyPage
+import com.fourcutbook.forcutbook.feature.subscribingdiary.navigateToSubscribingDiary
+import com.fourcutbook.forcutbook.feature.subscribingdiary.subscribingDiaryNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,7 +69,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     top = contentPadding.calculateTopPadding(),
                     bottom = contentPadding.calculateBottomPadding(),
                     start = FcbTheme.padding.basicHorizontalPadding,
-                    end = FcbTheme.padding.basicVerticalPadding
+                    end = FcbTheme.padding.basicHorizontalPadding
                 )
                 .fillMaxSize(),
             navController = navController,
@@ -91,6 +94,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
             myPageNavGraph(
                 navController = navController,
+                navigateToSubscribingDiary = navController::navigateToSubscribingDiary,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            subscribingDiaryNavGraph(
+                navigateToUserPage = navController::navigateToMyPage,
+                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }

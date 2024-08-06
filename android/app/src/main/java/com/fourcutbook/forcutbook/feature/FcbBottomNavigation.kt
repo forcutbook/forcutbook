@@ -23,6 +23,8 @@ fun FcbBottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    // todo : 언제 보여지고 언제 사라질지
+
     if (currentRoute == FcbRoute.LoginRoute.value) return
 
     BottomNavigation(
