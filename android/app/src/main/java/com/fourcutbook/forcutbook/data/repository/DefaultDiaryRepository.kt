@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.data.repository
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.DiaryMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.DiaryService
 import com.fourcutbook.forcutbook.domain.Diary
@@ -23,9 +22,7 @@ class DefaultDiaryRepository @Inject constructor(
     override suspend fun fetchDiaries(): List<Diary> {
         run {
             val userId = userRepository.fetchUserId().first()
-            Log.d("woogi", "fetchDiaries: $userId")
             val response = diaryService.fetchDiaries(userId)
-            Log.d("woogi", "fetchDiaries: ${response.code()}")
 
             if (response.isSuccessful) {
                 val diaries = response.body()
@@ -90,7 +87,6 @@ class DefaultDiaryRepository @Inject constructor(
                 image = listOf(MultipartBody.Part.createFormData("images", image.name, imageFile)),
                 friends = friends
             )
-            Log.d("woogi", "postDiary: $response")
         }
     }
 }

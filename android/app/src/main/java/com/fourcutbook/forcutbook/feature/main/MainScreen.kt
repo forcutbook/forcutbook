@@ -40,8 +40,10 @@ import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigat
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.navigateToMyPage
-import com.fourcutbook.forcutbook.feature.subscribingdiary.navigateToSubscribingDiary
-import com.fourcutbook.forcutbook.feature.subscribingdiary.subscribingDiaryNavGraph
+import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.navigateToSubscribedUser
+import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.subscribedUserNavGraph
+import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.navigateToSubscribingDiary
+import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.subscribingDiaryNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -95,10 +97,17 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             myPageNavGraph(
                 navController = navController,
                 navigateToSubscribingDiary = navController::navigateToSubscribingDiary,
+                navigateToSubscribedUser = navController::navigateToSubscribedUser,
                 onShowSnackBar = onShowSnackBar
             )
 
             subscribingDiaryNavGraph(
+                navigateToUserPage = navController::navigateToMyPage,
+                onBackPressed = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            subscribedUserNavGraph(
                 navigateToUserPage = navController::navigateToMyPage,
                 onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar

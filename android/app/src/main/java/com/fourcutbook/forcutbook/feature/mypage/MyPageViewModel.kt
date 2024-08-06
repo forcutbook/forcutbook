@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.mypage
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
@@ -51,7 +50,6 @@ class MyPageViewModel @Inject constructor(
                     )
                 )
             }.collect { userInfo ->
-                Log.d("woogi", "fetchUserInfo: $userInfo")
                 _uiState.value = MyPageUiState.MyInfo(info = userInfo)
             }
         }

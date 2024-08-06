@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.diaryfeed
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,7 +58,6 @@ fun DiaryFeedScreen(
     uiState: DiaryFeedUiState,
     onDiaryClick: (diaryId: Long) -> Unit = {}
 ) {
-    Log.d("woogi", "DiaryFeedScreen")
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
             DiariesColumn(
@@ -83,7 +81,6 @@ fun DiariesColumn(
     diaries: List<Diary>,
     onDiaryClick: (diaryId: Long) -> Unit
 ) {
-    Log.d("woogi", "DiariesColumn: $diaries")
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()

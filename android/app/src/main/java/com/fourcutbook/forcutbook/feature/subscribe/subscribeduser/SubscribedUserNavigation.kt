@@ -1,24 +1,22 @@
-package com.fourcutbook.forcutbook.feature.subscribingdiary
+package com.fourcutbook.forcutbook.feature.subscribe.subscribeduser
 
-import android.annotation.SuppressLint
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.fourcutbook.forcutbook.feature.FcbRoute
 
-fun NavController.navigateToSubscribingDiary(navOptions: NavOptions? = null) {
-    navigate(FcbRoute.SubscribingDiaryRoute.value, navOptions)
+fun NavController.navigateToSubscribedUser(navOptions: NavOptions? = null) {
+    navigate(FcbRoute.SubscribedUserRoute.value, navOptions)
 }
 
-@SuppressLint("UnrememberedGetBackStackEntry")
-fun NavGraphBuilder.subscribingDiaryNavGraph(
+fun NavGraphBuilder.subscribedUserNavGraph(
     navigateToUserPage: () -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = FcbRoute.SubscribingDiaryRoute.value) {
-        SubscribingDiaryRoute(
+        SubscribedUserRoute(
             navigateToUserPage = navigateToUserPage,
             onShowSnackBar = onShowSnackBar,
             onBackPressed = onBackPressed

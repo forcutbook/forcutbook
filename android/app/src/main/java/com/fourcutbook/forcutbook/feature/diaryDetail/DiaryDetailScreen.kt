@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.diaryDetail
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +44,6 @@ fun DiaryDetailScreen(
     uiState: DiaryDetailUiState,
     onBackClick: () -> Unit
 ) {
-    Log.d("woogi", "DiaryDetailScreen")
     when (uiState) {
         is DiaryDetailUiState.DiaryDetail -> {
             Column(
@@ -62,7 +60,6 @@ fun DiaryDetailScreen(
                     title = uiState.diary.title,
                     onBackClick = onBackClick
                 )
-                Log.d("woogi", "DiaryDetailScreen: ${uiState.diary.imageUrl}")
                 DiaryContents(contents = uiState.diary.contents)
                 DiaryImage(imageUrl = uiState.diary.imageUrl)
             }

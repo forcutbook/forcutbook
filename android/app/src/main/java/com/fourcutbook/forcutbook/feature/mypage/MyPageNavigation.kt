@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.feature.mypage
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -10,9 +9,6 @@ import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
 
 fun NavController.navigateToMyPage(navOptions: NavOptions? = null) {
-    currentBackStack.value.forEach {
-        Log.d("woogi", "navigateToMyPage: $it")
-    }
     navigate(FcbRoute.MyPageRoute.value, navOptions)
 }
 
@@ -20,12 +16,13 @@ fun NavController.navigateToMyPage(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.myPageNavGraph(
     navController: NavController,
     navigateToSubscribingDiary: () -> Unit,
+    navigateToSubscribedUser: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = FcbRoute.MyPageRoute.value) {
         MyPageRoute(
             navigateToSubscribingDiaryScreen = navigateToSubscribingDiary,
-            navigateToSubscribedUserScreen = {},
+            navigateToSubscribedUserScreen = navigateToSubscribedUser,
             navigateToDiaryDetailScreen = navController::navigateToDiaryDetail
         )
     }
