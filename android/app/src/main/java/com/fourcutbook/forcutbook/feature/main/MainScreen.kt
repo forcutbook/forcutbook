@@ -2,51 +2,48 @@ package com.fourcutbook.forcutbook.feature.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.design.FcbTheme
+import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
+import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.diaryDetail.diaryDetailNavGraph
 import com.fourcutbook.forcutbook.feature.diaryDetail.navigateToDiaryDetail
-import com.fourcutbook.forcutbook.feature.diaryRegistration.diaryRegistrationNavGraph
-import com.fourcutbook.forcutbook.feature.diaryRegistration.navigateToDiaryRegistration
-import com.fourcutbook.forcutbook.feature.home.homeNavGraph
-import com.fourcutbook.forcutbook.feature.home.navigateToHome
-import com.fourcutbook.forcutbook.feature.imageUploading.imageUploadingNavGraph
-import com.fourcutbook.forcutbook.feature.imageUploading.navigateToImageUploading
-import com.fourcutbook.forcutbook.feature.login.LOGIN_ROUTE
-import com.fourcutbook.forcutbook.feature.login.loginNavGraph
+import com.fourcutbook.forcutbook.feature.diaryfeed.diaryFeedNavGraph
+import com.fourcutbook.forcutbook.feature.diaryfeed.navigateToDiaryFeed
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.diaryImageUploadingNavGraph
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRegistrationNavGraph
+import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
+import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
+import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
+import com.fourcutbook.forcutbook.feature.mypage.navigateToMyPage
+import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.navigateToSubscribedUser
+import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.subscribedUserNavGraph
+import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.navigateToSubscribingDiary
+import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.subscribingDiaryNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,128 +55,101 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             snackBarHostState.showSnackbar(message)
         }
     }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
-        modifier = Modifier,
-        topBar = { HomeForCutBookLogo() },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-            Box {
-                FloatingActionButton(
-                    onClick = { navController.navigateToImageUploading() },
-                    shape = CircleShape,
-                    containerColor = Color(0xFF1DA1F2),
-                    modifier = Modifier
-                        .offset(y = 50.dp)
-                        .align(Alignment.Center)
-                        .size(60.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(30.dp),
-                        painter = painterResource(id = R.drawable.ic_register_diary),
-                        tint = Color.White,
-                        contentDescription = null
-                    )
-                }
-            }
-        },
-        bottomBar = { MainBottomAppBar() }
-    ) { padding ->
+        modifier = Modifier.fillMaxSize(),
+        topBar = { FcbTopAppBar(currentRoute = FcbRoute.find(currentRoute)) },
+        bottomBar = { FcbBottomNavigation(navController = navController) }
+    ) { contentPadding ->
+
         NavHost(
             modifier = Modifier
-                .background(color = Color(0xFFEDEDED))
-                .padding(top = 50.dp),
+                .background(color = FcbTheme.colors.fcbGray)
+                .padding(
+                    top = contentPadding.calculateTopPadding(),
+                    bottom = contentPadding.calculateBottomPadding(),
+                    start = FcbTheme.padding.basicHorizontalPadding,
+                    end = FcbTheme.padding.basicHorizontalPadding
+                )
+                .fillMaxSize(),
             navController = navController,
-            startDestination = LOGIN_ROUTE
+            startDestination = FcbRoute.LoginRoute.value
         ) {
-            loginNavGraph(navController::navigateToHome)
+            loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
-            homeNavGraph(
-                navigateToDiaryRegistration = navController::navigateToImageUploading,
-                navigateToDiaryDetails = navController::navigateToDiaryDetail
-            )
+            diaryFeedNavGraph(navigateToDiaryDetails = navController::navigateToDiaryDetail)
 
-            imageUploadingNavGraph { navController.navigateToDiaryRegistration() }
+            diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
 
             diaryRegistrationNavGraph(
                 navController = navController,
-                navigateToHomeScreen = navController::navigateToHome,
+                navigateToHomeScreen = navController::navigateToDiaryFeed,
+                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
 
             diaryDetailNavGraph(
+                onBackPressed = navController::popBackStack
+            )
+
+            myPageNavGraph(
                 navController = navController,
+                navigateToSubscribingDiary = navController::navigateToSubscribingDiary,
+                navigateToSubscribedUser = navController::navigateToSubscribedUser,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            subscribingDiaryNavGraph(
+                navigateToUserPage = navController::navigateToMyPage,
+                onBackPressed = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            subscribedUserNavGraph(
+                navigateToUserPage = navController::navigateToMyPage,
+                onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }
-        padding
     }
 }
 
 @Composable
-fun HomeForCutBookLogo(modifier: Modifier = Modifier) {
+fun FcbTopAppBar(
+    modifier: Modifier = Modifier,
+    currentRoute: FcbRoute?
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp, start = 30.dp, end = 30.dp),
+            .padding(
+                top = FcbTheme.padding.basicVerticalPadding,
+                start = FcbTheme.padding.basicHorizontalPadding,
+                end = FcbTheme.padding.basicHorizontalPadding
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         Text(
             textAlign = TextAlign.Center,
-            modifier = modifier
-                .wrapContentWidth(),
-            text = "포컷북",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            modifier = modifier.wrapContentWidth(),
+            style = FcbTheme.typography.heading,
+            text = currentRoute
+                ?.header
+                ?.let { rid -> stringResource(id = rid) }
+                ?: stringResource(id = R.string.string_header_of_home_screen)
         )
-        IconButton(onClick = { /*TODO*/ }) {
+
+        if (currentRoute is FcbRoute.DiaryFeed) {
             Icon(
                 modifier = modifier
                     .wrapContentWidth()
-                    .height(28.dp),
+                    .height(FcbTheme.shame.iconSize),
                 painter = painterResource(id = R.drawable.ic_alarm),
                 contentDescription = null
             )
-        }
-    }
-}
-
-@Composable
-fun MainBottomAppBar(modifier: Modifier = Modifier) {
-    BottomAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(65.dp),
-        containerColor = Color.White
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                modifier = Modifier.padding(start = 30.dp),
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    tint = Color(0xFF545454),
-                    modifier = Modifier.size(45.dp),
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                modifier = Modifier.padding(end = 30.dp),
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    tint = Color(0xFF545454),
-                    modifier = Modifier.size(45.dp),
-                    painter = painterResource(id = R.drawable.ic_my_page),
-                    contentDescription = null
-                )
-            }
         }
     }
 }

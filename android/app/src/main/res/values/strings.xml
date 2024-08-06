@@ -2,4 +2,15 @@
     <string name="app_name">forcutbook</string>
     <string name="login_request_enter_id">아이디를 입력해 주세요.</string>
     <string name="login_request_enter_password">비밀번호를 입력해 주세요.</string>
+    <string name="string_header_of_home_screen">그림 일기</string>
+    <string name="string_header_of_image_uploading_screen">일기 생성</string>
+    <string name="string_header_of_diary_registration_screen">일기 등록</string>
+    <string name="string_registration_button_description">등록하기</string>
+    <string name="header_of_my_page">나의 일기</string>
+    <string name="header_of_subscribing_diary">구독중인 일기</string>
+    <string name="subscribing_diary_description">구독중인 일기</string>
+    <string name="subscribing_user_description">나를 구독한 유저</string>
+    <string name="count_of_diaries">작성한 일기</string>
+    <string name="subscribing_cancel">구독 취소</string>
+    <string name="subscribing_request">구독 신청</string>
 </resources>
