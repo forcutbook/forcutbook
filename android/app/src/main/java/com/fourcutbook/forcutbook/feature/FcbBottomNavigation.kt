@@ -23,7 +23,7 @@ fun FcbBottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    // todo : 언제 보여지고 언제 사라질지
+    // ㄹtodo : 언제 보여지고 언제 사라질지
 
     if (currentRoute == FcbRoute.LoginRoute.value) return
 
@@ -37,10 +37,9 @@ fun FcbBottomNavigation(
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-//                        navController.graph.startDestinationRoute?.let {
-//                            popUpTo(it) { saveState = true }
-//                        }
-                        // todo: 왜 이코드가 존재해야하는지 와닿지 않음
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) { saveState = true }
+                        }
                         launchSingleTop = true
                         restoreState = true
                     }

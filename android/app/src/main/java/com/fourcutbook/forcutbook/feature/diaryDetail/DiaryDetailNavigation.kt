@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.diaryDetail
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
@@ -20,7 +19,6 @@ fun NavController.navigateToDiaryDetail(
     navigate("$DIARY_DETAIL_ROUTE/$diaryId", navOptions)
 }
 
-@SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.diaryDetailNavGraph(onBackPressed: () -> Unit) {
     composable(
         route = "$DIARY_DETAIL_ROUTE/{$DIARY_ID}",

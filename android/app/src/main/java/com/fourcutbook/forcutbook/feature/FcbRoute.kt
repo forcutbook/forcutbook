@@ -16,7 +16,7 @@ sealed interface FcbRoute {
     data object DiaryFeed : FcbRoute {
 
         override val header = R.string.string_header_of_home_screen
-        override val value = "HOME_ROUTE"
+        override val value = "DIARY_FEED"
     }
 
     data object DiaryImageUploadingRoute : FcbRoute {

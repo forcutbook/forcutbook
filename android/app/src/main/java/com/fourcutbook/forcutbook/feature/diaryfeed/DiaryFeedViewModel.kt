@@ -44,4 +44,8 @@ class DiaryFeedViewModel @Inject constructor(
             }
         }
     }
+
+    fun fetchDiaryDetail(diaryId: Long) {
+        _uiState.value = DiaryFeedUiState.DiaryDetail(diaryId)
+    }
 }

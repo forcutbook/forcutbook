@@ -79,7 +79,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         ) {
             loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
-            diaryFeedNavGraph(navigateToDiaryDetails = navController::navigateToDiaryDetail)
+            diaryFeedNavGraph(
+                navController = navController,
+                navigateToDiaryDetails = navController::navigateToDiaryDetail
+            )
 
             diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
 
@@ -90,9 +93,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onShowSnackBar = onShowSnackBar
             )
 
-            diaryDetailNavGraph(
-                onBackPressed = navController::popBackStack
-            )
+            diaryDetailNavGraph(onBackPressed = navController::popBackStack)
 
             myPageNavGraph(
                 navController = navController,

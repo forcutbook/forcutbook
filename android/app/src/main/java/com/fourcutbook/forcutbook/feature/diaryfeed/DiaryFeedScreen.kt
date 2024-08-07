@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,20 +34,13 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DiaryFeedRoute(
     diaryFeedViewModel: DiaryFeedViewModel = hiltViewModel(),
-    navigateToDiaryDetail: (diaryId: Long) -> Unit = {}
+    navigateToDiaryDetail: (diaryId: Long) -> Unit = { }
 ) {
     val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
-    // navigateToDiaryDetail을 remember로 감싸서 메모이제이션
-    val onDiaryClick: (Long) -> Unit = remember(navigateToDiaryDetail) {
-        { diaryId ->
-            navigateToDiaryDetail(diaryId)
-        }
-    }
 
     DiaryFeedScreen(
         uiState = uiState,
-        // todo: recomposition을 어떻게 막아야할까?
-        onDiaryClick = onDiaryClick
+        onDiaryClick = navigateToDiaryDetail
     )
 }
 
@@ -56,7 +48,9 @@ fun DiaryFeedRoute(
 fun DiaryFeedScreen(
     modifier: Modifier = Modifier,
     uiState: DiaryFeedUiState,
-    onDiaryClick: (diaryId: Long) -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onDiaryClick: (diaryId: Long) -> Unit = {},
+    navigateToDiaryDetail: (diaryId: Long) -> Unit = { _ -> }
 ) {
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
@@ -64,10 +58,6 @@ fun DiaryFeedScreen(
                 diaries = uiState.diaries,
                 onDiaryClick = onDiaryClick
             )
-        }
-
-        is DiaryFeedUiState.Loading -> {
-            // todo: change progress bar visibility
         }
 
         else -> {
@@ -79,7 +69,7 @@ fun DiaryFeedScreen(
 fun DiariesColumn(
     modifier: Modifier = Modifier,
     diaries: List<Diary>,
-    onDiaryClick: (diaryId: Long) -> Unit
+    onDiaryClick: (diaryId: Long) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier
