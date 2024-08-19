@@ -14,7 +14,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,9 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,11 +32,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.design.FcbTheme
+import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithOnlyTitle
 import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingUiState
 import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingViewModel
 import com.fourcutbook.forcutbook.util.parseBitmap
@@ -50,63 +49,62 @@ import java.io.File
 @Composable
 fun DiaryImageUploadingRoute(
     diaryPostingViewModel: DiaryPostingViewModel = hiltViewModel(),
-    navigateToDiaryScreen: () -> Unit = {}
+    onImageUpload: () -> Unit = {}
 ) {
     val uiState by diaryPostingViewModel.uiState.collectAsStateWithLifecycle()
 
     DiaryImageUploadingScreen(
         uiState = uiState,
-        onImageUpload = { imageFile, imageBitmap ->
+        onImageSelect = { imageBitmap ->
+            diaryPostingViewModel.selectImage(imageBitmap)
+        },
+        onImageUploaded = { imageFile, imageBitmap ->
             diaryPostingViewModel.postImage(
                 imageFile = imageFile,
                 imageBitmap = imageBitmap
             )
-        },
-        navigateToDiaryScreen = navigateToDiaryScreen
+            onImageUpload()
+        }
     )
 }
 
 @Composable
 fun DiaryImageUploadingScreen(
     uiState: DiaryPostingUiState,
-    onImageUpload: (
+    onImageSelect: (imageBitmap: Bitmap) -> Unit = {},
+    onImageUploaded: (
         imageFile: File,
         imageBitmap: Bitmap
-    ) -> Unit = { _, _ -> },
-    navigateToDiaryScreen: () -> Unit = {}
+    ) -> Unit = { _, _ -> }
 ) {
-    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-
     when (uiState) {
-        is DiaryPostingUiState.ImageUploaded -> navigateToDiaryScreen()
-
-        is DiaryPostingUiState.ImageUploading -> {
+        is DiaryPostingUiState.IncludingImage -> {
             Column(
                 modifier = Modifier
-                    .padding(top = 20.dp, start = 30.dp, end = 30.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .fillMaxSize()
+                    .padding(top = FcbTheme.padding.basicVerticalPadding)
             ) {
                 val context = LocalContext.current
                 val takePhotoFromAlbumLauncher = rememberAlbumLauncher(
                     onSuccess = { image ->
-                        bitmap = image
+                        onImageSelect(image)
                     }
                 )
-
+                FcbTopAppBarWithOnlyTitle(title = stringResource(R.string.string_header_of_image_uploading_screen))
                 UploadingImage(
+                    modifier = Modifier.padding(top = FcbTheme.padding.basicVerticalPadding),
                     onClick = {
                         takePhotoFromAlbumLauncher.launch(takePhotoFromAlbumIntent)
                     },
-                    bitmap = bitmap
+                    bitmap = uiState.bitmap
                 )
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
                     onClick = {
-                        bitmap?.let { image ->
-                            onImageUpload(image.toFile(context), image)
+                        uiState.bitmap?.let { image ->
+                            onImageUploaded(image.toFile(context), image)
                         }
                     },
                     shape = RoundedCornerShape(10.dp),
@@ -137,12 +135,13 @@ fun DiaryImageUploadingScreen(
 
 @Composable
 fun UploadingImage(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     bitmap: Bitmap? = null
 ) {
     val painter: Painter = painterResource(R.drawable.ic_empty_image)
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.White, shape = RoundedCornerShape(10.dp))
@@ -202,5 +201,7 @@ fun rememberAlbumLauncher(
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun ImageUploadingScreenPreview() {
-    DiaryImageUploadingScreen(DiaryPostingUiState.ImageUploading)
+    DiaryImageUploadingScreen(
+        uiState = DiaryPostingUiState.IncludingImage.ImageSelecting(null)
+    )
 }

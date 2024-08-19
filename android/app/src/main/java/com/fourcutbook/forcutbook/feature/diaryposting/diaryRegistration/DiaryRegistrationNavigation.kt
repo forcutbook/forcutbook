@@ -16,7 +16,7 @@ fun NavController.navigateToDiaryRegistration(navOptions: NavOptions? = null) {
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.diaryRegistrationNavGraph(
     navController: NavController,
-    navigateToHomeScreen: () -> Unit,
+    onDiaryRegistered: () -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
@@ -26,7 +26,7 @@ fun NavGraphBuilder.diaryRegistrationNavGraph(
         }
         DiaryRegistrationRoute(
             diaryPostingViewModel = sharedViewModel,
-            navigateToHomeScreen = navigateToHomeScreen,
+            onDiaryRegistered = onDiaryRegistered,
             onShowSnackBar = onShowSnackBar,
             onBackPressed = onBackPressed
         )

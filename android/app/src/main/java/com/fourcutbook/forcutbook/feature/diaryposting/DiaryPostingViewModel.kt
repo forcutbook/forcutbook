@@ -25,7 +25,7 @@ class DiaryPostingViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<DiaryPostingUiState> =
-        MutableStateFlow(DiaryPostingUiState.ImageUploading)
+        MutableStateFlow(DiaryPostingUiState.IncludingImage.ImageSelecting())
     val uiState: StateFlow<DiaryPostingUiState>
         get() = _uiState.asStateFlow()
 
@@ -46,7 +46,7 @@ class DiaryPostingViewModel @Inject constructor(
             }.onStart {
                 _uiState.emit(DiaryPostingUiState.LoadingForUploading)
             }.collect { diary ->
-                _uiState.emit(DiaryPostingUiState.ImageUploaded(diary.copy(image = imageBitmap)))
+                _uiState.emit(DiaryPostingUiState.IncludingImage.ImageUploaded(diary.copy(image = imageBitmap)))
             }
         }
     }
@@ -54,9 +54,9 @@ class DiaryPostingViewModel @Inject constructor(
     /**
      * registration, uploading screen is sharing viewModel so we must change uiState when back again registration to uploading.
      */
-    fun tryImageUploading() {
+    fun selectImage(bitmap: Bitmap) {
         viewModelScope.launch {
-            _uiState.emit(DiaryPostingUiState.ImageUploading)
+            _uiState.value = DiaryPostingUiState.IncludingImage.ImageSelecting(bitmap)
         }
     }
 

@@ -4,5 +4,5 @@ sealed interface DiaryPostingEvent {
 
     data object Loading : DiaryPostingEvent
 
-    data object Done : DiaryPostingEvent
+    data object ImageUploaded : DiaryPostingEvent
 }
