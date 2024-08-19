@@ -1,6 +1,7 @@
 package konkuk.forcutbook.diary.domain;
 
 import jakarta.persistence.*;
+import konkuk.global.domain.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class UserDiary extends TimeEntity{
+public class UserDiary extends TimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userDiaryId")
     private Long id;
