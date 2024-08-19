@@ -19,10 +19,10 @@ class DefaultDiaryRepository @Inject constructor(
     private val diaryService: DiaryService
 ) : DiaryRepository {
 
-    override suspend fun fetchDiaries(): List<Diary> {
+    override suspend fun fetchDiaries(userId: Long?): List<Diary> {
         run {
-            val userId = userRepository.fetchUserId().first()
-            val response = diaryService.fetchDiaries(userId)
+            val id = userId ?: userRepository.fetchUserId().first()
+            val response = diaryService.fetchDiaries(id)
 
             if (response.isSuccessful) {
                 val diaries = response.body()

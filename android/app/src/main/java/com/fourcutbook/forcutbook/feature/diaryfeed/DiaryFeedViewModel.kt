@@ -33,10 +33,10 @@ class DiaryFeedViewModel @Inject constructor(
         fetchDiaries()
     }
 
-    fun fetchDiaries() {
+    fun fetchDiaries(userId: Long? = null) {
         viewModelScope.launch {
             flow {
-                emit(diaryRepository.fetchDiaries())
+                emit(diaryRepository.fetchDiaries(userId))
             }.catch {
                 _event.emit(DiaryFeedEvent.Error)
             }.collect { diaries ->

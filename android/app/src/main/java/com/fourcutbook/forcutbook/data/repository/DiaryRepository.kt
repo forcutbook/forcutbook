@@ -5,7 +5,7 @@ import java.io.File
 
 interface DiaryRepository {
 
-    suspend fun fetchDiaries(): List<Diary>
+    suspend fun fetchDiaries(userId: Long? = null): List<Diary>
 
     suspend fun fetchDiaryDetails(diaryId: Long): Diary
 

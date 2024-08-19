@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.Diary
+import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithIcon
 import com.fourcutbook.forcutbook.util.DiaryFixture
 import java.time.format.DateTimeFormatter
 
@@ -54,10 +57,13 @@ fun DiaryFeedScreen(
 ) {
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
-            DiariesColumn(
-                diaries = uiState.diaries,
-                onDiaryClick = onDiaryClick
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                FcbTopAppBarWithIcon(title = stringResource(id = R.string.header_of_home_screen))
+                DiariesColumn(
+                    diaries = uiState.diaries,
+                    onDiaryClick = onDiaryClick
+                )
+            }
         }
 
         else -> {

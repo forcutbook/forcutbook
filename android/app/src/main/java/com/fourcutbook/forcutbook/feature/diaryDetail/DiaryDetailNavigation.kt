@@ -1,7 +1,5 @@
 package com.fourcutbook.forcutbook.feature.diaryDetail
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -22,13 +20,13 @@ fun NavController.navigateToDiaryDetail(
 fun NavGraphBuilder.diaryDetailNavGraph(onBackPressed: () -> Unit) {
     composable(
         route = "$DIARY_DETAIL_ROUTE/{$DIARY_ID}",
-        arguments = listOf(navArgument(DIARY_ID) { type = NavType.LongType }),
-        enterTransition = {
-            slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(700)
-            )
-        }
+        arguments = listOf(navArgument(DIARY_ID) { type = NavType.LongType })
+//        enterTransition = {
+//            slideIntoContainer(
+//                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+//                animationSpec = tween(700)
+//            )
+//        }
     ) { navBackStackEntry ->
         val diaryId = navBackStackEntry.arguments?.getLong(DIARY_ID)
 

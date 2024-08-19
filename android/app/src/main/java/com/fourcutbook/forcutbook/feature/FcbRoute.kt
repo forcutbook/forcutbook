@@ -12,13 +12,13 @@ sealed interface FcbRoute {
 
     data object LoginRoute : FcbRoute {
 
-        override val headerRes = R.string.string_header_of_home_screen
+        override val headerRes = R.string.header_of_home_screen
         override val value = "LOGIN_ROUTE"
     }
 
     data object DiaryFeed : FcbRoute {
 
-        override val headerRes = R.string.string_header_of_home_screen
+        override val headerRes = R.string.header_of_home_screen
         override val value = "DIARY_FEED"
     }
 
@@ -30,7 +30,7 @@ sealed interface FcbRoute {
 
     data object DiaryRegistrationRoute : FcbRoute {
 
-        override val headerRes = R.string.string_header_of_diary_registration_screen
+        override val headerRes = R.string.header_of_diary_registration_screen
         override val value = "DIARY_REGISTRATION_ROUTE"
     }
 
@@ -38,6 +38,12 @@ sealed interface FcbRoute {
 
         override val headerRes = R.string.header_of_my_page
         override val value: String = "MY_PAGE"
+    }
+
+    data object UserPageRoute : FcbRoute {
+
+        override val headerRes = R.string.header_of_user_page
+        override val value: String = "USER_PAGE"
     }
 
     data object SubscribingDiaryRoute : FcbRoute {
@@ -49,7 +55,7 @@ sealed interface FcbRoute {
     data object SubscribedUserRoute : FcbRoute {
 
         override val headerRes: Int = R.string.header_of_subscribing_diary
-        override val value: String = "SUBSCRIBING_DIARY"
+        override val value: String = "SUBSCRIBED_DIARY"
     }
 
     data object NotificationRoute : FcbRoute {

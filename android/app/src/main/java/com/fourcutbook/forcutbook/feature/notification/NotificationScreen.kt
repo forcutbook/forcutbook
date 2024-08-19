@@ -31,22 +31,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.data.fixture.NotificationFixture
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.FriendRequestNotification
 import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.FcbTopAppBar
+import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
 
 @Composable
 fun NotificationRoute(
     notificationViewModel: NotificationViewModel = hiltViewModel(),
-    onUserProfileClick: (userId: Long) -> Unit = {},
+    onProfileImgClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit
 ) {
     val uiState: NotificationUiState by notificationViewModel.uiState.collectAsStateWithLifecycle()
 
     NotificationScreen(
         notificationUiState = uiState,
-        onUserProfileClick = {}
+        onUserProfileClick = onProfileImgClick,
+        onBackClick = onBackClick
     )
 }
 
@@ -58,7 +60,7 @@ fun NotificationScreen(
     onBackClick: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        FcbTopAppBar(
+        FcbTopAppBarWithBackButton(
             title = stringResource(id = FcbRoute.SubscribingDiaryRoute.headerRes),
             onBackClick = onBackClick
         )
@@ -167,6 +169,17 @@ fun RequestAcceptDeclineButton(
             fontSize = 12.sp
         )
     }
+}
+
+@Preview(widthDp = 360, heightDp = 640)
+@Composable
+fun NotificationScreenPreview() {
+    NotificationScreen(
+        modifier = Modifier.background(FcbTheme.colors.fcbGray),
+        notificationUiState = NotificationUiState(
+            friendRequestNotifications = NotificationFixture.get()
+        )
+    )
 }
 
 @Preview

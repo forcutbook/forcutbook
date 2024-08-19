@@ -44,13 +44,14 @@ class MyPageViewModel @Inject constructor(
             fetchUserDiaries().zip(fetchUserSubscribingCount()) { diaries, subscribingCount ->
                 UserInfo(
                     diaries = diaries,
+                    userId = 1,
                     subscribingCount = SubscribingCount(
                         subscribingDiaryCount = subscribingCount.subscribingDiaryCount,
                         subscribingUserCount = subscribingCount.subscribingUserCount
                     )
                 )
             }.collect { userInfo ->
-                _uiState.value = MyPageUiState.MyInfo(info = userInfo)
+                _uiState.value = MyPageUiState.MyPage(value = userInfo)
             }
         }
     }
