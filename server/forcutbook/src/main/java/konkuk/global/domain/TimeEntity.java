@@ -1,4 +1,4 @@
-package konkuk.forcutbook.diary.domain;
+package konkuk.global.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

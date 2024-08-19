@@ -1,6 +1,7 @@
 package konkuk.forcutbook.diary;
 
 import konkuk.forcutbook.diary.dto.*;
+import konkuk.global.dto.SuccessResDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
