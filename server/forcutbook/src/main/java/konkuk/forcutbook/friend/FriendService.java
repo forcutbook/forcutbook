@@ -3,10 +3,13 @@ package konkuk.forcutbook.friend;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
+import konkuk.forcutbook.friend.dto.FriendAcceptListResDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Slf4j
@@ -42,6 +45,16 @@ public class FriendService {
         //서비스 로직
         friend.setAccept(true);
         return friend.getId();
+    }
+
+    public FriendAcceptListResDto getFriendAcceptList(Long userId){
+        //검증 로직
+        User user = findUser(userId);
+
+        //서비스 로직
+        List<Friend> acceptList = friendRepository.findByReceiverIdAndIsAccept(userId, false);
+
+        return FriendAcceptListResDto.toDto(acceptList);
     }
 
     private User findUser(Long userId){

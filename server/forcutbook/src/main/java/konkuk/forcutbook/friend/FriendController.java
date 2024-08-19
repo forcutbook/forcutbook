@@ -1,14 +1,12 @@
 package konkuk.forcutbook.friend;
 
+import konkuk.forcutbook.friend.dto.FriendAcceptListResDto;
 import konkuk.global.dto.SuccessResDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/users/{userId}/friends")
@@ -32,5 +30,12 @@ public class FriendController {
         Long id = friendService.acceptFriend(userId, friendId);
 
         return SuccessResDto.getResponseEntity(id, SuccessResDto.SuccessMessage.ACCEPT_SUCCESS, HttpStatus.OK);
+    }
+
+    @GetMapping("/accept")
+    public ResponseEntity<FriendAcceptListResDto> getFriendAcceptList(@PathVariable Long userId){
+        FriendAcceptListResDto dto = friendService.getFriendAcceptList(userId);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

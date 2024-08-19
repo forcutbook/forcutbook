@@ -4,12 +4,16 @@ import jakarta.persistence.EntityManager;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
+import konkuk.forcutbook.friend.dto.FriendAcceptListResDto;
+import konkuk.forcutbook.friend.dto.FriendAcceptResDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +76,36 @@ class FriendServiceIntegrationTest {
         //then
         assertThat(findFriend).isNotNull();
         assertThat(findFriend.isAccept()).isTrue();
+    }
+
+    @Test
+    @DisplayName("친구 수락 대기 리스트 조회")
+    void getFriendAcceptList() {
+        //given
+        User sender1 = createUser("sender1");
+        User sender2 = createUser("sender2");
+        User receiver = createUser("receiver");
+        userRepository.save(sender1);
+        userRepository.save(sender2);
+        userRepository.save(receiver);
+
+        Friend friend1 = Friend.createFriend(sender1, receiver);
+        friendRepository.save(friend1);
+        Friend friend2 = Friend.createFriend(sender2, receiver);
+        friendRepository.save(friend2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        FriendAcceptListResDto dto = friendService.getFriendAcceptList(receiver.getId());
+
+        //then
+        List<FriendAcceptResDto> data = dto.getData();
+        assertThat(data.size()).isEqualTo(2);
+        assertThat(data).extracting("userId").contains(sender1.getId(), sender2.getId());
+        assertThat(data).extracting("userName").contains(sender1.getUserName(), sender2.getUserName());
+        assertThat(data).extracting("createdAt").contains(friend1.getCreatedAt(), friend2.getCreatedAt());
     }
 
     User createUser(String username){
