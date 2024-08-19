@@ -32,7 +32,7 @@ import com.fourcutbook.forcutbook.domain.UserProfile
 @Composable
 fun SubscribeList(
     userProfiles: List<UserProfile>,
-    navigateToUserPage: () -> Unit
+    onUserProfileClick: (userId: Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -42,7 +42,7 @@ fun SubscribeList(
         items(userProfiles) { userProfile ->
             SubscribeItem(
                 userProfile = userProfile,
-                navigateToUserPage = navigateToUserPage
+                onUserProfileClick = { onUserProfileClick(userProfile.userId) }
             )
         }
     }
@@ -51,7 +51,7 @@ fun SubscribeList(
 @Composable
 fun SubscribeItem(
     userProfile: UserProfile,
-    navigateToUserPage: () -> Unit = {}
+    onUserProfileClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -67,7 +67,7 @@ fun SubscribeItem(
                 .padding(start = FcbTheme.padding.basicHorizontalPadding)
                 .size(FcbTheme.shame.iconSize)
                 .clip(shape = CircleShape)
-                .clickable { navigateToUserPage() },
+                .clickable { onUserProfileClick() },
             model = userProfile.profileImageUrl,
             contentDescription = null,
             contentScale = ContentScale.Fit

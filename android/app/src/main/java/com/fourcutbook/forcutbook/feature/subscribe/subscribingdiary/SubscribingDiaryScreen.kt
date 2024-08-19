@@ -21,23 +21,26 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
+import com.fourcutbook.forcutbook.data.fixture.UserProfileFixture
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.subscribe.SubscribeList
 
 @Composable
 fun SubscribingDiaryRoute(
+    userId: Long?,
     subscribingDiaryViewModel: SubscribingDiaryViewModel = hiltViewModel(),
-    navigateToUserPage: () -> Unit,
+    onUserProfileClick: (userId: Long) -> Unit,
     onShowSnackBar: (message: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val uiState: SubscribingDiaryUiState by subscribingDiaryViewModel.uiState.collectAsStateWithLifecycle()
 
+    subscribingDiaryViewModel.fetchSubscribingDiaries(userId)
+
     SubscribingDiaryScreen(
         uiState = uiState,
-        navigateToUserPage = navigateToUserPage,
+        onUserProfileClick = onUserProfileClick,
         onBackClick = onBackPressed
     )
 }
@@ -46,19 +49,23 @@ fun SubscribingDiaryRoute(
 fun SubscribingDiaryScreen(
     modifier: Modifier = Modifier,
     uiState: SubscribingDiaryUiState,
-    navigateToUserPage: () -> Unit = {},
+    onUserProfileClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
         is SubscribingDiaryUiState.SubscribingDiaries -> {
-            Column(modifier = modifier.fillMaxSize()) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(top = FcbTheme.padding.basicVerticalPadding)
+            ) {
                 SubscribingDiaryTopAppBar(
                     header = stringResource(id = FcbRoute.SubscribingDiaryRoute.headerRes),
                     onBackClick = onBackClick
                 )
                 SubscribeList(
                     userProfiles = uiState.value,
-                    navigateToUserPage = navigateToUserPage
+                    onUserProfileClick = onUserProfileClick
                 )
             }
         }
@@ -101,24 +108,7 @@ fun SubscribingScreenPreview() {
     SubscribingDiaryScreen(
         modifier = Modifier.background(FcbTheme.colors.fcbGray),
         uiState = SubscribingDiaryUiState.SubscribingDiaries(
-            value = listOf(
-                UserProfile(
-                    profileImageUrl = "https://duckduckgo.com/?q=consectetuer",
-                    nickname = "woogi"
-                ),
-                UserProfile(
-                    profileImageUrl = "https://duckduckgo.com/?q=consectetuer",
-                    nickname = "woogi"
-                ),
-                UserProfile(
-                    profileImageUrl = "https://duckduckgo.com/?q=consectetuer",
-                    nickname = "woogi"
-                ),
-                UserProfile(
-                    profileImageUrl = "https://duckduckgo.com/?q=consectetuer",
-                    nickname = "woogi"
-                )
-            )
+            value = UserProfileFixture.get()
         )
     )
 }

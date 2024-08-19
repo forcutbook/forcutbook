@@ -25,7 +25,7 @@ class SubscribingDiaryViewModel @Inject constructor(
         fetchSubscribingDiaries()
     }
 
-    fun fetchSubscribingDiaries(userId: Long = 1) {
+    fun fetchSubscribingDiaries(userId: Long? = 1) {
         viewModelScope.launch {
             flow {
                 emit(userInfoRepository.fetchSubscribingDiaries(userId))

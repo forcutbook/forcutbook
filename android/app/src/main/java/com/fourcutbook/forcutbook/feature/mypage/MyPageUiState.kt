@@ -6,5 +6,5 @@ sealed interface MyPageUiState {
 
     data object Default : MyPageUiState
 
-    data class MyInfo(val info: UserInfo) : MyPageUiState
+    data class MyPage(val value: UserInfo) : MyPageUiState
 }
