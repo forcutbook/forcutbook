@@ -14,7 +14,6 @@ public class DiarySimpleResDto {
     private String title;
     private String content;
     private Boolean isImage;
-    private LocalDateTime date;
     private LocalDateTime createdAt;
 
     public static DiarySimpleResDto toDto(Diary diary){
@@ -23,7 +22,6 @@ public class DiarySimpleResDto {
                 .title(diary.getTitle())
                 .content(diary.getContent())
                 .isImage(!diary.getDiaryImages().isEmpty())
-                .date(diary.getDate())
                 .createdAt(diary.getCreatedAt())
                 .build();
     }

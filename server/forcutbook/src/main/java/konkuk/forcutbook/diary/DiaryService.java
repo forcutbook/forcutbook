@@ -38,7 +38,7 @@ public class DiaryService {
         List<MultipartFile> imageFiles = diaryAddDto.getImages();
         List<String> imageUrls = uploadImage(imageFiles);
 
-        Diary diary = Diary.createDiary(user, diaryAddDto.getTitle(), diaryAddDto.getContent(), imageUrls, diaryAddDto.getDate());
+        Diary diary = Diary.createDiary(user, diaryAddDto.getTitle(), diaryAddDto.getContent(), imageUrls);
 
         return diaryRepository.save(diary).getId();
     }

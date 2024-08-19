@@ -22,24 +22,19 @@ public class Diary extends TimeEntity {
     @ManyToOne
     @JoinColumn(name = "userId")
     private User writer;
-
-    //TODO List<User> 태그된 친구 연관관계 매핑
-
     private String title;
     private String content;
-    private LocalDateTime date;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
-    public Diary(String title, String content, LocalDateTime date) {
+    public Diary(String title, String content) {
         this.title = title;
         this.content = content;
-        this.date = date;
     }
 
-    public static Diary createDiary(User user, String title, String content, List<String> imageUrls, LocalDateTime date){
-        Diary diary = new Diary(title, content, date);
+    public static Diary createDiary(User user, String title, String content, List<String> imageUrls){
+        Diary diary = new Diary(title, content);
         diary.writer = user;
         diary.addDiaryImage(imageUrls);
         return diary;
