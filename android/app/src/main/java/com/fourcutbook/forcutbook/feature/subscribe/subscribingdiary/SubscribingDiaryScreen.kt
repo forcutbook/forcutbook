@@ -53,7 +53,7 @@ fun SubscribingDiaryScreen(
         is SubscribingDiaryUiState.SubscribingDiaries -> {
             Column(modifier = modifier.fillMaxSize()) {
                 SubscribingDiaryTopAppBar(
-                    header = stringResource(id = FcbRoute.SubscribingDiaryRoute.header),
+                    header = stringResource(id = FcbRoute.SubscribingDiaryRoute.headerRes),
                     onBackClick = onBackClick
                 )
                 SubscribeList(

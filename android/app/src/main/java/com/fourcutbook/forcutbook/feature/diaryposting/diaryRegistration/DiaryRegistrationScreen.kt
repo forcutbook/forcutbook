@@ -138,7 +138,7 @@ fun DiaryRegistrationTopAppBar(onBackPressed: () -> Unit) {
                 .padding(start = FcbTheme.padding.basicHorizontalPadding),
             style = FcbTheme.typography.heading,
             // todo: 일관성 없는 코드.. 어느 곳에서는 Scaffold로 처리하고...
-            text = stringResource(FcbRoute.DiaryRegistrationRoute.header)
+            text = stringResource(FcbRoute.DiaryRegistrationRoute.headerRes)
         )
     }
 }

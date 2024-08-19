@@ -138,7 +138,7 @@ fun FcbTopAppBar(
             modifier = modifier.wrapContentWidth(),
             style = FcbTheme.typography.heading,
             text = currentRoute
-                ?.header
+                ?.headerRes
                 ?.let { rid -> stringResource(id = rid) }
                 ?: stringResource(id = R.string.string_header_of_home_screen)
         )

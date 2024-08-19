@@ -40,16 +40,21 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    fun provideLoginService(retrofit: Retrofit): LoginService =
+    fun providesLoginService(retrofit: Retrofit): LoginService =
         retrofit.create(LoginService::class.java)
 
     @Provides
     @Singleton
-    fun provideDiaryService(retrofit: Retrofit): DiaryService =
+    fun providesDiaryService(retrofit: Retrofit): DiaryService =
         retrofit.create(DiaryService::class.java)
 
     @Provides
     @Singleton
-    fun provideUserService(retrofit: Retrofit): UserService =
+    fun providesUserService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesNotificationService(retrofit: Retrofit): NotificationService =
+        retrofit.create(NotificationService::class.java)
 }

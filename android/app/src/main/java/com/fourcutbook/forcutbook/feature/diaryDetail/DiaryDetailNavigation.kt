@@ -25,7 +25,7 @@ fun NavGraphBuilder.diaryDetailNavGraph(onBackPressed: () -> Unit) {
         arguments = listOf(navArgument(DIARY_ID) { type = NavType.LongType }),
         enterTransition = {
             slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(700)
             )
         }
