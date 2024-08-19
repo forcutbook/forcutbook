@@ -1,6 +1,6 @@
 package konkuk.forcutbook.friend;
 
-import konkuk.forcutbook.friend.dto.FriendAcceptListResDto;
+import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.global.dto.SuccessResDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +33,22 @@ public class FriendController {
     }
 
     @GetMapping("/accept")
-    public ResponseEntity<FriendAcceptListResDto> getFriendAcceptList(@PathVariable Long userId){
-        FriendAcceptListResDto dto = friendService.getFriendAcceptList(userId);
+    public ResponseEntity<FriendListResDto> getFriendAcceptList(@PathVariable Long userId){
+        FriendListResDto dto = friendService.getFriendAcceptList(userId);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/follower")
+    public ResponseEntity<FriendListResDto> getFollowerList(@PathVariable Long userId){
+        FriendListResDto dto = friendService.getFollowerList(userId);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/following")
+    public ResponseEntity<FriendListResDto> getFollowingList(@PathVariable Long userId){
+        FriendListResDto dto = friendService.getFollowingList(userId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
