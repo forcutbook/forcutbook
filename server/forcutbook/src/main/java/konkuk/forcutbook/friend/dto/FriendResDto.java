@@ -7,23 +7,23 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class FriendAcceptResDto {
+public class FriendResDto {
     private Long userId;
     private String userName;
     private LocalDateTime createdAt;
 
-    private FriendAcceptResDto(Long userId, String userName, LocalDateTime createdAt) {
+    private FriendResDto(Long userId, String userName, LocalDateTime createdAt) {
         this.userId = userId;
         this.userName = userName;
         this.createdAt = createdAt;
     }
 
-    public static FriendAcceptResDto toDto(User user, LocalDateTime createdAt){
-        return new FriendAcceptResDto(user.getId(), user.getUserName(), createdAt);
+    public static FriendResDto toDto(User user, LocalDateTime createdAt){
+        return new FriendResDto(user.getId(), user.getUserName(), createdAt);
     }
 
-    public static FriendAcceptResDto toDto(Friend friend){
+    public static FriendResDto toDto(Friend friend){
         User sender = friend.getSender();
-        return new FriendAcceptResDto(sender.getId(), sender.getUserName(), friend.getCreatedAt());
+        return new FriendResDto(sender.getId(), sender.getUserName(), friend.getCreatedAt());
     }
 }

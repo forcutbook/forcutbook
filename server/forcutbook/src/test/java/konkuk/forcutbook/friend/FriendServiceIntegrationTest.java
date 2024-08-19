@@ -4,8 +4,8 @@ import jakarta.persistence.EntityManager;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
-import konkuk.forcutbook.friend.dto.FriendAcceptListResDto;
-import konkuk.forcutbook.friend.dto.FriendAcceptResDto;
+import konkuk.forcutbook.friend.dto.FriendListResDto;
+import konkuk.forcutbook.friend.dto.FriendResDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,10 +98,45 @@ class FriendServiceIntegrationTest {
         em.clear();
 
         //when
-        FriendAcceptListResDto dto = friendService.getFriendAcceptList(receiver.getId());
+        FriendListResDto dto = friendService.getFriendAcceptList(receiver.getId());
 
         //then
-        List<FriendAcceptResDto> data = dto.getData();
+        List<FriendResDto> data = dto.getData();
+        assertThat(data.size()).isEqualTo(2);
+        assertThat(data).extracting("userId").contains(sender1.getId(), sender2.getId());
+        assertThat(data).extracting("userName").contains(sender1.getUserName(), sender2.getUserName());
+        assertThat(data).extracting("createdAt").contains(friend1.getCreatedAt(), friend2.getCreatedAt());
+    }
+
+    @Test
+    @DisplayName("팔로워 목록 조회")
+    void getFollowerList() {
+        //given
+        User sender1 = createUser("sender1");
+        User sender2 = createUser("sender2");
+        User waitSender = createUser("waitSender");
+        User receiver = createUser("receiver");
+        userRepository.save(sender1);
+        userRepository.save(sender2);
+        userRepository.save(waitSender);
+        userRepository.save(receiver);
+
+        Friend friend1 = Friend.createFriend(sender1, receiver);
+        friend1.setAccept(true);
+        friendRepository.save(friend1);
+
+        Friend friend2 = Friend.createFriend(sender2, receiver);
+        friend2.setAccept(true);
+        friendRepository.save(friend2);
+
+        Friend waitFriend = Friend.createFriend(waitSender, receiver);
+        friendRepository.save(waitFriend);
+
+        //when
+        FriendListResDto dto = friendService.getFollowerList(receiver.getId());
+
+        //then
+        List<FriendResDto> data = dto.getData();
         assertThat(data.size()).isEqualTo(2);
         assertThat(data).extracting("userId").contains(sender1.getId(), sender2.getId());
         assertThat(data).extracting("userName").contains(sender1.getUserName(), sender2.getUserName());
