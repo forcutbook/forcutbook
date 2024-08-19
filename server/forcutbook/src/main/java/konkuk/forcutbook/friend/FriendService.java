@@ -54,7 +54,7 @@ public class FriendService {
         //서비스 로직
         List<Friend> acceptList = friendRepository.findByReceiverIdAndIsAccept(userId, false);
 
-        return FriendListResDto.toDto(acceptList);
+        return FriendListResDto.toDtoBySender(acceptList);
     }
 
     public FriendListResDto getFollowerList(Long userId) {
@@ -64,7 +64,17 @@ public class FriendService {
         //서비스 로직
         List<Friend> friends = friendRepository.findByReceiverIdAndIsAccept(userId, true);
 
-        return FriendListResDto.toDto(friends);
+        return FriendListResDto.toDtoBySender(friends);
+    }
+
+    public FriendListResDto getFollowingList(Long userId) {
+        //검증 로직
+        User user = findUser(userId);
+
+        //서비스 로직
+        List<Friend> friends = friendRepository.findBySenderIdAndIsAccept(userId, true);
+
+        return FriendListResDto.toDtoByReceiver(friends);
     }
 
     private User findUser(Long userId){

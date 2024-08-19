@@ -45,4 +45,11 @@ public class FriendController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @GetMapping("/following")
+    public ResponseEntity<FriendListResDto> getFollowingList(@PathVariable Long userId){
+        FriendListResDto dto = friendService.getFollowingList(userId);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }

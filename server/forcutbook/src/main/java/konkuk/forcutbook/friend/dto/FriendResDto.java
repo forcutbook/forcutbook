@@ -22,8 +22,13 @@ public class FriendResDto {
         return new FriendResDto(user.getId(), user.getUserName(), createdAt);
     }
 
-    public static FriendResDto toDto(Friend friend){
+    public static FriendResDto toDtoBySender(Friend friend){
         User sender = friend.getSender();
         return new FriendResDto(sender.getId(), sender.getUserName(), friend.getCreatedAt());
+    }
+
+    public static FriendResDto toDtoByReceiver(Friend friend){
+        User receiver = friend.getReceiver();
+        return new FriendResDto(receiver.getId(), receiver.getUserName(), friend.getCreatedAt());
     }
 }

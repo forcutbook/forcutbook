@@ -143,6 +143,41 @@ class FriendServiceIntegrationTest {
         assertThat(data).extracting("createdAt").contains(friend1.getCreatedAt(), friend2.getCreatedAt());
     }
 
+    @Test
+    @DisplayName("팔로잉 목록 조회")
+    void getFollowingList() {
+        //given
+        User sender = createUser("sender");
+        User receiver1 = createUser("receiver1");
+        User receiver2 = createUser("receiver2");
+        User waitReceiver = createUser("waitReceiver");
+        userRepository.save(sender);
+        userRepository.save(receiver1);
+        userRepository.save(receiver2);
+        userRepository.save(waitReceiver);
+
+        Friend friend1 = Friend.createFriend(sender, receiver1);
+        friend1.setAccept(true);
+        friendRepository.save(friend1);
+
+        Friend friend2 = Friend.createFriend(sender, receiver2);
+        friend2.setAccept(true);
+        friendRepository.save(friend2);
+
+        Friend waitFriend = Friend.createFriend(sender, waitReceiver);
+        friendRepository.save(waitFriend);
+
+        //when
+        FriendListResDto dto = friendService.getFollowingList(sender.getId());
+
+        //then
+        List<FriendResDto> data = dto.getData();
+        assertThat(data.size()).isEqualTo(2);
+        assertThat(data).extracting("userId").contains(receiver1.getId(), receiver2.getId());
+        assertThat(data).extracting("userName").contains(receiver1.getUserName(), receiver2.getUserName());
+        assertThat(data).extracting("createdAt").contains(friend1.getCreatedAt(), friend2.getCreatedAt());
+    }
+
     User createUser(String username){
         User user = new User();
         user.setUserName(username);

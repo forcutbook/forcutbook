@@ -12,9 +12,16 @@ public class FriendListResDto {
         this.data = data;
     }
 
-    public static FriendListResDto toDto(List<Friend> friends) {
+    public static FriendListResDto toDtoBySender(List<Friend> friends) {
         List<FriendResDto> dtoList = friends.stream()
-                .map(FriendResDto::toDto)
+                .map(FriendResDto::toDtoBySender)
+                .toList();
+        return new FriendListResDto(dtoList);
+    }
+
+    public static FriendListResDto toDtoByReceiver(List<Friend> friends) {
+        List<FriendResDto> dtoList = friends.stream()
+                .map(FriendResDto::toDtoByReceiver)
                 .toList();
         return new FriendListResDto(dtoList);
     }
