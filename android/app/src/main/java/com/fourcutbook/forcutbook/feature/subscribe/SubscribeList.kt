@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.UserProfile
+import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun SubscribeList(
@@ -67,7 +68,7 @@ fun SubscribeItem(
                 .padding(start = FcbTheme.padding.basicHorizontalPadding)
                 .size(FcbTheme.shame.iconSize)
                 .clip(shape = CircleShape)
-                .clickable { onUserProfileClick() },
+                .noRippleClickable { onUserProfileClick() },
             model = userProfile.profileImageUrl,
             contentDescription = null,
             contentScale = ContentScale.Fit

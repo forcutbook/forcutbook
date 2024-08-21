@@ -36,6 +36,7 @@ import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.FriendRequestNotification
 import com.fourcutbook.forcutbook.feature.FcbRoute
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
+import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun NotificationRoute(
@@ -163,7 +164,7 @@ fun FriendRequestAcceptOrDeclineButton(
     onClick: () -> Unit = {}
 ) {
     Surface(
-        modifier = Modifier.clickable { onClick() }
+        modifier = Modifier.noRippleClickable { onClick() }
     ) {
         Text(
             modifier = modifier

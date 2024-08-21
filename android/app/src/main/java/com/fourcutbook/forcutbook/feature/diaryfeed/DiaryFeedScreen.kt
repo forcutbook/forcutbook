@@ -32,6 +32,7 @@ import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithIcon
 import com.fourcutbook.forcutbook.util.DiaryFixture
+import com.fourcutbook.forcutbook.util.noRippleClickable
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -119,7 +120,7 @@ fun DiaryItem(
                 shape = RoundedCornerShape(5.dp)
             )
             .padding(12.dp)
-            .clickable { onClick(diary.id) },
+            .noRippleClickable { onClick(diary.id) },
         verticalAlignment = Alignment.CenterVertically
 
     ) {

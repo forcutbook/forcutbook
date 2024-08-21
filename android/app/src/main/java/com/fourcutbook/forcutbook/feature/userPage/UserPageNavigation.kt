@@ -23,6 +23,7 @@ fun NavGraphBuilder.userPageNavGraph(
     onSubscribingUserClick: (userId: Long?) -> Unit,
     onSubscribedUserClick: (userId: Long?) -> Unit,
     onDiaryClick: (diaryId: Long) -> Unit,
+    onBackClick: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(
@@ -35,7 +36,8 @@ fun NavGraphBuilder.userPageNavGraph(
             userId = userId,
             onSubscribingUserClick = onSubscribingUserClick,
             onSubscribedUserClick = onSubscribedUserClick,
-            onDiaryClick = onDiaryClick
+            onDiaryClick = onDiaryClick,
+            onBackClick = onBackClick
         )
     }
 }

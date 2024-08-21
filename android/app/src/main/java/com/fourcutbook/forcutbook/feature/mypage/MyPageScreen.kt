@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,6 +25,7 @@ import com.fourcutbook.forcutbook.domain.UserInfo
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithOnlyTitle
 import com.fourcutbook.forcutbook.feature.diaryfeed.DiariesColumn
 import com.fourcutbook.forcutbook.util.DiaryFixture
+import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun MyPageRoute(
@@ -65,9 +65,10 @@ fun MyPageScreen(
                 FcbTopAppBarWithOnlyTitle(title = stringResource(id = R.string.header_of_my_page))
                 Row(
                     modifier = modifier.fillMaxWidth().padding(top = FcbTheme.padding.basicVerticalPadding),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     UserPageSubscribingCount(
+                        modifier = Modifier.padding(start = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.subscribing_diary_description,
                         count = uiState.value
                             .subscribingCount
@@ -75,7 +76,6 @@ fun MyPageScreen(
                         onClick = { onSubscribingUserClick(uiState.value.userId) }
                     )
                     UserPageSubscribingCount(
-                        modifier = Modifier.padding(start = 25.dp),
                         typeOfCount = R.string.subscribing_user_description,
                         count = uiState.value
                             .subscribingCount
@@ -83,7 +83,7 @@ fun MyPageScreen(
                         onClick = { onSubscribedUserClick(uiState.value.userId) }
                     )
                     UserPageSubscribingCount(
-                        modifier = Modifier.padding(start = 25.dp),
+                        modifier = Modifier.padding(end = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.count_of_diaries,
                         count = uiState.value.diaryCount
                     )
@@ -113,14 +113,14 @@ fun UserPageSubscribingCount(
     ) {
         // todo: style 정의
         Text(
-            modifier = Modifier.clickable { onClick() },
+            modifier = Modifier.noRippleClickable { onClick() },
             fontSize = 14.sp,
             style = FcbTheme.typography.heading,
             text = stringResource(typeOfCount)
         )
         Text(
             modifier = Modifier
-                .clickable { onClick() }
+                .noRippleClickable { onClick() }
                 .padding(top = FcbTheme.padding.smallVerticalPadding),
             fontSize = 25.sp,
             style = FcbTheme.typography.title,

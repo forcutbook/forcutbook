@@ -42,6 +42,7 @@ import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithOnlyTitle
 import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingUiState
 import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingViewModel
+import com.fourcutbook.forcutbook.util.noRippleClickable
 import com.fourcutbook.forcutbook.util.parseBitmap
 import com.fourcutbook.forcutbook.util.toFile
 import java.io.File
@@ -159,7 +160,7 @@ fun UploadingImage(
         } ?: Image(
             modifier = Modifier
                 .align(Alignment.Center)
-                .clickable {
+                .noRippleClickable {
                     onClick()
                 },
             painter = painter,

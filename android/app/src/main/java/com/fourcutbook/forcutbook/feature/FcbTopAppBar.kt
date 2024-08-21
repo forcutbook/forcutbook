@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
+import com.fourcutbook.forcutbook.util.noRippleClickable
 
 // todo: 계속해서 반복되는 코드 공통적인 component로 분리가 필요
 @Composable
@@ -80,7 +81,7 @@ fun FcbTopAppBarWithIcon(
             modifier = modifier
                 .wrapContentWidth()
                 .height(FcbTheme.shame.iconSize)
-                .clickable { onIconClick() },
+                .noRippleClickable { onIconClick() },
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = null
         )
