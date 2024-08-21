@@ -116,6 +116,16 @@ public class DiaryService {
                 .build();
     }
 
+    public DiaryFeedListResDto getDiaryFeed(Long userId){
+        //검증 로직
+        User user = findUser(userId);
+
+        //서비스 로직
+        List<DiaryFeedResDto> diaryDtoList = diaryRepository.findDiaryListForFeed(userId);
+
+        return new DiaryFeedListResDto(userId, diaryDtoList);
+    }
+
     //TODO 오류 수정해야함
     private void checkIsFriendShip(Long userId, Long friendId){
         if(!friendRepository.existsBySenderIdAndReceiverIdAndIsAccept(userId, friendId, true)){

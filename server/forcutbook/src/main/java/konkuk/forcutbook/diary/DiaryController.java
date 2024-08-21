@@ -50,4 +50,10 @@ public class DiaryController {
         DiaryListResDto dto = diaryService.getFriendDiaryList(userId, friendId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @GetMapping("/feed")
+    public ResponseEntity<DiaryFeedListResDto> getDiaryFeed(@PathVariable Long userId){
+        DiaryFeedListResDto dto = diaryService.getDiaryFeed(userId);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }
