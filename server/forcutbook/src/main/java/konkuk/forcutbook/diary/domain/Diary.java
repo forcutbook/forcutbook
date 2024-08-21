@@ -20,7 +20,7 @@ public class Diary extends TimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "writerId")
     private User writer;
     private String title;
     private String content;
@@ -40,6 +40,11 @@ public class Diary extends TimeEntity {
             diary.addDiaryImage(imageUrls);
         }
         return diary;
+    }
+
+    public void updateDiary(String title, String content){
+        this.title = title;
+        this.content = content;
     }
 
     public void addDiaryImage(String imageUrl){

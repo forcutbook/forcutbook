@@ -31,6 +31,14 @@ public class DiaryController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/{diaryId}")
+    public ResponseEntity<SuccessResDto> updateDiary(@PathVariable Long userId,
+                                                     @PathVariable Long diaryId,
+                                                     @RequestBody DiaryUpdateDto diaryUpdateDto){
+        diaryService.updateDiary(userId, diaryId, diaryUpdateDto);
+        return SuccessResDto.getResponseEntity(diaryId, SuccessResDto.SuccessMessage.MODIFY_SUCCESS, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<DiaryListResDto> getDiaryList(@PathVariable Long userId){
         DiaryListResDto dto = diaryService.getDiaryList(userId);

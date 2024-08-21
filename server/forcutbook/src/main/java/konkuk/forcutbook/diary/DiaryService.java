@@ -61,6 +61,17 @@ public class DiaryService {
         return new AiDiaryResDto("AI title", "AI content");
     }
 
+    public Long updateDiary(Long userId, Long diaryId, DiaryUpdateDto diaryUpdateDto){
+        //검증 로직
+        User user = findUser(userId);
+        Diary diary = checkDiaryAuthority(userId, diaryId);
+
+        //서비스 로직
+        diary.updateDiary(diaryUpdateDto.getTitle(), diaryUpdateDto.getContent());
+
+        return diary.getId();
+    }
+
     private String getFileExtension(String originalFilename){
         return originalFilename.substring(originalFilename.lastIndexOf("."));
     }
@@ -127,6 +138,10 @@ public class DiaryService {
     }
 
     //TODO 오류 수정해야함
+    private Diary checkDiaryAuthority(Long userId, Long diaryId){
+        return diaryRepository.findByIdAndWriterId(diaryId, userId).orElseThrow();
+    }
+
     private void checkIsFriendShip(Long userId, Long friendId){
         if(!friendRepository.existsBySenderIdAndReceiverIdAndIsAccept(userId, friendId, true)){
             throw new NoSuchElementException("친구관계가 아니어서 접근 권한 없음");

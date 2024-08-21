@@ -2,10 +2,8 @@ package konkuk.forcutbook.diary;
 
 import jakarta.persistence.EntityManager;
 import konkuk.forcutbook.diary.domain.Diary;
-import konkuk.forcutbook.diary.dto.DiaryFeedListResDto;
-import konkuk.forcutbook.diary.dto.DiaryFeedResDto;
-import konkuk.forcutbook.diary.dto.DiaryListEachResDto;
-import konkuk.forcutbook.diary.dto.DiaryListResDto;
+import konkuk.forcutbook.diary.dto.*;
+import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +26,35 @@ class DiaryServiceIntegrationTest {
     EntityManager em;
     @Autowired
     DiaryService diaryService;
+    @Autowired
+    DiaryRepository diaryRepository;
+
+    @Test
+    @DisplayName("다이어리 수정 - 권한o")
+    void updateDiary() {
+        //given
+        User user1 = createUser("user1");
+        em.persist(user1);
+
+        Diary diary1 = Diary.createDiary(user1, "title1", "content1", List.of("imageUrl1", "imageUrl2", "imageUrl3"));
+        em.persist(diary1);
+
+        em.flush();
+        em.clear();
+
+        //when
+        DiaryUpdateDto diaryUpdateDto = new DiaryUpdateDto("updated title", "updated content");
+        diaryService.updateDiary(user1.getId(), diary1.getId(), diaryUpdateDto);
+
+        em.flush();
+        em.clear();
+
+        //then
+        Diary findDiary = diaryRepository.findById(diary1.getId()).orElse(null);
+        assertThat(findDiary).isNotNull();
+        assertThat(findDiary.getTitle()).isEqualTo(diaryUpdateDto.getTitle());
+        assertThat(findDiary.getContent()).isEqualTo(diaryUpdateDto.getContent());
+    }
 
     @DisplayName("내 다이어리 목록 조회")
     @Test
