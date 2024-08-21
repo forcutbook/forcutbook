@@ -12,6 +12,4 @@ public class DiaryAddDto {
     private String title;
     private String content;
     private List<MultipartFile> images;
-    private List<Long> friends;
-    private LocalDateTime date;
 }

@@ -31,5 +31,4 @@ public class UserService {
     public Optional<User> login(ApiLoginRequest loginRequest) {
         return userRepository.findByUserNameAndPassword(loginRequest.getUserName(), loginRequest.getPassword());
     }
-
 }
