@@ -36,7 +36,9 @@ public class Diary extends TimeEntity {
     public static Diary createDiary(User user, String title, String content, List<String> imageUrls){
         Diary diary = new Diary(title, content);
         diary.writer = user;
-        diary.addDiaryImage(imageUrls);
+        if (imageUrls != null) {
+            diary.addDiaryImage(imageUrls);
+        }
         return diary;
     }
 
