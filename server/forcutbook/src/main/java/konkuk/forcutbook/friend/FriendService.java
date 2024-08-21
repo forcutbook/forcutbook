@@ -38,9 +38,9 @@ public class FriendService {
     @Transactional
     public Long acceptFriend(Long userId, Long senderId){
         //검증 로직
-        User user = findUser(userId);
+        User receiver = findUser(userId);
         User sender = findUser(senderId);
-        Friend friend = findExistFriendRequest(userId, senderId);
+        Friend friend = findExistFriendRequest(senderId, userId);
 
         //서비스 로직
         friend.setAccept(true);
@@ -81,16 +81,16 @@ public class FriendService {
         return userRepository.findById(userId).orElseThrow();
     }
 
-    private void checkAlreadyFriend(Long userId, Long senderId){
-        if(friendRepository.existsBySenderIdAndReceiverId(senderId, userId)){
+    private void checkAlreadyFriend(Long senderId, Long receiver){
+        if(friendRepository.existsBySenderIdAndReceiverId(senderId, receiver)){
             //TODO 나중에 오류 상세히 수정
             throw new IllegalArgumentException("중복 요청");
         }
     }
 
-    private Friend findExistFriendRequest(Long userId, Long friendId){
+    private Friend findExistFriendRequest(Long senderId, Long receiverId){
         //TODO 나중에 오류 상세히 수정
-        Friend friend = friendRepository.findBySenderIdAndReceiverId(friendId, userId).orElseThrow();
+        Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if(friend.isAccept()){
             throw new IllegalArgumentException("이미 친구 관계");
         }
