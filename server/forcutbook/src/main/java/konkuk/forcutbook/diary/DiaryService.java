@@ -1,12 +1,11 @@
 package konkuk.forcutbook.diary;
 
 import konkuk.forcutbook.diary.domain.Diary;
-import konkuk.forcutbook.diary.dto.AiDiaryResDto;
-import konkuk.forcutbook.diary.dto.DiaryAddDto;
-import konkuk.forcutbook.diary.dto.DiaryDetailResDto;
-import konkuk.forcutbook.diary.dto.DiaryListResDto;
+import konkuk.forcutbook.diary.dto.*;
+import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
+import konkuk.forcutbook.friend.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,14 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Service
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
+    private final FriendRepository friendRepository;
     private final S3ServiceProvider s3ServiceProvider;
 
     @Value("${aws.s3.imageUrlPrefix}")
@@ -68,9 +68,25 @@ public class DiaryService {
         return imageUrlPrefix + imageName;
     }
 
-    public DiaryListResDto getDiaryList(Long userId, String search) {
-        List<Diary> diaryList = diaryRepository.findByWriterId(userId); //TODO search 조건 넣어야함
-        return DiaryListResDto.toDto(userId, search, diaryList);
+    public DiaryListResDto getDiaryList(Long userId) {
+        //검증 로직
+        User user = findUser(userId);
+
+        //서비스 로직
+        List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(userId);
+        Long diaryCount = diaryRepository.countByWriterId(userId);
+        Long following = friendRepository.countBySenderIdAndIsAccept(userId, true);
+        Long follower = friendRepository.countByReceiverIdAndIsAccept(userId, true);
+
+        return DiaryListResDto.builder()
+                .userId(userId)
+                .username(user.getUserName())
+                .search(null)
+                .follower(follower)
+                .following(following)
+                .diaryCount(diaryCount)
+                .diaries(diaryDtoList)
+                .build();
     }
 
     public DiaryDetailResDto getDiary(Long userId, Long diaryId){

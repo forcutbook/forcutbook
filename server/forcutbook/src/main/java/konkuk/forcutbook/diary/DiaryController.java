@@ -31,10 +31,9 @@ public class DiaryController {
     }
 
     @GetMapping("/users/{userId}/diaries")
-    public ResponseEntity<DiaryListResDto> getDiaryList(@PathVariable Long userId,
-                                                        @RequestParam(required = false) String search){
-        DiaryListResDto responseDto = diaryService.getDiaryList(userId, search);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<DiaryListResDto> getDiaryList(@PathVariable Long userId){
+        DiaryListResDto dto = diaryService.getDiaryList(userId);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/users/{userId}/diaries/{diaryId}")

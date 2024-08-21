@@ -16,4 +16,7 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @EntityGraph(attributePaths = {"receiver"})
     List<Friend> findBySenderIdAndIsAccept(Long senderId, boolean isAccept);
+
+    Long countBySenderIdAndIsAccept(Long senderId, boolean isAccept);
+    Long countByReceiverIdAndIsAccept(Long receiverId, boolean isAccept);
 }

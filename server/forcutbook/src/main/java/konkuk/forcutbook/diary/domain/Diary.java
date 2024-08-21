@@ -28,7 +28,7 @@ public class Diary extends TimeEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
-    public Diary(String title, String content) {
+    private Diary(String title, String content) {
         this.title = title;
         this.content = content;
     }
