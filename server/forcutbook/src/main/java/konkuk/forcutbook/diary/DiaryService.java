@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -91,6 +92,35 @@ public class DiaryService {
     public DiaryDetailResDto getDiary(Long userId, Long diaryId){
         Diary diary = findDiaryWithDiaryImage(diaryId);
         return DiaryDetailResDto.toDto(diary);
+    }
+
+    public DiaryListResDto getFriendDiaryList(Long userId, Long friendId) {
+        //검증 로직
+        User user = findUser(userId);
+        User friend = findUser(friendId);
+        checkIsFriendShip(userId, friendId);
+
+        //서비스 로직
+        List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(friendId);
+        Long diaryCount = diaryRepository.countByWriterId(friendId);
+        Long following = friendRepository.countBySenderIdAndIsAccept(friendId, true);
+        Long follower = friendRepository.countByReceiverIdAndIsAccept(friendId, true);
+
+        return DiaryListResDto.builder()
+                .userId(friendId)
+                .username(friend.getUserName())
+                .follower(follower)
+                .following(following)
+                .diaryCount(diaryCount)
+                .diaries(diaryDtoList)
+                .build();
+    }
+
+    //TODO 오류 수정해야함
+    private void checkIsFriendShip(Long userId, Long friendId){
+        if(!friendRepository.existsBySenderIdAndReceiverIdAndIsAccept(userId, friendId, true)){
+            throw new NoSuchElementException("친구관계가 아니어서 접근 권한 없음");
+        }
     }
 
     private User findUser(Long id){

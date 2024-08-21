@@ -67,6 +67,46 @@ class DiaryServiceIntegrationTest {
         assertThat(diaries.stream().map(DiaryListEachResDto::getImageUrl)).contains("imageUrl1");
     }
 
+    @Test
+    @DisplayName("친구의 다이어리 조회 - 팔로워일 때")
+    void getFriendDiaryList() {
+        //given
+        User user = createUser("user");
+        User friend = createUser("friendShip");
+        em.persist(user);
+        em.persist(friend);
+
+        Friend friendShip = Friend.createFriend(user, friend);
+        friendShip.setAccept(true);
+        em.persist(friendShip);
+
+        Diary diary1 = Diary.createDiary(friend, "title1", "content1", List.of("imageUrl1", "imageUrl2", "imageUrl3"));
+        Diary diary2 = Diary.createDiary(friend, "title2", "content2", List.of());
+        Diary otherDiary = Diary.createDiary(user, "other", "other", List.of());
+        em.persist(diary1);
+        em.persist(diary2);
+        em.persist(otherDiary);
+
+        em.flush();
+        em.clear();
+
+        //when
+        DiaryListResDto results = diaryService.getFriendDiaryList(user.getId(), friend.getId());
+
+        //then
+        assertThat(results.getUserId()).isEqualTo(friend.getId());
+        assertThat(results.getUsername()).isEqualTo(friend.getUserName());
+        assertThat(results.getDiaryCount()).isEqualTo(2);
+        assertThat(results.getFollower()).isEqualTo(1);
+        assertThat(results.getFollowing()).isEqualTo(0);
+
+        List<DiaryListEachResDto> diaries = results.getDiaries();
+        assertThat(diaries.stream().map(DiaryListEachResDto::getDiaryId)).contains(diary1.getId(), diary2.getId());
+        assertThat(diaries.stream().map(DiaryListEachResDto::getTitle)).contains(diary1.getTitle(), diary2.getTitle());
+        assertThat(diaries.stream().map(DiaryListEachResDto::getContent)).contains(diary1.getContent(), diary2.getContent());
+        assertThat(diaries.stream().map(DiaryListEachResDto::getImageUrl)).contains("imageUrl1");
+    }
+
     User createUser(String username){
         User user = new User();
         user.setUserName(username);
