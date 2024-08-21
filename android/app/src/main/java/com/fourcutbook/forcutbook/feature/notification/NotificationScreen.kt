@@ -59,9 +59,13 @@ fun NotificationScreen(
     onUserProfileClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = FcbTheme.padding.basicVerticalPadding)
+    ) {
         FcbTopAppBarWithBackButton(
-            title = stringResource(id = FcbRoute.SubscribingDiaryRoute.headerRes),
+            title = stringResource(id = FcbRoute.NotificationRoute.headerRes),
             onBackClick = onBackClick
         )
         NotificationList(
@@ -131,14 +135,14 @@ fun NotificationItem(
                 fontSize = 14.sp
             )
             Row {
-                RequestAcceptDeclineButton(
+                FriendRequestAcceptOrDeclineButton(
                     modifier = Modifier.background(
                         shape = RoundedCornerShape(5.dp),
                         color = FcbTheme.colors.fcbLightBeige
                     ),
                     description = stringResource(R.string.friend_request_accept)
                 )
-                RequestAcceptDeclineButton(
+                FriendRequestAcceptOrDeclineButton(
                     modifier = Modifier
                         .padding(start = 12.dp)
                         .background(
@@ -153,7 +157,7 @@ fun NotificationItem(
 }
 
 @Composable
-fun RequestAcceptDeclineButton(
+fun FriendRequestAcceptOrDeclineButton(
     modifier: Modifier = Modifier,
     description: String,
     onClick: () -> Unit = {}

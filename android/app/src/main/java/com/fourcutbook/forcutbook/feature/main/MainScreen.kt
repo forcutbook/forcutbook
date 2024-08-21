@@ -27,6 +27,7 @@ import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRe
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
+import com.fourcutbook.forcutbook.feature.notification.navigateToNotification
 import com.fourcutbook.forcutbook.feature.notification.notificationNavGraph
 import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.navigateToSubscribedUser
 import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.subscribedUserNavGraph
@@ -52,7 +53,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         modifier = Modifier
             .fillMaxSize()
             .background(FcbTheme.colors.fcbGray),
-//        topBar = { FcbTopAppBar(currentRoute = FcbRoute.find(currentRoute)) },
         bottomBar = { FcbBottomNavigation(navController = navController) }
     ) { contentPadding ->
 
@@ -72,8 +72,8 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
             diaryFeedNavGraph(
-                navController = navController,
-                navigateToDiaryDetails = navController::navigateToDiaryDetail
+                onDiaryClick = navController::navigateToDiaryDetail,
+                onNotificationClick = navController::navigateToNotification
             )
 
             diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
@@ -122,6 +122,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onSubscribingUserClick = navController::navigateToSubscribingDiary,
                 onSubscribedUserClick = navController::navigateToSubscribedUser,
                 onDiaryClick = navController::navigateToDiaryDetail,
+                onBackClick = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }

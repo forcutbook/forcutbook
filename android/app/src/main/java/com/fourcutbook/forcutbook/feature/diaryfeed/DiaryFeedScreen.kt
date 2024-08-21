@@ -37,13 +37,15 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DiaryFeedRoute(
     diaryFeedViewModel: DiaryFeedViewModel = hiltViewModel(),
-    navigateToDiaryDetail: (diaryId: Long) -> Unit = { }
+    navigateToDiaryDetail: (diaryId: Long) -> Unit = { },
+    navigateToNotification: () -> Unit = {}
 ) {
     val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
 
     DiaryFeedScreen(
         uiState = uiState,
-        onDiaryClick = navigateToDiaryDetail
+        onDiaryClick = navigateToDiaryDetail,
+        onNotificationClick = navigateToNotification
     )
 }
 
@@ -53,12 +55,15 @@ fun DiaryFeedScreen(
     uiState: DiaryFeedUiState,
     onBackClick: () -> Unit = {},
     onDiaryClick: (diaryId: Long) -> Unit = {},
-    navigateToDiaryDetail: (diaryId: Long) -> Unit = { _ -> }
+    onNotificationClick: () -> Unit = {}
 ) {
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
             Column(modifier = Modifier.fillMaxSize()) {
-                FcbTopAppBarWithIcon(title = stringResource(id = R.string.header_of_home_screen))
+                FcbTopAppBarWithIcon(
+                    title = stringResource(id = R.string.header_of_home_screen),
+                    onIconClick = onNotificationClick
+                )
                 DiariesColumn(
                     diaries = uiState.diaries,
                     onDiaryClick = onDiaryClick

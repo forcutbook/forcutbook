@@ -2,6 +2,7 @@ package com.fourcutbook.forcutbook.feature
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,7 +55,8 @@ fun FcbTopAppBarWithBackButton(
 @Composable
 fun FcbTopAppBarWithIcon(
     modifier: Modifier = Modifier,
-    title: String
+    title: String,
+    onIconClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -77,7 +79,8 @@ fun FcbTopAppBarWithIcon(
         Icon(
             modifier = modifier
                 .wrapContentWidth()
-                .height(FcbTheme.shame.iconSize),
+                .height(FcbTheme.shame.iconSize)
+                .clickable { onIconClick() },
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = null
         )
