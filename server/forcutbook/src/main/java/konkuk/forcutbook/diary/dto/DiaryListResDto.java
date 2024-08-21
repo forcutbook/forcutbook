@@ -13,7 +13,6 @@ import java.util.List;
 public class DiaryListResDto {
     private Long userId;
     private String username;
-    private String search;
     private Long follower;
     private Long following;
     private Long diaryCount;

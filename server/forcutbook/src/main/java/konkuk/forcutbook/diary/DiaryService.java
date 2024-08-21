@@ -81,7 +81,6 @@ public class DiaryService {
         return DiaryListResDto.builder()
                 .userId(userId)
                 .username(user.getUserName())
-                .search(null)
                 .follower(follower)
                 .following(following)
                 .diaryCount(diaryCount)
