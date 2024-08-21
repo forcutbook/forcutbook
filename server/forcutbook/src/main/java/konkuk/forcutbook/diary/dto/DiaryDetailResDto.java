@@ -15,9 +15,7 @@ public class DiaryDetailResDto {
     private Long diaryId;
     private String title;
     private String content;
-    //TODO 태그 친구 목록
     private List<DiaryImageResDto> images;
-    private LocalDateTime date;
     private LocalDateTime createdAt;
 
     //TODO 친구 이미지 등등 추가
@@ -28,7 +26,6 @@ public class DiaryDetailResDto {
                 .content(diary.getContent())
                 .images(diary.getDiaryImages().stream()
                         .map(DiaryImageResDto::toDto).toList())
-                .date(diary.getDate())
                 .createdAt(diary.getCreatedAt())
                 .build();
     }
