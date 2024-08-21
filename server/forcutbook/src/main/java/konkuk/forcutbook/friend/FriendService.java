@@ -47,6 +47,18 @@ public class FriendService {
         return friend.getId();
     }
 
+    @Transactional
+    public Long denyFriend(Long userId, Long friendId) {
+        //검증 로직
+        User user = findUser(userId);
+        User friend = findUser(friendId);
+        Friend friendShip = findExistFriendRequest(friendId, userId);
+
+        //서비스 로직
+        friendRepository.delete(friendShip);
+        return friendShip.getId();
+    }
+
     public FriendListResDto getFriendAcceptList(Long userId){
         //검증 로직
         User user = findUser(userId);

@@ -14,8 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @Transactional
@@ -76,6 +78,30 @@ class FriendServiceIntegrationTest {
         //then
         assertThat(findFriend).isNotNull();
         assertThat(findFriend.isAccept()).isTrue();
+    }
+
+    @Test
+    @DisplayName("친구 거절")
+    void denyFriend() {
+        //given
+        User sender = createUser("sender");
+        User receiver = createUser("receiver");
+        userRepository.save(sender);
+        userRepository.save(receiver);
+
+        Friend friend = Friend.createFriend(sender, receiver);
+        friendRepository.save(friend);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Long friendShipId = friendService.denyFriend(receiver.getId(), sender.getId());
+        em.flush();
+        em.clear();
+
+        //then
+        assertThatThrownBy(() -> friendRepository.findById(friendShipId).orElseThrow()).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
