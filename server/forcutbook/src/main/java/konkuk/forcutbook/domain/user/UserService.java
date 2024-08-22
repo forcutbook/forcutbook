@@ -22,6 +22,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private FriendRepository friendRepository;
 
     public long createUser(ApiSignupRequest apiSignupRequest) {
