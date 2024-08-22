@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,6 +31,7 @@ import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
 import com.fourcutbook.forcutbook.feature.notification.navigateToNotification
 import com.fourcutbook.forcutbook.feature.notification.notificationNavGraph
+import com.fourcutbook.forcutbook.feature.searching.userSearchingNavGraph
 import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.navigateToSubscribedUser
 import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.subscribedUserNavGraph
 import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.navigateToSubscribingDiary
@@ -38,7 +41,10 @@ import com.fourcutbook.forcutbook.feature.userPage.userPageNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
+fun MainScreen(
+    navController: NavHostController = rememberNavController(),
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
     val onShowSnackBar: (message: String) -> Unit = { message ->
@@ -47,7 +53,12 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val startDestination = when (uiState) {
+        is MainUiState.SignedIn -> FcbRoute.DiaryFeed.value
+        is MainUiState.NotSignedIn -> FcbRoute.LoginRoute.value
+    }
 
     Scaffold(
         modifier = Modifier
@@ -67,7 +78,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 )
                 .fillMaxSize(),
             navController = navController,
-            startDestination = FcbRoute.LoginRoute.value
+            startDestination = startDestination
         ) {
             loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
 
@@ -122,6 +133,12 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onSubscribingUserClick = navController::navigateToSubscribingDiary,
                 onSubscribedUserClick = navController::navigateToSubscribedUser,
                 onDiaryClick = navController::navigateToDiaryDetail,
+                onBackClick = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            userSearchingNavGraph(
+                onUserProfileClick = navController::navigateToUserPage,
                 onBackClick = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )

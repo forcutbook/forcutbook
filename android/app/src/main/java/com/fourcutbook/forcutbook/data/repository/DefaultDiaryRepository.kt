@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.data.repository
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.DiaryMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.DiaryService
 import com.fourcutbook.forcutbook.domain.Diary
@@ -15,13 +16,15 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class DefaultDiaryRepository @Inject constructor(
-    private val userRepository: UserRepository,
+    private val tokenRepository: TokenRepository,
     private val diaryService: DiaryService
 ) : DiaryRepository {
 
     override suspend fun fetchDiaries(userId: Long?): List<Diary> {
         run {
-            val id = userId ?: userRepository.fetchUserId().first()
+            val id = userId
+                ?: tokenRepository.fetchUserId().first()
+                ?: throw IllegalStateException("Cannot access on this contents.")
             val response = diaryService.fetchDiaries(id)
 
             if (response.isSuccessful) {
@@ -35,7 +38,7 @@ class DefaultDiaryRepository @Inject constructor(
 
     override suspend fun fetchDiaryDetails(diaryId: Long): Diary {
         run {
-            val userId = userRepository.fetchUserId().first()
+            val userId = tokenRepository.fetchUserId().first() ?: throw IllegalStateException("Cannot access on this contents.")
             val response = diaryService.fetchDiaryDetails(
                 userId = userId,
                 diaryId = diaryId
@@ -52,7 +55,7 @@ class DefaultDiaryRepository @Inject constructor(
 
     override suspend fun postImage(image: File): Diary {
         run {
-            val userId = userRepository.fetchUserId().first()
+            val userId = tokenRepository.fetchUserId().first() ?: throw IllegalStateException("Cannot access on this contents.")
             val imageFile = image.asRequestBody("image/*".toMediaTypeOrNull())
             val response = diaryService.postImage(
                 userId = userId,
@@ -71,7 +74,7 @@ class DefaultDiaryRepository @Inject constructor(
 
     override suspend fun postDiary(diary: Diary, image: File) {
         run {
-            val userId = userRepository.fetchUserId().first()
+            val userId = tokenRepository.fetchUserId().first() ?: throw IllegalStateException("Cannot access on this contents.")
             val imageFile = image.asRequestBody("image/*".toMediaTypeOrNull())
             val title = diary.title.toRequestBody("text/plain".toMediaTypeOrNull())
             val contents = diary.contents.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -87,6 +90,7 @@ class DefaultDiaryRepository @Inject constructor(
                 image = listOf(MultipartBody.Part.createFormData("images", image.name, imageFile)),
                 friends = friends
             )
+            Log.d("woogi", "postDiary: $response")
         }
     }
 }

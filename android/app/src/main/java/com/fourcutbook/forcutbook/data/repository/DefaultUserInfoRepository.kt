@@ -11,12 +11,12 @@ import javax.inject.Inject
 
 class DefaultUserInfoRepository @Inject constructor(
     private val diaryRepository: DiaryRepository,
-    private val userRepository: UserRepository
+    private val tokenRepository: TokenRepository
 ) : UserInfoRepository {
 
     override suspend fun fetchSubscribingCount(userId: Long?): SubscribingCount {
         run {
-            val id = userId ?: userRepository.fetchUserId().first()
+            val id = userId ?: tokenRepository.fetchUserId().first()
             val userInfoResponse = UserInfoResponse(
                 numberOfSubscribingDiary = 32,
                 numberOfSubscribingUser = 32,
@@ -44,19 +44,27 @@ class DefaultUserInfoRepository @Inject constructor(
                 profiles = listOf(
                     UserProfileResponse(
                         profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
-                        nickname = "woogi"
+                        nickname = "woogi",
+                        isSubscribing = "cetero",
+                        userId = 7030
                     ),
                     UserProfileResponse(
                         profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
-                        nickname = "woogi"
+                        nickname = "woogi",
+                        isSubscribing = "augue",
+                        userId = 2241
                     ),
                     UserProfileResponse(
                         profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
-                        nickname = "woogi"
+                        nickname = "woogi",
+                        isSubscribing = "solet",
+                        userId = 3396
                     ),
                     UserProfileResponse(
                         profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
-                        nickname = "woogi"
+                        nickname = "woogi",
+                        isSubscribing = "accumsan",
+                        userId = 2280
                     )
                 )
             )

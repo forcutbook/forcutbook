@@ -19,4 +19,8 @@
     <string name="friend_request_decline">거절</string>
     <string name="header_of_user_page">%의 일기</string>
     <string name="header_of_subscribed_user">나를 구독한 사용자</string>
+    <string name="user_searching_placeholder">사용자 이름을 입력해주세요.</string>
+    <string name="header_of_user_searching">사용자 검색</string>
+    <string name="description_of_request_subscribing">구독</string>
+    <string name="descripion_of_requesting_status">요청중</string>
 </resources>

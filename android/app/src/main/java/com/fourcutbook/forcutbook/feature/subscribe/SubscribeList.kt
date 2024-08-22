@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
+import com.fourcutbook.forcutbook.domain.SubscribingStatus
 import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.util.noRippleClickable
 
@@ -89,7 +90,7 @@ fun SubscribeItem(
                 fontSize = 14.sp
             )
             Surface {
-                val text = if (userProfile.isSubscribing) {
+                val text = if (userProfile.isSubscribing == SubscribingStatus.SUBSCRIBED) {
                     stringResource(R.string.subscribing_cancel)
                 } else {
                     stringResource(R.string.subscribing_request)

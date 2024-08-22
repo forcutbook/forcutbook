@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class DefaultNotificationRepository @Inject constructor(
-    private val userRepository: UserRepository,
+    private val tokenRepository: TokenRepository,
     private val service: NotificationService
 ) : NotificationRepository {
 
     override suspend fun fetchFriendRequestNotification(): List<FriendRequestNotification> {
-        val userId = userRepository.fetchUserId().first()
+        val userId = tokenRepository.fetchUserId().first()
 
         return NotificationFixture.get()
     }

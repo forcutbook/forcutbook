@@ -5,8 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserProfileResponse(
-    @SerialName("profileImageUrl")
+    @SerialName("imageUrl")
     val profileImageUrl: String,
-    @SerialName("nickname")
-    val nickname: String
+    @SerialName("userName")
+    val nickname: String,
+    @SerialName("status")
+    val isSubscribing: String,
+    @SerialName("userId")
+    val userId: Long
 )

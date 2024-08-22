@@ -64,6 +64,11 @@ sealed interface FcbRoute {
         override val value: String = "SUBSCRIBING_DIARY"
     }
 
+    data object UserSearchingRoute : FcbRoute {
+        override val headerRes: Int = R.string.header_of_user_searching
+        override val value: String = "USER_SERACHING"
+    }
+
     companion object {
 
         private val bottomNavigationItems = listOf(

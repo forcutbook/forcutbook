@@ -12,8 +12,8 @@ data class DiaryResponse(
     val title: String,
     @SerialName("content")
     val content: String,
-    @SerialName("isImage")
-    val includeImage: Boolean,
+    @SerialName("imageUrl")
+    val imageUrl: String,
     @SerialName("createdAt")
     val date: LocalDateTime
 )
