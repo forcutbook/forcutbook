@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import konkuk.forcutbook.diary.domain.QDiaryImage;
 import konkuk.forcutbook.diary.dto.DiaryFeedResDto;
 import konkuk.forcutbook.diary.dto.DiaryListEachResDto;
 import konkuk.forcutbook.domain.user.QUser;
@@ -25,6 +26,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
 
     @Override
     public List<DiaryListEachResDto> findDiaryListDtoByWriterId(Long userId) {
+        QDiaryImage diaryImageSub = new QDiaryImage("diaryImageSub");
         return query
                 .select(Projections.constructor(DiaryListEachResDto.class,
                         diary.id.as("diaryId"),
@@ -36,14 +38,15 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                 .leftJoin(diary.diaryImages, diaryImage)
                 .where(diary.writer.id.eq(userId)
                         .and(diaryImage.isNull().or(diaryImage.id.eq(
-                                JPAExpressions.select(diaryImage.id.min())
-                                        .from(diaryImage)
-                                        .where(diaryImage.diary.eq(diary))))))
+                                JPAExpressions.select(diaryImageSub.id.min())
+                                        .from(diaryImageSub)
+                                        .where(diaryImageSub.diary.eq(diary))))))
                 .fetch();
     }
 
     @Override
     public List<DiaryFeedResDto> findDiaryListForFeed(Long userId) {
+        QDiaryImage diaryImageSub = new QDiaryImage("diaryImageSub");
         return query
                 .select(Projections.constructor(DiaryFeedResDto.class,
                         user.id.as("userId"),
@@ -61,13 +64,13 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                                         JPAExpressions.select(friend.receiver.id)
                                                 .from(friend)
                                                 .where(friend.sender.id.eq(userId)
-                                                        .and(friend.isAccept.eq(true))),
-                                        Expressions.asNumber(userId))
+                                                        .and(friend.isAccept.eq(true))))
+                                .or(diary.writer.id.eq(userId))
                                 .and(diaryImage.isNull()
                                         .or(diaryImage.id.eq(
-                                                JPAExpressions.select(diaryImage.id.min())
-                                                        .from(diaryImage)
-                                                        .where(diaryImage.diary.eq(diary))))))
+                                                JPAExpressions.select(diaryImageSub.id.min())
+                                                        .from(diaryImageSub)
+                                                        .where(diaryImageSub.diary.eq(diary))))))
                 .orderBy(diary.createdAt.desc())
                 .fetch();
     }

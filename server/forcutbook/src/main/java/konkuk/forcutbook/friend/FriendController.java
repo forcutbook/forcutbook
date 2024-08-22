@@ -32,6 +32,14 @@ public class FriendController {
         return SuccessResDto.getResponseEntity(id, SuccessResDto.SuccessMessage.ACCEPT_SUCCESS, HttpStatus.OK);
     }
 
+    @PostMapping("/friends/{friendId}/deny")
+    public ResponseEntity<SuccessResDto> denyFriend(@PathVariable Long userId,
+                                                      @PathVariable Long friendId){
+        Long id = friendService.denyFriend(userId, friendId);
+
+        return SuccessResDto.getResponseEntity(id, SuccessResDto.SuccessMessage.ACCEPT_SUCCESS, HttpStatus.OK);
+    }
+
     @GetMapping("/accept")
     public ResponseEntity<FriendListResDto> getFriendAcceptList(@PathVariable Long userId){
         FriendListResDto dto = friendService.getFriendAcceptList(userId);

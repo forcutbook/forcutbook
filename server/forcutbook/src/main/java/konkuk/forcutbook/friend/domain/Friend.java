@@ -26,9 +26,6 @@ public class Friend extends TimeEntity {
 
     private boolean isAccept;
 
-    @Enumerated(value = EnumType.STRING)
-    private Status status = Status.ACTIVE;
-
     private Friend(User sender, User receiver) {
         this.sender = sender;
         this.receiver = receiver;
