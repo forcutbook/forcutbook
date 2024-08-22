@@ -1,5 +1,6 @@
 package konkuk.forcutbook.domain.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,9 @@ public class User {
     private String userName;
     // private String email;
     private String password;
+
+    @Nullable
+    private String imageUrl;
 
     // Getters and Setters
 }
