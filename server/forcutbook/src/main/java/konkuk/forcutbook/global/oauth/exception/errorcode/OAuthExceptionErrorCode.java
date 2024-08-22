@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RequiredArgsConstructor
 public enum OAuthExceptionErrorCode implements ResponseStatus {
 
-    NOT_VALID_EMAIL(5000, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    NOT_VALID_EMAIL(5000, HttpStatus.BAD_REQUEST.value(), "DB에 존재하지 않는 이메일입니다.");
 
     private final int code;
     private final int status;
