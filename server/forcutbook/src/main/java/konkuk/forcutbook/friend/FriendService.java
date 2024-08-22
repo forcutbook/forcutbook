@@ -59,6 +59,16 @@ public class FriendService {
         return friendShip.getId();
     }
 
+    public Long deleteFriend(Long userId, Long friendId) {
+        //검증 로직
+        User user = findUser(userId);
+        Friend friendShip = checkIsFriendShip(userId, friendId);
+
+        //서비스 로직
+        friendRepository.delete(friendShip);
+        return friendShip.getId();
+    }
+
     public FriendListResDto getFriendAcceptList(Long userId){
         //검증 로직
         User user = findUser(userId);
@@ -100,12 +110,22 @@ public class FriendService {
         }
     }
 
+    private Friend checkIsFriendShip(Long userId, Long friendId){
+        Friend friend = friendRepository.findBySenderIdAndReceiverId(userId, friendId).orElseThrow();
+        if (!friend.isAccept()){
+            throw new RuntimeException("친구관계 아닌데 삭제 요청");
+        }
+        return friend;
+    }
+
     private Friend findExistFriendRequest(Long senderId, Long receiverId){
         //TODO 나중에 오류 상세히 수정
         Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if(friend.isAccept()){
             throw new IllegalArgumentException("이미 친구 관계");
         }
+
+
 
         return friend;
     }

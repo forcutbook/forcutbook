@@ -6,6 +6,7 @@ import konkuk.forcutbook.diary.dto.*;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
+import konkuk.global.domain.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,30 @@ class DiaryServiceIntegrationTest {
         assertThat(findDiary).isNotNull();
         assertThat(findDiary.getTitle()).isEqualTo(diaryUpdateDto.getTitle());
         assertThat(findDiary.getContent()).isEqualTo(diaryUpdateDto.getContent());
+    }
+
+    @Test
+    @DisplayName("다이어리 삭제 - 권한o")
+    void deleteDiary() {
+        //given
+        User user1 = createUser("user1");
+        em.persist(user1);
+
+        Diary diary1 = Diary.createDiary(user1, "title1", "content1", List.of("imageUrl1", "imageUrl2", "imageUrl3"));
+        em.persist(diary1);
+
+        em.flush();
+        em.clear();
+
+        //when
+        diaryService.deleteDiary(user1.getId(), diary1.getId());
+
+        //then
+        Diary findDiary = diaryRepository.findById(diary1.getId()).orElse(null);
+        assertThat(findDiary).isNotNull();
+        assertThat(findDiary.getTitle()).isEqualTo(diary1.getTitle());
+        assertThat(findDiary.getContent()).isEqualTo(diary1.getContent());
+        assertThat(findDiary.getStatus()).isEqualTo(Status.DELETED);
     }
 
     @DisplayName("내 다이어리 목록 조회")

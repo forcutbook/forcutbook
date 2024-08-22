@@ -2,6 +2,7 @@ package konkuk.forcutbook.diary.domain;
 
 import jakarta.persistence.*;
 import konkuk.forcutbook.domain.user.User;
+import konkuk.global.domain.Status;
 import konkuk.global.domain.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,6 +29,9 @@ public class Diary extends TimeEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
+    @Enumerated(value = EnumType.STRING)
+    Status status = Status.ACTIVE;
+
     private Diary(String title, String content) {
         this.title = title;
         this.content = content;
@@ -45,6 +49,10 @@ public class Diary extends TimeEntity {
     public void updateDiary(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    public void deleteDiary(){
+        this.status = Status.DELETED;
     }
 
     public void addDiaryImage(String imageUrl){
