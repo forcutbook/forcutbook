@@ -40,10 +40,12 @@ public class UserService {
         return userRepository.findByUserNameAndPassword(loginRequest.getUserName(), loginRequest.getPassword());
     }
 
-    public List<GetUserListDTO> getUsersBySearchWord(long userId, String searchWord) {
-        List<User> users = userRepository.getUserByUserName(searchWord);
+    public List<GetUserListDTO> getUsersBySearchWord(long userId, String userName) {
+        log.info("Getting users by search word: {}", userName);
+        List<User> users = userRepository.getUserByUserName(userName);
         List<GetUserListDTO> userListDTO = new ArrayList<>();
         for (User user : users) {
+            log.info("User: {}", user.getUserName());
             // friend 관계를 조회
             Optional<Friend> friendOptional = friendRepository.findBySenderIdAndReceiverId(userId, user.getId());
 
