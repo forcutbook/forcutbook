@@ -4,8 +4,8 @@ import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
-import konkuk.forcutbook.global.exception.BaseException;
-import konkuk.forcutbook.global.response.ResponseStatus;
+import konkuk.forcutbook.friend.exception.FriendException;
+import konkuk.forcutbook.friend.exception.errorcode.FriendExceptionErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -122,10 +122,9 @@ public class FriendService {
     }
 
     private Friend findExistFriendRequest(Long senderId, Long receiverId){
-        //TODO 나중에 오류 상세히 수정
         Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if(friend.isAccept()){
-            throw new BaseException()
+            throw new FriendException(FriendExceptionErrorCode.DUPLICATED_FRIEND);
         }
 
 
