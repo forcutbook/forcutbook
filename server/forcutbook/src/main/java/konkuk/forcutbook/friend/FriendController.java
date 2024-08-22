@@ -2,10 +2,8 @@ package konkuk.forcutbook.friend;
 
 import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.forcutbook.global.response.BaseResponse;
-import konkuk.global.dto.SuccessResDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
