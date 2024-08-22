@@ -105,6 +105,31 @@ class FriendServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("친구 삭제")
+    void deleteFriend() {
+        //given
+        User user = createUser("user");
+        User friend = createUser("friend");
+        userRepository.save(user);
+        userRepository.save(friend);
+
+        Friend friendShip = Friend.createFriend(user, friend);
+        friendShip.setAccept(true);
+        friendRepository.save(friendShip);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Long friendShipId = friendService.deleteFriend(user.getId(), friend.getId());
+        em.flush();
+        em.clear();
+
+        //then
+        assertThatThrownBy(() -> friendRepository.findById(friendShipId).orElseThrow()).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     @DisplayName("친구 수락 대기 리스트 조회")
     void getFriendAcceptList() {
         //given
