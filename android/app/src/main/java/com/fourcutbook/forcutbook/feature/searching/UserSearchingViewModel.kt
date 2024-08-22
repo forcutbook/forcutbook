@@ -44,7 +44,9 @@ class UserSearchingViewModel @Inject constructor(
             userSearchingRepository
                 .fetchUsers(nickname)
                 .catch { _event.emit(UserSearchingEvent.Error) }
-                .map { UserSearchingUiState(userProfiles = it) }
+                .map { userProfiles ->
+                    UserSearchingUiState(userProfiles = userProfiles)
+                }
         }.stateIn(
             initialValue = UserSearchingUiState(userProfiles = listOf()),
             started = SharingStarted.WhileSubscribed(5000),

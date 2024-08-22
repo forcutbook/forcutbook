@@ -4,6 +4,7 @@ import com.fourcutbook.forcutbook.data.fixture.UserProfileFixture
 import com.fourcutbook.forcutbook.data.mapper.UserProfileMapper.toDomain
 import com.fourcutbook.forcutbook.data.response.UserInfoResponse
 import com.fourcutbook.forcutbook.data.response.UserProfileResponse
+import com.fourcutbook.forcutbook.data.response.UserProfilesResponse
 import com.fourcutbook.forcutbook.domain.SubscribingCount
 import com.fourcutbook.forcutbook.domain.UserProfile
 import kotlinx.coroutines.flow.first

@@ -15,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
@@ -52,7 +51,6 @@ fun MainScreen(
             snackBarHostState.showSnackbar(message)
         }
     }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val startDestination = when (uiState) {
