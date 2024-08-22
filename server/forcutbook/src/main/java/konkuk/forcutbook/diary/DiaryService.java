@@ -6,6 +6,7 @@ import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.FriendRepository;
+import konkuk.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class DiaryService {
         return new AiDiaryResDto("AI title", "AI content");
     }
 
+    @Transactional
     public Long updateDiary(Long userId, Long diaryId, DiaryUpdateDto diaryUpdateDto){
         //검증 로직
         User user = findUser(userId);
@@ -69,6 +71,17 @@ public class DiaryService {
         //서비스 로직
         diary.updateDiary(diaryUpdateDto.getTitle(), diaryUpdateDto.getContent());
 
+        return diary.getId();
+    }
+
+    @Transactional
+    public Long deleteDiary(Long userId, Long diaryId) {
+        //검증 로직
+        User user = findUser(userId);
+        Diary diary = checkDiaryAuthority(userId, diaryId);
+
+        //서비스 로직
+        diary.deleteDiary();
         return diary.getId();
     }
 
@@ -86,7 +99,7 @@ public class DiaryService {
 
         //서비스 로직
         List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(userId);
-        Long diaryCount = diaryRepository.countByWriterId(userId);
+        Long diaryCount = diaryRepository.countByWriterIdAndStatus(userId, Status.ACTIVE);
         Long following = friendRepository.countBySenderIdAndIsAccept(userId, true);
         Long follower = friendRepository.countByReceiverIdAndIsAccept(userId, true);
 
@@ -113,7 +126,7 @@ public class DiaryService {
 
         //서비스 로직
         List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(friendId);
-        Long diaryCount = diaryRepository.countByWriterId(friendId);
+        Long diaryCount = diaryRepository.countByWriterIdAndStatus(friendId, Status.ACTIVE);
         Long following = friendRepository.countBySenderIdAndIsAccept(friendId, true);
         Long follower = friendRepository.countByReceiverIdAndIsAccept(friendId, true);
 
@@ -139,7 +152,7 @@ public class DiaryService {
 
     //TODO 오류 수정해야함
     private Diary checkDiaryAuthority(Long userId, Long diaryId){
-        return diaryRepository.findByIdAndWriterId(diaryId, userId).orElseThrow();
+        return diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElseThrow();
     }
 
     private void checkIsFriendShip(Long userId, Long friendId){
@@ -153,6 +166,7 @@ public class DiaryService {
     }
 
     private Diary findDiaryWithDiaryImage(Long diaryId) {
-        return diaryRepository.findById(diaryId).orElseThrow();
+        return diaryRepository.findByIdAndStatus(diaryId, Status.ACTIVE).orElseThrow();
     }
+
 }

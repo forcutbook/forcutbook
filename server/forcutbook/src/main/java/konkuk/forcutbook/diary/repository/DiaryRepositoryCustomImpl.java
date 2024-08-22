@@ -10,6 +10,7 @@ import konkuk.forcutbook.diary.dto.DiaryFeedResDto;
 import konkuk.forcutbook.diary.dto.DiaryListEachResDto;
 import konkuk.forcutbook.domain.user.QUser;
 import konkuk.forcutbook.friend.domain.QFriend;
+import konkuk.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                         .and(diaryImage.isNull().or(diaryImage.id.eq(
                                 JPAExpressions.select(diaryImageSub.id.min())
                                         .from(diaryImageSub)
-                                        .where(diaryImageSub.diary.eq(diary))))))
+                                        .where(diaryImageSub.diary.eq(diary)))))
+                        .and(diary.status.eq(Status.ACTIVE)))
                 .fetch();
     }
 
@@ -70,7 +72,8 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                                         .or(diaryImage.id.eq(
                                                 JPAExpressions.select(diaryImageSub.id.min())
                                                         .from(diaryImageSub)
-                                                        .where(diaryImageSub.diary.eq(diary))))))
+                                                        .where(diaryImageSub.diary.eq(diary)))))
+                                .and(diary.status.eq(Status.ACTIVE)))
                 .orderBy(diary.createdAt.desc())
                 .fetch();
     }

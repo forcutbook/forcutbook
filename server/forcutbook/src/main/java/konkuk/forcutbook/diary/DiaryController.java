@@ -39,6 +39,13 @@ public class DiaryController {
         return SuccessResDto.getResponseEntity(diaryId, SuccessResDto.SuccessMessage.MODIFY_SUCCESS, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{diaryId}")
+    public ResponseEntity<SuccessResDto> deleteDiary(@PathVariable Long userId,
+                                                     @PathVariable Long diaryId){
+        Long id = diaryService.deleteDiary(userId, diaryId);
+        return SuccessResDto.getResponseEntity(id, SuccessResDto.SuccessMessage.MODIFY_SUCCESS, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<DiaryListResDto> getDiaryList(@PathVariable Long userId){
         DiaryListResDto dto = diaryService.getDiaryList(userId);
