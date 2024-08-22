@@ -2,13 +2,12 @@ package konkuk.forcutbook.diary.domain;
 
 import jakarta.persistence.*;
 import konkuk.forcutbook.domain.user.User;
-import konkuk.global.domain.Status;
-import konkuk.global.domain.TimeEntity;
+import konkuk.forcutbook.global.domain.Status;
+import konkuk.forcutbook.global.domain.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

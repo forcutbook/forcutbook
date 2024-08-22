@@ -1,7 +1,7 @@
 package konkuk.forcutbook.diary.domain;
 
 import jakarta.persistence.*;
-import konkuk.global.domain.TimeEntity;
+import konkuk.forcutbook.global.domain.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
