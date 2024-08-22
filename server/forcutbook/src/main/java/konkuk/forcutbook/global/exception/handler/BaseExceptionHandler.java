@@ -16,6 +16,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static konkuk.forcutbook.global.exception.errorcode.BaseExceptionErrorcode.*;
@@ -86,6 +87,13 @@ public class BaseExceptionHandler {
     public BaseErrorResponse handle_MissingServletRequestPartException(MissingServletRequestPartException e) {
         log.error("[BaseExceptionControllerAdvice: handle_MissingServletRequestPartException 호출]", e);
         return new BaseErrorResponse(INAPPROPRIATE_DATA);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NoSuchElementException.class)
+    public BaseErrorResponse handle_NoSuchElementException(MissingServletRequestPartException e) {
+        log.error("[BaseExceptionControllerAdvice: handle_NoSuchElementException 호출]", e);
+        return new BaseErrorResponse(BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)

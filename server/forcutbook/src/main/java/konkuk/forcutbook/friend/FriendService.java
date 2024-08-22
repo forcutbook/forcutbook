@@ -4,12 +4,15 @@ import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
+import konkuk.forcutbook.global.exception.BaseException;
+import konkuk.forcutbook.global.response.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -113,7 +116,7 @@ public class FriendService {
     private Friend checkIsFriendShip(Long userId, Long friendId){
         Friend friend = friendRepository.findBySenderIdAndReceiverId(userId, friendId).orElseThrow();
         if (!friend.isAccept()){
-            throw new RuntimeException("친구관계 아닌데 삭제 요청");
+            throw new NoSuchElementException();
         }
         return friend;
     }
@@ -122,7 +125,7 @@ public class FriendService {
         //TODO 나중에 오류 상세히 수정
         Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if(friend.isAccept()){
-            throw new IllegalArgumentException("이미 친구 관계");
+            throw new BaseException()
         }
 
 

@@ -150,14 +150,13 @@ public class DiaryService {
         return new DiaryFeedListResDto(userId, diaryDtoList);
     }
 
-    //TODO 오류 수정해야함
     private Diary checkDiaryAuthority(Long userId, Long diaryId){
         return diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElseThrow();
     }
 
     private void checkIsFriendShip(Long userId, Long friendId){
         if(!friendRepository.existsBySenderIdAndReceiverIdAndIsAccept(userId, friendId, true)){
-            throw new NoSuchElementException("친구관계가 아니어서 접근 권한 없음");
+            throw new NoSuchElementException();
         }
     }
 
@@ -168,5 +167,4 @@ public class DiaryService {
     private Diary findDiaryWithDiaryImage(Long diaryId) {
         return diaryRepository.findByIdAndStatus(diaryId, Status.ACTIVE).orElseThrow();
     }
-
 }
