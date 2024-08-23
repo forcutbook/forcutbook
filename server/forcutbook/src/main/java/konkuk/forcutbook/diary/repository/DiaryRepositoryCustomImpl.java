@@ -1,16 +1,12 @@
 package konkuk.forcutbook.diary.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import konkuk.forcutbook.diary.domain.QDiaryImage;
 import konkuk.forcutbook.diary.dto.DiaryFeedResDto;
 import konkuk.forcutbook.diary.dto.DiaryListEachResDto;
-import konkuk.forcutbook.domain.user.QUser;
-import konkuk.forcutbook.friend.domain.QFriend;
-import konkuk.global.domain.Status;
+import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

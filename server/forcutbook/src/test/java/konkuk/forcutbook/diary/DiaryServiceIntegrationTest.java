@@ -6,7 +6,7 @@ import konkuk.forcutbook.diary.dto.*;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
-import konkuk.global.domain.Status;
+import konkuk.forcutbook.global.domain.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,27 @@ class DiaryServiceIntegrationTest {
     DiaryService diaryService;
     @Autowired
     DiaryRepository diaryRepository;
+
+    @Test
+    @DisplayName("다이어리 생성 - 이미지 없음")
+    void addDiary() {
+        //given
+        User user1 = createUser("user1");
+        em.persist(user1);
+
+        //when
+        DiaryAddDto diaryAddDto = new DiaryAddDto("title1", "content1", null);
+        Long diaryId = diaryService.addDiary(user1.getId(), diaryAddDto);
+
+        em.flush();
+        em.clear();
+
+        //then
+        Diary findDiary = diaryRepository.findById(diaryId).orElse(null);
+        assertThat(findDiary).isNotNull();
+        assertThat(findDiary.getTitle()).isEqualTo(diaryAddDto.getTitle());
+        assertThat(findDiary.getContent()).isEqualTo(diaryAddDto.getContent());
+    }
 
     @Test
     @DisplayName("다이어리 수정 - 권한o")

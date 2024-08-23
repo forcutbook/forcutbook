@@ -2,8 +2,7 @@ package konkuk.forcutbook.friend.domain;
 
 import jakarta.persistence.*;
 import konkuk.forcutbook.domain.user.User;
-import konkuk.global.domain.Status;
-import konkuk.global.domain.TimeEntity;
+import konkuk.forcutbook.global.domain.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -2,11 +2,13 @@ package konkuk.forcutbook.diary;
 
 import konkuk.forcutbook.diary.domain.Diary;
 import konkuk.forcutbook.diary.dto.*;
+import konkuk.forcutbook.diary.exception.DiaryException;
+import konkuk.forcutbook.diary.exception.errorcode.DiaryExceptionErrorCode;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.FriendRepository;
-import konkuk.global.domain.Status;
+import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -150,23 +152,33 @@ public class DiaryService {
         return new DiaryFeedListResDto(userId, diaryDtoList);
     }
 
-    //TODO 오류 수정해야함
     private Diary checkDiaryAuthority(Long userId, Long diaryId){
-        return diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElseThrow();
+        Diary diary = diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElse(null);
+        if (diary == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_AUTHORITY_DIARY);
+        }
+        return diary;
     }
 
     private void checkIsFriendShip(Long userId, Long friendId){
         if(!friendRepository.existsBySenderIdAndReceiverIdAndIsAccept(userId, friendId, true)){
-            throw new NoSuchElementException("친구관계가 아니어서 접근 권한 없음");
+            throw new DiaryException(DiaryExceptionErrorCode.NO_AUTHORITY_FRIEND);
         }
     }
 
     private User findUser(Long id){
-        return userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_SUCH_USER);
+        }
+        return user;
     }
 
     private Diary findDiaryWithDiaryImage(Long diaryId) {
-        return diaryRepository.findByIdAndStatus(diaryId, Status.ACTIVE).orElseThrow();
+        Diary diary = diaryRepository.findByIdAndStatus(diaryId, Status.ACTIVE).orElse(null);
+        if (diary == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_SUCH_DIARY);
+        }
+        return diary;
     }
-
 }

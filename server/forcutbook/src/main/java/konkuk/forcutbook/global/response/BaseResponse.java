@@ -30,6 +30,13 @@ public class BaseResponse<T> implements ResponseStatus{
         this.result = result;
     }
 
+    public BaseResponse(Long id) {
+        this.code = SUCCESS.getCode();
+        this.status = SUCCESS.getStatus();
+        this.message = SUCCESS.getMessage();
+        this.result = (T) new BaseResultDto(id);
+    }
+
     @Override
     public int getCode() {
         return code;
