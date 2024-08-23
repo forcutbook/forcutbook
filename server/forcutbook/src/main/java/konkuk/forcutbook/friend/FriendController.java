@@ -24,6 +24,12 @@ public class FriendController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/{friendId}/request/cancel")
+    public ResponseEntity<BaseResponse> cancelFriendRequest(@PathVariable Long userId,
+                                                            @PathVariable Long friendId){
+        friendService.cancelFriendRequest(userId, friendId);
+    }
+
     @PostMapping("/{friendId}/accept")
     public ResponseEntity<BaseResponse> acceptFriend(@PathVariable Long userId,
                                                       @PathVariable Long friendId){
