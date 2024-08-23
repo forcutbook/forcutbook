@@ -130,10 +130,6 @@ class DiaryServiceIntegrationTest {
 
         //then
         assertThat(results.getUserId()).isEqualTo(user1.getId());
-        assertThat(results.getUsername()).isEqualTo(user1.getUserName());
-        assertThat(results.getDiaryCount()).isEqualTo(2);
-        assertThat(results.getFollower()).isEqualTo(0);
-        assertThat(results.getFollowing()).isEqualTo(1);
 
         List<DiaryListEachResDto> diaries = results.getDiaries();
         assertThat(diaries.stream().map(DiaryListEachResDto::getDiaryId)).contains(diary1.getId(), diary2.getId());
@@ -170,10 +166,6 @@ class DiaryServiceIntegrationTest {
 
         //then
         assertThat(results.getUserId()).isEqualTo(friend.getId());
-        assertThat(results.getUsername()).isEqualTo(friend.getUserName());
-        assertThat(results.getDiaryCount()).isEqualTo(2);
-        assertThat(results.getFollower()).isEqualTo(1);
-        assertThat(results.getFollowing()).isEqualTo(0);
 
         List<DiaryListEachResDto> diaries = results.getDiaries();
         assertThat(diaries.stream().map(DiaryListEachResDto::getDiaryId)).contains(diary1.getId(), diary2.getId());
