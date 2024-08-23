@@ -5,6 +5,8 @@ import konkuk.forcutbook.domain.user.api.ApiLoginRequest;
 import konkuk.forcutbook.domain.user.api.ApiSignupRequest;
 import konkuk.forcutbook.domain.user.dto.GetUserInfoDTO;
 import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
+import konkuk.forcutbook.domain.user.exception.UserException;
+import konkuk.forcutbook.domain.user.exception.errorcode.UserExceptionErrorcode;
 import konkuk.forcutbook.friend.FriendRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.global.domain.Status;
@@ -52,25 +54,28 @@ public class UserService {
         for (User user : users) {
             log.info("User: {}", user.getUserName());
             // friend 관계를 조회
-            Optional<Friend> friendOptional = friendRepository.findBySenderIdAndReceiverId(userId, user.getId());
-
-            String status;
-            if (friendOptional.isPresent()) {
-                Friend friend = friendOptional.get();
-                if (friend.isAccept()) {
-                    status = "구독중";  // 친구 관계가 수락된 경우
-                } else {
-                    status = "요청중";  // 친구 요청이 있으나 수락되지 않은 경우
-                }
-            } else {
-                status = "구독";  // 친구 관계가 없는 경우
-            }
-
+            String status = getFriendStatus(userId, user.getId());
             // User를 DTO로 변환
             GetUserListDTO userDTO = userConvertToDTO(user, status);
             userListDTO.add(userDTO);
         }
         return userListDTO;
+    }
+    private String getFriendStatus(long userId, long friendId) {
+        Optional<Friend> friendOptional = friendRepository.findBySenderIdAndReceiverId(userId, friendId);
+
+        String status;
+        if (friendOptional.isPresent()) {
+            Friend friend = friendOptional.get();
+            if (friend.isAccept()) {
+                status = "구독중";  // 친구 관계가 수락된 경우
+            } else {
+                status = "요청중";  // 친구 요청이 있으나 수락되지 않은 경우
+            }
+        } else {
+            status = "구독";  // 친구 관계가 없는 경우
+        }
+        return status;
     }
 
     private GetUserListDTO userConvertToDTO(User user, String status) {
@@ -83,17 +88,22 @@ public class UserService {
                 .build();
     }
 
-    public GetUserInfoDTO getUserInfo(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        Long dairyCnt = diaryRepository.countByWriterIdAndStatus(userId, Status.ACTIVE);
-        Long following = friendRepository.countBySenderIdAndIsAccept(userId, true);
-        Long follower = friendRepository.countByReceiverIdAndIsAccept(userId, true);
+    public GetUserInfoDTO getUserInfo(Long userId, Long friendId) {
+        User user = userRepository.findById(friendId).orElse(null);
+        if (user == null) {
+            throw new UserException(UserExceptionErrorcode.NOT_FOUND_USER);
+        }
+        Long dairyCnt = diaryRepository.countByWriterIdAndStatus(friendId, Status.ACTIVE);
+        Long following = friendRepository.countBySenderIdAndIsAccept(friendId, true);
+        Long follower = friendRepository.countByReceiverIdAndIsAccept(friendId, true);
+        String status = getFriendStatus(userId, friendId);
         return GetUserInfoDTO.builder()
                 .userId(user.getId())
                 .userName(user.getUserName())
                 .dairyCnt(dairyCnt)
                 .followerCnt(follower)
                 .subscriptionCnt(following)
+                .friendRequestStatus(status)
                 .build();
     }
 }
