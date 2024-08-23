@@ -101,18 +101,8 @@ public class DiaryService {
 
         //서비스 로직
         List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(userId);
-        Long diaryCount = diaryRepository.countByWriterIdAndStatus(userId, Status.ACTIVE);
-        Long following = friendRepository.countBySenderIdAndIsAccept(userId, true);
-        Long follower = friendRepository.countByReceiverIdAndIsAccept(userId, true);
 
-        return DiaryListResDto.builder()
-                .userId(userId)
-                .username(user.getUserName())
-                .follower(follower)
-                .following(following)
-                .diaryCount(diaryCount)
-                .diaries(diaryDtoList)
-                .build();
+        return new DiaryListResDto(userId, diaryDtoList);
     }
 
     public DiaryDetailResDto getDiary(Long userId, Long diaryId){
@@ -128,18 +118,8 @@ public class DiaryService {
 
         //서비스 로직
         List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(friendId);
-        Long diaryCount = diaryRepository.countByWriterIdAndStatus(friendId, Status.ACTIVE);
-        Long following = friendRepository.countBySenderIdAndIsAccept(friendId, true);
-        Long follower = friendRepository.countByReceiverIdAndIsAccept(friendId, true);
 
-        return DiaryListResDto.builder()
-                .userId(friendId)
-                .username(friend.getUserName())
-                .follower(follower)
-                .following(following)
-                .diaryCount(diaryCount)
-                .diaries(diaryDtoList)
-                .build();
+        return new DiaryListResDto(userId, diaryDtoList);
     }
 
     public DiaryFeedListResDto getDiaryFeed(Long userId){
