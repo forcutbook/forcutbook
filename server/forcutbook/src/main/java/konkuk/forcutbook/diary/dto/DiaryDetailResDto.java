@@ -18,7 +18,6 @@ public class DiaryDetailResDto {
     private List<DiaryImageResDto> images;
     private LocalDateTime createdAt;
 
-    //TODO 친구 이미지 등등 추가
     public static DiaryDetailResDto toDto(Diary diary) {
         return DiaryDetailResDto.builder()
                 .diaryId(diary.getId())

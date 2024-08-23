@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class DiaryFeedResDto {
     private Long userId;
     private String userName;
-//    private String userImage;
+    private String userImageUrl;
     private Long diaryId;
     private String title;
     private String content;
@@ -17,10 +17,10 @@ public class DiaryFeedResDto {
     private LocalDateTime createdAt;
 
     @QueryProjection
-    public DiaryFeedResDto(Long userId, String userName, Long diaryId, String title, String content, String imageUrl, LocalDateTime createdAt) {
+    public DiaryFeedResDto(Long userId, String userName, String userImageUrl, Long diaryId, String title, String content, String imageUrl, LocalDateTime createdAt) {
         this.userId = userId;
         this.userName = userName;
-//        this.userImage = userImage;
+        this.userImageUrl = userImageUrl;
         this.diaryId = diaryId;
         this.title = title;
         this.content = content;
