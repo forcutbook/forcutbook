@@ -121,7 +121,7 @@ public class DiaryService {
         //서비스 로직
         List<DiaryListEachResDto> diaryDtoList = diaryRepository.findDiaryListDtoByWriterId(friendId);
 
-        return new DiaryListResDto(userId, diaryDtoList);
+        return new DiaryListResDto(friendId, diaryDtoList);
     }
 
     public DiaryFeedListResDto getDiaryFeed(Long userId){
