@@ -1,5 +1,6 @@
 package konkuk.forcutbook.global.exception.handler;
 
+import konkuk.forcutbook.diary.exception.DiaryException;
 import konkuk.forcutbook.friend.exception.FriendException;
 import konkuk.forcutbook.global.exception.BaseException;
 import konkuk.forcutbook.global.response.BaseErrorResponse;
@@ -108,6 +109,13 @@ public class BaseExceptionHandler {
     @ExceptionHandler(FriendException.class)
     public BaseErrorResponse handle_FriendException(Exception e) {
         log.error("[BaseExceptionControllerAdvice: handle_FriendException 호출]", e);
+        return new BaseErrorResponse(SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DiaryException.class)
+    public BaseErrorResponse handle_DiaryException(Exception e) {
+        log.error("[BaseExceptionControllerAdvice: handle_DiaryException 호출]", e);
         return new BaseErrorResponse(SERVER_ERROR);
     }
 }
