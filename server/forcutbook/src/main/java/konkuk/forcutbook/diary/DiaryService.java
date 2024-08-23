@@ -153,7 +153,11 @@ public class DiaryService {
     }
 
     private Diary checkDiaryAuthority(Long userId, Long diaryId){
-        return diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElseThrow();
+        Diary diary = diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElse(null);
+        if (diary == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_AUTHORITY_DIARY);
+        }
+        return diary;
     }
 
     private void checkIsFriendShip(Long userId, Long friendId){
