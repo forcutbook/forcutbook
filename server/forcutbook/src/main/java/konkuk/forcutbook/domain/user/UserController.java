@@ -3,6 +3,7 @@ package konkuk.forcutbook.domain.user;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import konkuk.forcutbook.domain.user.api.*;
+import konkuk.forcutbook.domain.user.dto.GetUserInfoDTO;
 import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
 import konkuk.forcutbook.domain.user.exception.UserException;
 import konkuk.forcutbook.domain.user.exception.errorcode.UserExceptionErrorcode;
@@ -19,6 +20,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserInfoDTO> getUserInfo(@PathVariable Long userId) {
+        GetUserInfoDTO response = userService.getUserInfo(userId);
+        return new BaseResponse<>(response);
+    }
 
     @GetMapping("/users/{userId}")
     public BaseResponse<List<GetUserListDTO>> getUsersBySearchWord(@PathVariable Long userId, @RequestParam("search") String searchWord){
