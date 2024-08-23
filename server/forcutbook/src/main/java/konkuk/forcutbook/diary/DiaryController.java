@@ -1,13 +1,13 @@
 package konkuk.forcutbook.diary;
 
 import konkuk.forcutbook.diary.dto.*;
-import konkuk.global.dto.SuccessResDto;
+import konkuk.forcutbook.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 @Slf4j
 @RequestMapping("/users/{userId}/diaries")
@@ -18,57 +18,74 @@ public class DiaryController {
     private final DiaryService diaryService;
 
     @PostMapping
-    public ResponseEntity<SuccessResDto> addDiary(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> addDiary(@PathVariable Long userId,
                                                   @ModelAttribute DiaryAddDto diaryAddDto){
-        Long diaryId = diaryService.addDiary(userId, diaryAddDto);
-        return SuccessResDto.getResponseEntity(diaryId, SuccessResDto.SuccessMessage.ADD_SUCCESS, HttpStatus.OK);
+        Long id = diaryService.addDiary(userId, diaryAddDto);
+
+        BaseResponse<Object> response = new BaseResponse<>(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/aiCreate")
-    public ResponseEntity<AiDiaryResDto> createAiDiary(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> createAiDiary(@PathVariable Long userId,
                                                   @ModelAttribute DiaryAddDto diaryAddDto){
-        AiDiaryResDto responseDto = diaryService.createAiDiary(userId, diaryAddDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        AiDiaryResDto resultDto = diaryService.createAiDiary(userId, diaryAddDto);
+
+        BaseResponse<AiDiaryResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{diaryId}")
-    public ResponseEntity<SuccessResDto> updateDiary(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> updateDiary(@PathVariable Long userId,
                                                      @PathVariable Long diaryId,
                                                      @RequestBody DiaryUpdateDto diaryUpdateDto){
-        diaryService.updateDiary(userId, diaryId, diaryUpdateDto);
-        return SuccessResDto.getResponseEntity(diaryId, SuccessResDto.SuccessMessage.MODIFY_SUCCESS, HttpStatus.OK);
+        Long id = diaryService.updateDiary(userId, diaryId, diaryUpdateDto);
+
+        BaseResponse<Object> response = new BaseResponse<>(id);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{diaryId}")
-    public ResponseEntity<SuccessResDto> deleteDiary(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> deleteDiary(@PathVariable Long userId,
                                                      @PathVariable Long diaryId){
         Long id = diaryService.deleteDiary(userId, diaryId);
-        return SuccessResDto.getResponseEntity(id, SuccessResDto.SuccessMessage.MODIFY_SUCCESS, HttpStatus.OK);
+
+
+        BaseResponse<Object> response = new BaseResponse<>(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<DiaryListResDto> getDiaryList(@PathVariable Long userId){
-        DiaryListResDto dto = diaryService.getDiaryList(userId);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    public ResponseEntity<BaseResponse> getDiaryList(@PathVariable Long userId){
+        DiaryListResDto resultDto = diaryService.getDiaryList(userId);
+
+        BaseResponse<DiaryListResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{diaryId}")
-    public ResponseEntity<DiaryDetailResDto> getDiary(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> getDiary(@PathVariable Long userId,
                                                       @PathVariable Long diaryId){
-        DiaryDetailResDto responseDto = diaryService.getDiary(userId, diaryId);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        DiaryDetailResDto resultDto = diaryService.getDiary(userId, diaryId);
+
+        BaseResponse<DiaryDetailResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/friends/{friendId}")
-    public ResponseEntity<DiaryListResDto> getFriendDiaryList(@PathVariable Long userId,
+    public ResponseEntity<BaseResponse> getFriendDiaryList(@PathVariable Long userId,
                                                               @PathVariable Long friendId){
-        DiaryListResDto dto = diaryService.getFriendDiaryList(userId, friendId);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        DiaryListResDto resultDto = diaryService.getFriendDiaryList(userId, friendId);
+
+        BaseResponse<DiaryListResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<DiaryFeedListResDto> getDiaryFeed(@PathVariable Long userId){
-        DiaryFeedListResDto dto = diaryService.getDiaryFeed(userId);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    public ResponseEntity<BaseResponse> getDiaryFeed(@PathVariable Long userId){
+        DiaryFeedListResDto resultDto = diaryService.getDiaryFeed(userId);
+
+        BaseResponse<DiaryFeedListResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
     }
 }

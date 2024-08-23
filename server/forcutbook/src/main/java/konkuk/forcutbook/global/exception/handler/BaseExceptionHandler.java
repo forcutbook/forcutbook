@@ -1,5 +1,7 @@
 package konkuk.forcutbook.global.exception.handler;
 
+import konkuk.forcutbook.diary.exception.DiaryException;
+import konkuk.forcutbook.friend.exception.FriendException;
 import konkuk.forcutbook.global.exception.BaseException;
 import konkuk.forcutbook.global.response.BaseErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static konkuk.forcutbook.global.exception.errorcode.BaseExceptionErrorcode.*;
@@ -99,6 +102,20 @@ public class BaseExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handle_RuntimeException(Exception e) {
         log.error("[BaseExceptionControllerAdvice: handle_RuntimeException 호출]", e);
+        return new BaseErrorResponse(SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FriendException.class)
+    public BaseErrorResponse handle_FriendException(Exception e) {
+        log.error("[BaseExceptionControllerAdvice: handle_FriendException 호출]", e);
+        return new BaseErrorResponse(SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DiaryException.class)
+    public BaseErrorResponse handle_DiaryException(Exception e) {
+        log.error("[BaseExceptionControllerAdvice: handle_DiaryException 호출]", e);
         return new BaseErrorResponse(SERVER_ERROR);
     }
 }

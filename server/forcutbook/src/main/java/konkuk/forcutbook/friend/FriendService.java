@@ -4,12 +4,15 @@ import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
+import konkuk.forcutbook.friend.exception.FriendException;
+import konkuk.forcutbook.friend.exception.errorcode.FriendExceptionErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -100,33 +103,32 @@ public class FriendService {
     }
 
     private User findUser(Long userId){
-        return userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new FriendException(FriendExceptionErrorCode.NO_SUCH_USER);
+        }
+        return user;
     }
 
     private void checkAlreadyFriend(Long senderId, Long receiver){
         if(friendRepository.existsBySenderIdAndReceiverId(senderId, receiver)){
-            //TODO 나중에 오류 상세히 수정
-            throw new IllegalArgumentException("중복 요청");
+            throw new FriendException(FriendExceptionErrorCode.DUPLICATED_FRIEND);
         }
     }
 
     private Friend checkIsFriendShip(Long userId, Long friendId){
         Friend friend = friendRepository.findBySenderIdAndReceiverId(userId, friendId).orElseThrow();
         if (!friend.isAccept()){
-            throw new RuntimeException("친구관계 아닌데 삭제 요청");
+            throw new FriendException(FriendExceptionErrorCode.NO_SUCH_FRIEND);
         }
         return friend;
     }
 
     private Friend findExistFriendRequest(Long senderId, Long receiverId){
-        //TODO 나중에 오류 상세히 수정
         Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if(friend.isAccept()){
-            throw new IllegalArgumentException("이미 친구 관계");
+            throw new FriendException(FriendExceptionErrorCode.NO_SUCH_FRIEND_REQUEST);
         }
-
-
-
         return friend;
     }
 }

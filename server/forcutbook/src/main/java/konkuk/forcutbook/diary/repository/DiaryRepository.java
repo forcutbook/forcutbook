@@ -1,7 +1,7 @@
 package konkuk.forcutbook.diary.repository;
 
 import konkuk.forcutbook.diary.domain.Diary;
-import konkuk.global.domain.Status;
+import konkuk.forcutbook.global.domain.Status;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
