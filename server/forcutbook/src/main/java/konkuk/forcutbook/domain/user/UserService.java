@@ -1,10 +1,13 @@
 package konkuk.forcutbook.domain.user;
 
+import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.domain.user.api.ApiLoginRequest;
 import konkuk.forcutbook.domain.user.api.ApiSignupRequest;
+import konkuk.forcutbook.domain.user.dto.GetUserInfoDTO;
 import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
 import konkuk.forcutbook.friend.FriendRepository;
 import konkuk.forcutbook.friend.domain.Friend;
+import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private FriendRepository friendRepository;
+    @Autowired
+    private DiaryRepository diaryRepository;
 
     public long createUser(ApiSignupRequest apiSignupRequest) {
         log.info("Creating user: {}", apiSignupRequest.getUserName());
@@ -75,6 +80,20 @@ public class UserService {
                 .userName(user.getUserName())
                 .imageUrl(user.getImageUrl())
                 .status(status)
+                .build();
+    }
+
+    public GetUserInfoDTO getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Long dairyCnt = diaryRepository.countByWriterIdAndStatus(userId, Status.ACTIVE);
+        Long following = friendRepository.countBySenderIdAndIsAccept(userId, true);
+        Long follower = friendRepository.countByReceiverIdAndIsAccept(userId, true);
+        return GetUserInfoDTO.builder()
+                .userId(user.getId())
+                .userName(user.getUserName())
+                .dairyCnt(dairyCnt)
+                .followerCnt(follower)
+                .subscriptionCnt(following)
                 .build();
     }
 }
