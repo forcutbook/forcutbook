@@ -21,9 +21,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public BaseResponse<GetUserInfoDTO> getUserInfo(@PathVariable Long userId) {
-        GetUserInfoDTO response = userService.getUserInfo(userId);
+    @GetMapping("/{userId}/{friendId}")
+    public BaseResponse<GetUserInfoDTO> getUserInfo(@PathVariable Long userId, @PathVariable Long friendId) {
+        GetUserInfoDTO response = userService.getUserInfo(userId, friendId);
         return new BaseResponse<>(response);
     }
 
