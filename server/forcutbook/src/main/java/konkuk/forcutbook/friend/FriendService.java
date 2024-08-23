@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -39,11 +38,21 @@ public class FriendService {
     }
 
     @Transactional
+    public Long cancelFriendRequest(Long userId, Long friendId) {
+        //검증 로직
+        checkExistUser(userId, friendId);
+        Friend friendShip = checkExistFriendRequest(userId, friendId);
+
+        //서비스 로직
+        friendRepository.delete(friendShip);
+        return friendShip.getId();
+    }
+
+    @Transactional
     public Long acceptFriend(Long userId, Long senderId){
         //검증 로직
-        User receiver = findUser(userId);
-        User sender = findUser(senderId);
-        Friend friend = findExistFriendRequest(senderId, userId);
+        checkExistUser(userId, senderId);
+        Friend friend = checkExistFriendRequest(senderId, userId);
 
         //서비스 로직
         friend.setAccept(true);
@@ -53,18 +62,18 @@ public class FriendService {
     @Transactional
     public Long denyFriend(Long userId, Long friendId) {
         //검증 로직
-        User user = findUser(userId);
-        User friend = findUser(friendId);
-        Friend friendShip = findExistFriendRequest(friendId, userId);
+        checkExistUser(userId, friendId);
+        Friend friendShip = checkExistFriendRequest(friendId, userId);
 
         //서비스 로직
         friendRepository.delete(friendShip);
         return friendShip.getId();
     }
 
+    @Transactional
     public Long deleteFriend(Long userId, Long friendId) {
         //검증 로직
-        User user = findUser(userId);
+        checkExistUser(userId, friendId);
         Friend friendShip = checkIsFriendShip(userId, friendId);
 
         //서비스 로직
@@ -74,7 +83,7 @@ public class FriendService {
 
     public FriendListResDto getFriendAcceptList(Long userId){
         //검증 로직
-        User user = findUser(userId);
+        checkExistUser(userId);
 
         //서비스 로직
         List<Friend> acceptList = friendRepository.findByReceiverIdAndIsAccept(userId, false);
@@ -84,7 +93,7 @@ public class FriendService {
 
     public FriendListResDto getFollowerList(Long userId) {
         //검증 로직
-        User user = findUser(userId);
+        checkExistUser(userId);
 
         //서비스 로직
         List<Friend> friends = friendRepository.findByReceiverIdAndIsAccept(userId, true);
@@ -94,7 +103,7 @@ public class FriendService {
 
     public FriendListResDto getFollowingList(Long userId) {
         //검증 로직
-        User user = findUser(userId);
+        checkExistUser(userId);
 
         //서비스 로직
         List<Friend> friends = friendRepository.findBySenderIdAndIsAccept(userId, true);
@@ -110,9 +119,18 @@ public class FriendService {
         return user;
     }
 
+    private void checkExistUser(Long... userId){
+        for (Long id : userId) {
+            boolean isExist = userRepository.existsById(id);
+            if (!isExist){
+                throw new FriendException(FriendExceptionErrorCode.NO_SUCH_USER);
+            }
+        }
+    }
+
     private void checkAlreadyFriend(Long senderId, Long receiver){
         if(friendRepository.existsBySenderIdAndReceiverId(senderId, receiver)){
-            throw new FriendException(FriendExceptionErrorCode.DUPLICATED_FRIEND);
+            throw new FriendException(FriendExceptionErrorCode.ALREADY_FRIEND);
         }
     }
 
@@ -124,10 +142,13 @@ public class FriendService {
         return friend;
     }
 
-    private Friend findExistFriendRequest(Long senderId, Long receiverId){
-        Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
-        if(friend.isAccept()){
+    private Friend checkExistFriendRequest(Long senderId, Long receiverId) {
+        Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElse(null);
+        if (friend == null) {
             throw new FriendException(FriendExceptionErrorCode.NO_SUCH_FRIEND_REQUEST);
+        }
+        if (friend.isAccept()){
+            throw new FriendException(FriendExceptionErrorCode.ALREADY_FRIEND);
         }
         return friend;
     }
