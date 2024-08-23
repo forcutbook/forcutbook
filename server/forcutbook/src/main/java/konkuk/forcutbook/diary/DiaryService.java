@@ -106,7 +106,9 @@ public class DiaryService {
     }
 
     public DiaryDetailResDto getDiary(Long userId, Long diaryId){
+        checkDiaryAuthority(userId, diaryId);
         Diary diary = findDiaryWithDiaryImage(diaryId);
+
         return DiaryDetailResDto.toDto(diary);
     }
 
