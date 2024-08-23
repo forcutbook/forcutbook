@@ -56,6 +56,31 @@ class FriendServiceIntegrationTest {
         assertThat(friend.isAccept()).isFalse();
     }
 
+    @Test
+    @DisplayName("친구 요청 취소")
+    void test() {
+        //given
+        User user = createUser("user");
+        User friend = createUser("friend");
+        userRepository.save(user);
+        userRepository.save(friend);
+
+        Friend friendShip = Friend.createFriend(user, friend);
+        friendRepository.save(friendShip);
+
+        em.flush();
+        em.clear();
+
+        //when
+        friendService.cancelFriendRequest(user.getId(), friend.getId());
+        em.flush();
+        em.clear();
+
+        //then
+        assertThatThrownBy(() -> friendRepository.findById(friendShip.getId()).orElseThrow()).isInstanceOf(NoSuchElementException.class);
+
+    }
+
     @DisplayName("친구 수락")
     @Test
     void acceptFriend() {
