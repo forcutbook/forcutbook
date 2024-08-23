@@ -89,13 +89,6 @@ public class BaseExceptionHandler {
         return new BaseErrorResponse(INAPPROPRIATE_DATA);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NoSuchElementException.class)
-    public BaseErrorResponse handle_NoSuchElementException(MissingServletRequestPartException e) {
-        log.error("[BaseExceptionControllerAdvice: handle_NoSuchElementException 호출]", e);
-        return new BaseErrorResponse(BAD_REQUEST);
-    }
-
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     public BaseErrorResponse handle_ForbiddenException(HttpClientErrorException.Forbidden e){
