@@ -1,5 +1,6 @@
 package konkuk.forcutbook.global.exception.handler;
 
+import konkuk.forcutbook.friend.exception.FriendException;
 import konkuk.forcutbook.global.exception.BaseException;
 import konkuk.forcutbook.global.response.BaseErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -100,6 +101,13 @@ public class BaseExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handle_RuntimeException(Exception e) {
         log.error("[BaseExceptionControllerAdvice: handle_RuntimeException 호출]", e);
+        return new BaseErrorResponse(SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FriendException.class)
+    public BaseErrorResponse handle_FriendException(Exception e) {
+        log.error("[BaseExceptionControllerAdvice: handle_FriendException 호출]", e);
         return new BaseErrorResponse(SERVER_ERROR);
     }
 }
