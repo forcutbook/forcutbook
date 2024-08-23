@@ -49,6 +49,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                 .select(Projections.constructor(DiaryFeedResDto.class,
                         user.id.as("userId"),
                         user.userName,
+                        user.imageUrl.as("userImageUrl"),
                         diary.id.as("diaryId"),
                         diary.title,
                         diary.content,
