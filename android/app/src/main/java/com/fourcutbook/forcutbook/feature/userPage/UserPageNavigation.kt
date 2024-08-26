@@ -20,8 +20,8 @@ fun NavController.navigateToUserPage(
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.userPageNavGraph(
-    onSubscribingUserClick: (userId: Long?) -> Unit,
-    onSubscribedUserClick: (userId: Long?) -> Unit,
+    onFollowingCountClick: (userId: Long?) -> Unit,
+    onFollowerCountClick: (userId: Long?) -> Unit,
     onDiaryClick: (diaryId: Long) -> Unit,
     onBackClick: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
@@ -34,8 +34,8 @@ fun NavGraphBuilder.userPageNavGraph(
 
         UserPageRoute(
             userId = userId,
-            onSubscribingUserClick = onSubscribingUserClick,
-            onSubscribedUserClick = onSubscribedUserClick,
+            onFollowingCountClick = onFollowingCountClick,
+            onFollowerCountClick = onFollowerCountClick,
             onDiaryClick = onDiaryClick,
             onBackClick = onBackClick
         )

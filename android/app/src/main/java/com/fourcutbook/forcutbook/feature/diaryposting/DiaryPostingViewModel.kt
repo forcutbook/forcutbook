@@ -33,9 +33,6 @@ class DiaryPostingViewModel @Inject constructor(
     val event: SharedFlow<DiaryPostingEvent>
         get() = _event.asSharedFlow()
 
-    fun tryImageUpload() {
-    }
-
     fun postImage(
         imageFile: File,
         imageBitmap: Bitmap
@@ -51,9 +48,6 @@ class DiaryPostingViewModel @Inject constructor(
         }
     }
 
-    /**
-     * registration, uploading screen is sharing viewModel so we must change uiState when back again registration to uploading.
-     */
     fun selectImage(bitmap: Bitmap) {
         viewModelScope.launch {
             _uiState.value = DiaryPostingUiState.IncludingImage.ImageSelecting(bitmap)

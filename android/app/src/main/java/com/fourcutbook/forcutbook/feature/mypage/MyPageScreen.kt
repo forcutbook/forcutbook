@@ -19,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.SubscribingCount
-import com.fourcutbook.forcutbook.domain.UserInfo
+import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.UserStats
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithOnlyTitle
 import com.fourcutbook.forcutbook.feature.diaryfeed.DiariesColumn
 import com.fourcutbook.forcutbook.util.DiaryFixture
@@ -69,26 +69,22 @@ fun MyPageScreen(
                     UserPageSubscribingCount(
                         modifier = Modifier.padding(start = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.subscribing_diary_description,
-                        count = uiState.value
-                            .subscribingCount
-                            .subscribingDiaryCount,
-                        onClick = { onSubscribingUserClick(uiState.value.userId) }
+                        count = uiState.userStats.subscribingDiaryCount,
+                        onClick = { onSubscribingUserClick(uiState.userStats.userId) }
                     )
                     UserPageSubscribingCount(
                         typeOfCount = R.string.subscribing_user_description,
-                        count = uiState.value
-                            .subscribingCount
-                            .subscribingUserCount,
-                        onClick = { onSubscribedUserClick(uiState.value.userId) }
+                        count = uiState.userStats.subscribingUserCount,
+                        onClick = { onSubscribedUserClick(uiState.userStats.userId) }
                     )
                     UserPageSubscribingCount(
                         modifier = Modifier.padding(end = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.count_of_diaries,
-                        count = uiState.value.diaryCount
+                        count = uiState.userStats.diaryCount
                     )
                 }
                 DiariesColumn(
-                    diaries = uiState.value.diaries,
+                    diaries = uiState.diaries,
                     onDiaryClick = onDiaryClick
                 )
             }
@@ -134,14 +130,15 @@ fun UserPageScreenPreview() {
     MyPageScreen(
         modifier = Modifier.background(color = FcbTheme.colors.fcbGray),
         uiState = MyPageUiState.MyPage(
-            value = UserInfo(
-                diaries = DiaryFixture.get(),
-                userId = 1,
-                subscribingCount = SubscribingCount(
-                    subscribingDiaryCount = 4442,
-                    subscribingUserCount = 4953
-                )
-            )
+            userStats = UserStats(
+                nickname = "woogi",
+                userId = 6586,
+                subscribingDiaryCount = 7826,
+                subscribingUserCount = 5941,
+                diaryCount = 5388,
+                subscribingStatus = SubscribingStatus.SUBSCRIBED
+            ),
+            diaries = DiaryFixture.get()
         )
     )
 }

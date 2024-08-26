@@ -3,52 +3,82 @@ package com.fourcutbook.forcutbook.feature.userPage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
-import com.fourcutbook.forcutbook.data.repository.UserInfoRepository
+import com.fourcutbook.forcutbook.data.repository.UserRepository
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.domain.SubscribingCount
-import com.fourcutbook.forcutbook.domain.UserInfo
+import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserPageViewModel @Inject constructor(
-    private val userInfoRepository: UserInfoRepository,
+    private val userRepository: UserRepository,
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UserPageUiState> =
-        MutableStateFlow(UserPageUiState.Loading)
+        MutableStateFlow(UserPageUiState.UnLoaded)
     val uiState: StateFlow<UserPageUiState>
         get() = _uiState.asStateFlow()
 
     private fun fetchUserDiaries(userId: Long): Flow<List<Diary>> =
-        flow { emit(diaryRepository.fetchDiaries(userId)) }
+        flow { emit(diaryRepository.fetchUserDiaries(userId)) }
 
-    private fun fetchUserSubscribingCount(userId: Long): Flow<SubscribingCount> =
-        flow { emit(userInfoRepository.fetchSubscribingCount(userId)) }
+    private fun fetchUserStats(userId: Long): Flow<UserStats> =
+        flow { emit(userRepository.fetchUserStats(userId)) }
 
-    fun fetchUserInfo(userId: Long) {
+    fun fetchUserStatsAndDiaries(userId: Long) {
         viewModelScope.launch {
-            // todo: query문에 해당 userId만 넣어서 해당 유저의 다이어리들만 뽑아올 수 있도록 만들기
-            fetchUserDiaries(userId).zip(fetchUserSubscribingCount(userId)) { diaries, subscribingCount ->
-                UserInfo(
-                    diaries = diaries,
-                    // todo: 유저 고유 아이디도 받아와야함
-                    userId = 1,
-                    subscribingCount = SubscribingCount(
-                        subscribingDiaryCount = subscribingCount.subscribingDiaryCount,
-                        subscribingUserCount = subscribingCount.subscribingUserCount
+            fetchUserDiaries(userId)
+                .onStart {
+                    fetchUserStats(userId).collect { userStats ->
+                        _uiState.value = UserPageUiState.UserStatsLoaded.Loading(userStats)
+                    }
+                }.catch {
+                    _uiState.value = UserPageUiState.UserStatsLoaded.NotSubscribed(
+                        userStats = (uiState.value as UserPageUiState.UserStatsLoaded).userStats
+                    )
+                }.collect { diaries ->
+                    _uiState.value = UserPageUiState.UserStatsLoaded.Subscribed(
+                        userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats,
+                        diaries = diaries
+                    )
+                }
+        }
+    }
+
+    fun postFollowingRequest(userId: Long) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.postFollowingRequest(userId))
+            }.collect {
+                _uiState.value = UserPageUiState.UserStatsLoaded.NotSubscribed(
+                    userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats.copy(
+                        subscribingStatus = SubscribingStatus.REQUESTED
                     )
                 )
-            }.collect { userInfo ->
-                _uiState.value = UserPageUiState.UserPage(value = userInfo)
+            }
+        }
+    }
+
+    fun deleteFollowingRequest(userId: Long) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowingRequest(userId))
+            }.collect {
+                _uiState.value = UserPageUiState.UserStatsLoaded.NotSubscribed(
+                    userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats.copy(
+                        subscribingStatus = SubscribingStatus.NONE
+                    )
+                )
             }
         }
     }

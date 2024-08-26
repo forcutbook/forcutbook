@@ -23,4 +23,5 @@
     <string name="header_of_user_searching">사용자 검색</string>
     <string name="description_of_request_subscribing">구독</string>
     <string name="descripion_of_requesting_status">요청중</string>
+    <string name="request_subscribing_wanna_read_diary">일기를 보려면 구독 신청하세요.</string>
 </resources>

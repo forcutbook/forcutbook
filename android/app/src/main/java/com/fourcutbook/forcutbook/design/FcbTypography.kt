@@ -56,5 +56,11 @@ data class FcbTypography(
             fontFamily = maruburiFont,
             fontWeight = FontWeight.Normal,
             fontSize = 18.sp
+        ),
+    val body02: TextStyle =
+        TextStyle(
+            fontFamily = maruburiFont,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp
         )
 )

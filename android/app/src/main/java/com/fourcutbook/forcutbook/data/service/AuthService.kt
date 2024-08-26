@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.data.service
 
+import com.fourcutbook.forcutbook.data.response.BaseResponse
 import com.fourcutbook.forcutbook.data.response.LoginResponse
 import com.fourcutbook.forcutbook.data.response.TokenResponse
 import retrofit2.Response
@@ -12,12 +13,12 @@ interface AuthService {
     suspend fun kakaoLogin(
         @Header("Authorization")
         idToken: String
-    ): Response<LoginResponse>
+    ): Response<BaseResponse<LoginResponse>>
 
     @POST("/auth/kakao/refresh")
     suspend fun refreshAccessToken(
         @Header("Authorization") refreshToken: String
-    ): Response<TokenResponse>
+    ): Response<BaseResponse<TokenResponse>>
 
     @POST("/auth/logout")
     suspend fun logout(): Response<String>

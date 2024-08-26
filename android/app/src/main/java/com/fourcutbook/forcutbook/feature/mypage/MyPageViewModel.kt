@@ -1,25 +1,26 @@
 package com.fourcutbook.forcutbook.feature.mypage
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
-import com.fourcutbook.forcutbook.data.repository.UserInfoRepository
+import com.fourcutbook.forcutbook.data.repository.UserRepository
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.domain.SubscribingCount
-import com.fourcutbook.forcutbook.domain.UserInfo
+import com.fourcutbook.forcutbook.domain.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val userInfoRepository: UserInfoRepository,
+    private val userRepository: UserRepository,
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
@@ -28,11 +29,11 @@ class MyPageViewModel @Inject constructor(
     val uiState: StateFlow<MyPageUiState>
         get() = _uiState.asStateFlow()
 
-    private fun fetchUserDiaries(): Flow<List<Diary>> =
-        flow { emit(diaryRepository.fetchDiaries()) }
+    private fun fetchMyDiaries(): Flow<List<Diary>> =
+        flow { emit(diaryRepository.fetchMyDiaries()) }
 
-    private fun fetchUserSubscribingCount(): Flow<SubscribingCount> =
-        flow { emit(userInfoRepository.fetchSubscribingCount()) }
+    private fun fetchUserStats(): Flow<UserStats> =
+        flow { emit(userRepository.fetchUserStats()) }
 
     init {
         fetchUserInfo()
@@ -40,19 +41,20 @@ class MyPageViewModel @Inject constructor(
 
     fun fetchUserInfo() {
         viewModelScope.launch {
-            // todo: query문에 해당 userId만 넣어서 해당 유저의 다이어리들만 뽑아올 수 있도록 만들기
-            fetchUserDiaries().zip(fetchUserSubscribingCount()) { diaries, subscribingCount ->
-                UserInfo(
-                    diaries = diaries,
-                    userId = 1,
-                    subscribingCount = SubscribingCount(
-                        subscribingDiaryCount = subscribingCount.subscribingDiaryCount,
-                        subscribingUserCount = subscribingCount.subscribingUserCount
+            fetchMyDiaries()
+                .onStart {
+                    fetchUserStats().collect { userStats ->
+                        _uiState.value = MyPageUiState.Loading(userStats)
+                    }
+                }.catch {
+                    Log.d("woogi", "fetchUserInfo: $it")
+                }.collect { diaries ->
+                    Log.d("woogi", "fetchUserInfo: $diaries")
+                    _uiState.value = MyPageUiState.MyPage(
+                        userStats = (_uiState.value as MyPageUiState.Loading).userStats,
+                        diaries = diaries
                     )
-                )
-            }.collect { userInfo ->
-                _uiState.value = MyPageUiState.MyPage(value = userInfo)
-            }
+                }
         }
     }
 }

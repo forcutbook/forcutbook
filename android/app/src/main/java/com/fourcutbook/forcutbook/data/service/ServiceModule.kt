@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.data.service
 
 import com.forcutbook.forcutbook.BuildConfig
-import com.fourcutbook.forcutbook.feature.searching.UserSearchingService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -84,16 +83,11 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    fun providesUserService(@Named("general") retrofit: Retrofit): UserService =
-        retrofit.create(UserService::class.java)
-
-    @Provides
-    @Singleton
     fun providesNotificationService(@Named("general") retrofit: Retrofit): NotificationService =
         retrofit.create(NotificationService::class.java)
 
     @Provides
     @Singleton
-    fun providesUserSearchingService(@Named("general") retrofit: Retrofit): UserSearchingService =
-        retrofit.create(UserSearchingService::class.java)
+    fun providesUserSearchingService(@Named("general") retrofit: Retrofit): UserService =
+        retrofit.create(UserService::class.java)
 }

@@ -56,6 +56,8 @@ fun UserSearchingRoute(
         modifier = Modifier,
         uiState = uiState,
         searchingNickname = searchingNickname,
+        onFollowingRequestClick = userSearchingViewModel::postFollowing,
+        onFollowingRequestCancelClick = userSearchingViewModel::postFollowingRequestCancel,
         onUserProfileClick = onUserProfileClick,
         onSearch = userSearchingViewModel::enterNickname,
         onBackClick = onBackClick
@@ -68,6 +70,8 @@ fun UserSearchingScreen(
     uiState: UserSearchingUiState,
     searchingNickname: String,
     onUserProfileClick: (userId: Long) -> Unit = {},
+    onFollowingRequestClick: (userId: Long, nickname: String) -> Unit = { _, _ -> },
+    onFollowingRequestCancelClick: (userId: Long, nickname: String) -> Unit = { _, _ -> },
     onSearch: (nickname: String) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
@@ -95,12 +99,24 @@ fun UserSearchingScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = FcbTheme.padding.basicVerticalPadding)
+                .padding(top = FcbTheme.padding.smallVerticalPadding)
         ) {
             items(uiState.userProfiles) { userProfile ->
                 UserProfileItem(
                     userProfile = userProfile,
-                    onUserProfileClick = { onUserProfileClick(userProfile.userId) }
+                    onUserProfileClick = { onUserProfileClick(userProfile.userId) },
+                    onFollowingRequestClick = {
+                        onFollowingRequestClick(
+                            userProfile.userId,
+                            searchingNickname
+                        )
+                    },
+                    onFollowingRequestCancelClick = {
+                        onFollowingRequestCancelClick(
+                            userProfile.userId,
+                            searchingNickname
+                        )
+                    }
                 )
             }
         }
@@ -111,7 +127,9 @@ fun UserSearchingScreen(
 fun UserProfileItem(
     modifier: Modifier = Modifier,
     userProfile: UserProfile,
-    onUserProfileClick: () -> Unit
+    onUserProfileClick: () -> Unit,
+    onFollowingRequestClick: () -> Unit,
+    onFollowingRequestCancelClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -163,7 +181,16 @@ fun UserProfileItem(
                                     shape = RoundedCornerShape(5.dp),
                                     color = FcbTheme.colors.fcbDarkBeige
                                 )
-                                .padding(vertical = 6.dp, horizontal = 4.dp),
+                                .padding(vertical = 6.dp, horizontal = 4.dp)
+                                .noRippleClickable {
+                                    when (userProfile.isSubscribing) {
+                                        SubscribingStatus.NONE -> onFollowingRequestClick()
+
+                                        SubscribingStatus.REQUESTED -> onFollowingRequestCancelClick()
+
+                                        else -> {}
+                                    }
+                                },
                             text = text,
                             style = FcbTheme.typography.body,
                             fontSize = 12.sp

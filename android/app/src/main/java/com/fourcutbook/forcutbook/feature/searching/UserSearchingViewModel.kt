@@ -2,6 +2,7 @@ package com.fourcutbook.forcutbook.feature.searching
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fourcutbook.forcutbook.data.repository.UserRepository
 import com.fourcutbook.forcutbook.data.repository.UserSearchingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,16 +14,18 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserSearchingViewModel @Inject constructor(
-    private val userSearchingRepository: UserSearchingRepository
+    private val userSearchingRepository: UserSearchingRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _searchingNickname: MutableStateFlow<String> = MutableStateFlow("")
@@ -39,7 +42,6 @@ class UserSearchingViewModel @Inject constructor(
     val uiState: StateFlow<UserSearchingUiState> = searchingNickname
         .debounce(1000)
         .filter { it.isNotEmpty() }
-        .distinctUntilChanged()
         .flatMapLatest { nickname ->
             userSearchingRepository
                 .fetchUsers(nickname)
@@ -55,5 +57,35 @@ class UserSearchingViewModel @Inject constructor(
 
     fun enterNickname(nickname: String) {
         _searchingNickname.value = nickname
+    }
+
+    fun postFollowing(
+        userId: Long,
+        searchingNickname: String
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.postFollowingRequest(userId))
+            }.collect {
+                /* todo: for refetching userProfiles. need to improve */
+                _searchingNickname.value = ""
+                _searchingNickname.value = searchingNickname
+            }
+        }
+    }
+
+    fun postFollowingRequestCancel(
+        userId: Long,
+        searchingNickname: String
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowingRequest(userId))
+            }.collect {
+                /* todo: for refetching userProfiles. need to improve */
+                _searchingNickname.value = ""
+                _searchingNickname.value = searchingNickname
+            }
+        }
     }
 }

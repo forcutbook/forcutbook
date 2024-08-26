@@ -128,8 +128,8 @@ fun MainScreen(
             )
 
             userPageNavGraph(
-                onSubscribingUserClick = navController::navigateToSubscribingDiary,
-                onSubscribedUserClick = navController::navigateToSubscribedUser,
+                onFollowingCountClick = navController::navigateToSubscribingDiary,
+                onFollowerCountClick = navController::navigateToSubscribedUser,
                 onDiaryClick = navController::navigateToDiaryDetail,
                 onBackClick = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar

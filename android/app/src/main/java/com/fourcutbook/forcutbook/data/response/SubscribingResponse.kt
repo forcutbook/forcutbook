@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DiaryRegistrationResponse(
+data class SubscribingResponse(
     @SerialName("id")
-    val diaryId: Long
+    val id: Long
 )

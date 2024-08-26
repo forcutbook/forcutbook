@@ -1,10 +1,23 @@
 package com.fourcutbook.forcutbook.feature.userPage
 
-import com.fourcutbook.forcutbook.domain.UserInfo
+import com.fourcutbook.forcutbook.domain.Diary
+import com.fourcutbook.forcutbook.domain.UserStats
 
 sealed interface UserPageUiState {
 
-    data object Loading : UserPageUiState
+    data object UnLoaded : UserPageUiState
 
-    data class UserPage(val value: UserInfo) : UserPageUiState
+    sealed interface UserStatsLoaded : UserPageUiState {
+
+        val userStats: UserStats
+
+        data class Loading(override val userStats: UserStats) : UserStatsLoaded
+
+        data class NotSubscribed(override val userStats: UserStats) : UserStatsLoaded
+
+        data class Subscribed(
+            override val userStats: UserStats,
+            val diaries: List<Diary>
+        ) : UserStatsLoaded
+    }
 }

@@ -2,7 +2,7 @@ package com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fourcutbook.forcutbook.data.repository.UserInfoRepository
+import com.fourcutbook.forcutbook.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SubscribingDiaryViewModel @Inject constructor(
-    private val userInfoRepository: UserInfoRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SubscribingDiaryUiState> =
@@ -22,13 +22,13 @@ class SubscribingDiaryViewModel @Inject constructor(
         get() = _uiState.asStateFlow()
 
     init {
-        fetchSubscribingDiaries()
+        fetchFollowings()
     }
 
-    fun fetchSubscribingDiaries(userId: Long? = 1) {
+    fun fetchFollowings(userId: Long? = null) {
         viewModelScope.launch {
             flow {
-                emit(userInfoRepository.fetchSubscribingDiaries(userId))
+                emit(userRepository.fetchFollowings(userId))
             }.collect { userProfiles ->
                 _uiState.value = SubscribingDiaryUiState.SubscribingDiaries(userProfiles)
             }

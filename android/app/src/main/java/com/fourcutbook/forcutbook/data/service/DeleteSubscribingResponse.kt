@@ -1,10 +1,10 @@
-package com.fourcutbook.forcutbook.data.response
+package com.fourcutbook.forcutbook.data.service
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DiaryRegistrationResponse(
+data class DeleteSubscribingResponse(
     @SerialName("id")
-    val diaryId: Long
+    val id: Long
 )

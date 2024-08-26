@@ -51,8 +51,8 @@ class TokenInterceptor @Inject constructor(
             val response = authService.refreshAccessToken(TOKEN_FORMAT.format(refreshToken))
 
             if (response.isSuccessful) {
-                response.body()?.let { tokens ->
-                    onSuccess(tokens)
+                response.body()?.let { tokenResponse ->
+                    onSuccess(tokenResponse.result)
                 }
             } else {
                 onFail()

@@ -36,7 +36,7 @@ fun SubscribingDiaryRoute(
 ) {
     val uiState: SubscribingDiaryUiState by subscribingDiaryViewModel.uiState.collectAsStateWithLifecycle()
 
-    subscribingDiaryViewModel.fetchSubscribingDiaries(userId)
+    subscribingDiaryViewModel.fetchFollowings(userId)
 
     SubscribingDiaryScreen(
         uiState = uiState,
