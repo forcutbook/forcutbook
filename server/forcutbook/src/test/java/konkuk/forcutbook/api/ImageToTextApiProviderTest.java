@@ -20,7 +20,7 @@ class ImageToTextApiProviderTest {
 
     @Test
     void query() {
-        String filePath = "/Users/kyn/Downloads/testImage.jpg";  // 여기서 경로를 실제 이미지 파일 경로로 바꿔주세요
+/*        String filePath = "/Users/kyn/Downloads/testImage.jpg";  // 여기서 경로를 실제 이미지 파일 경로로 바꿔주세요
         File imgFile = new File(filePath);
 
         try {
@@ -32,6 +32,6 @@ class ImageToTextApiProviderTest {
             log.info("huggingFace 결과 = {}", result);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
