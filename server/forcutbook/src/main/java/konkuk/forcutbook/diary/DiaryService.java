@@ -1,5 +1,6 @@
 package konkuk.forcutbook.diary;
 
+import konkuk.forcutbook.api.s3.S3ServiceProvider;
 import konkuk.forcutbook.diary.domain.Diary;
 import konkuk.forcutbook.diary.dto.*;
 import konkuk.forcutbook.diary.exception.DiaryException;
@@ -18,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
