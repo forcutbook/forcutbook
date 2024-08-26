@@ -1,5 +1,8 @@
 package konkuk.forcutbook.diary;
 
+import konkuk.forcutbook.api.huggingface.FileConversion;
+import konkuk.forcutbook.api.huggingface.HuggingFaceResultDto;
+import konkuk.forcutbook.api.huggingface.ImageToTextApiProvider;
 import konkuk.forcutbook.api.s3.S3ServiceProvider;
 import konkuk.forcutbook.diary.domain.Diary;
 import konkuk.forcutbook.diary.dto.*;
@@ -31,17 +34,16 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
     private final S3ServiceProvider s3ServiceProvider;
+    private final ImageToTextApiProvider imageToTextApiProvider;
 
     @Value("${aws.s3.imageUrlPrefix}")
     private String imageUrlPrefix;
 
     @Transactional
     public Long addDiary(Long userId, DiaryAddDto diaryAddDto) {
-        log.info("service>>");
         User user = findUser(userId);
 
         List<MultipartFile> imageFiles = diaryAddDto.getImages();
-        log.info("image FIle >> {}" ,imageFiles);
         List<String> imageUrls = (imageFiles == null) ? null : uploadImage(imageFiles);
 
         Diary diary = Diary.createDiary(user, diaryAddDto.getTitle(), diaryAddDto.getContent(), imageUrls);
@@ -50,7 +52,6 @@ public class DiaryService {
     }
 
     private List<String> uploadImage(List<MultipartFile> imageFiles) {
-        log.info("uploadImage>>");
         List<String> imageNames = new ArrayList<>();
         for (MultipartFile imageFile : imageFiles) {
             String fileExtension = getFileExtension(imageFile.getOriginalFilename());
@@ -64,7 +65,14 @@ public class DiaryService {
     public AiDiaryResDto createAiDiary(Long userId, DiaryAddDto diaryAddDto) {
         List<MultipartFile> imageFiles = diaryAddDto.getImages();
 
-        return new AiDiaryResDto("AI title", "AI content");
+        if (imageFiles == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_DIARY_CREATE_IMAGE);
+        }
+
+        List<byte[]> imageByteList = FileConversion.multipartFileToBinary(imageFiles);
+        HuggingFaceResultDto imageToText = imageToTextApiProvider.query(imageByteList.get(0));
+
+        return new AiDiaryResDto("AI title", imageToText.getGenerated_text());
     }
 
     @Transactional

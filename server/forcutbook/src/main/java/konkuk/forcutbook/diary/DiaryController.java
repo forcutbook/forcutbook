@@ -20,7 +20,6 @@ public class DiaryController {
     @PostMapping
     public ResponseEntity<BaseResponse> addDiary(@PathVariable Long userId,
                                                   @ModelAttribute DiaryAddDto diaryAddDto){
-        log.info("controller>>");
         Long id = diaryService.addDiary(userId, diaryAddDto);
 
         BaseResponse<Object> response = new BaseResponse<>(id);

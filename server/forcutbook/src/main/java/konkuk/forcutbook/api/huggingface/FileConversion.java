@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileConversion {
-    public static List<byte[]> multipartFileToBinary(MultipartFile... multipartFiles) {
+    public static List<byte[]> multipartFileToBinary(List<MultipartFile> multipartFiles) {
+
         List<byte[]> imageDataList = new ArrayList<>();
         try {
             for (MultipartFile multipartFile : multipartFiles) {
