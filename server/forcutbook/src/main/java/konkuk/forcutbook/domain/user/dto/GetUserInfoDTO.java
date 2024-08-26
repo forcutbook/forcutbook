@@ -12,6 +12,6 @@ public class GetUserInfoDTO {
     private String userName;
     private long subscriptionCnt;
     private long followerCnt;
-    private long dairyCnt;
+    private long diaryCnt;
     private String friendRequestStatus;
 }

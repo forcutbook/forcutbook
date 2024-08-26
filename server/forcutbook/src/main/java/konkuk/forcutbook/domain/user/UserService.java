@@ -93,14 +93,14 @@ public class UserService {
         if (user == null) {
             throw new UserException(UserExceptionErrorcode.NOT_FOUND_USER);
         }
-        Long dairyCnt = diaryRepository.countByWriterIdAndStatus(friendId, Status.ACTIVE);
+        Long diaryCnt = diaryRepository.countByWriterIdAndStatus(friendId, Status.ACTIVE);
         Long following = friendRepository.countBySenderIdAndIsAccept(friendId, true);
         Long follower = friendRepository.countByReceiverIdAndIsAccept(friendId, true);
         String status = getFriendStatus(userId, friendId);
         return GetUserInfoDTO.builder()
                 .userId(user.getId())
                 .userName(user.getUserName())
-                .dairyCnt(dairyCnt)
+                .diaryCnt(diaryCnt)
                 .followerCnt(follower)
                 .subscriptionCnt(following)
                 .friendRequestStatus(status)
