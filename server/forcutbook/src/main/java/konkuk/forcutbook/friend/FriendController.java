@@ -1,6 +1,7 @@
 package konkuk.forcutbook.friend;
 
 import konkuk.forcutbook.friend.dto.FriendListResDto;
+import konkuk.forcutbook.friend.dto.FriendStatus;
 import konkuk.forcutbook.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ public class FriendController {
                                                       @PathVariable Long friendId){
         Long id = friendService.requestFriend(userId, friendId);
 
-        BaseResponse<Object> response = new BaseResponse<>(id);
+        BaseResponse<Object> response = new BaseResponse<>(id, FriendStatus.REQUEST);
         return ResponseEntity.ok(response);
     }
 
@@ -29,7 +30,7 @@ public class FriendController {
                                                             @PathVariable Long friendId){
         Long id = friendService.cancelFriendRequest(userId, friendId);
 
-        BaseResponse<Object> response = new BaseResponse<>(id);
+        BaseResponse<Object> response = new BaseResponse<>(id, FriendStatus.CANCEL);
         return ResponseEntity.ok(response);
     }
 
@@ -38,7 +39,7 @@ public class FriendController {
                                                       @PathVariable Long friendId){
         Long id = friendService.acceptFriend(userId, friendId);
 
-        BaseResponse<Object> response = new BaseResponse<>(id);
+        BaseResponse<Object> response = new BaseResponse<>(id, FriendStatus.ACCEPT);
         return ResponseEntity.ok(response);
     }
 
@@ -47,7 +48,7 @@ public class FriendController {
                                                       @PathVariable Long friendId){
         Long id = friendService.denyFriend(userId, friendId);
 
-        BaseResponse<Object> response = new BaseResponse<>(id);
+        BaseResponse<Object> response = new BaseResponse<>(id, FriendStatus.DENY);
         return ResponseEntity.ok(response);
     }
 

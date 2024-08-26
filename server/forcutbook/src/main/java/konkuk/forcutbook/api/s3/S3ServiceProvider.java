@@ -1,4 +1,4 @@
-package konkuk.forcutbook.diary;
+package konkuk.forcutbook.api.s3;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
