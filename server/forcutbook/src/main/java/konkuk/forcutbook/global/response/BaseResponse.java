@@ -2,6 +2,8 @@ package konkuk.forcutbook.global.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import konkuk.forcutbook.friend.dto.FriendResultDto;
+import konkuk.forcutbook.friend.dto.FriendStatus;
 import lombok.Getter;
 
 import static konkuk.forcutbook.global.exception.errorcode.BaseExceptionErrorcode.SUCCESS;
@@ -35,6 +37,13 @@ public class BaseResponse<T> implements ResponseStatus{
         this.status = SUCCESS.getStatus();
         this.message = SUCCESS.getMessage();
         this.result = (T) new BaseResultDto(id);
+    }
+
+    public BaseResponse(Long id, FriendStatus status) {
+        this.code = SUCCESS.getCode();
+        this.status = SUCCESS.getStatus();
+        this.message = SUCCESS.getMessage();
+        this.result = (T) new FriendResultDto(id, status.getMessage());
     }
 
     @Override
