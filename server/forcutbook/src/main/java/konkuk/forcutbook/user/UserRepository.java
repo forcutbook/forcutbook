@@ -1,6 +1,5 @@
-package konkuk.forcutbook.domain.user;
+package konkuk.forcutbook.user;
 
-import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

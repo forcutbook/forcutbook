@@ -5,8 +5,8 @@ import konkuk.forcutbook.diary.dto.*;
 import konkuk.forcutbook.diary.exception.DiaryException;
 import konkuk.forcutbook.diary.exception.errorcode.DiaryExceptionErrorCode;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
-import konkuk.forcutbook.domain.user.User;
-import konkuk.forcutbook.domain.user.UserRepository;
+import konkuk.forcutbook.user.User;
+import konkuk.forcutbook.user.UserRepository;
 import konkuk.forcutbook.friend.FriendRepository;
 import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j

@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import konkuk.forcutbook.diary.domain.Diary;
 import konkuk.forcutbook.diary.dto.*;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
-import konkuk.forcutbook.domain.user.User;
+import konkuk.forcutbook.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.global.domain.Status;
 import lombok.extern.slf4j.Slf4j;

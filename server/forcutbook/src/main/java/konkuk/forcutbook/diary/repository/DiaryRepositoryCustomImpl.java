@@ -13,7 +13,7 @@ import java.util.List;
 
 import static konkuk.forcutbook.diary.domain.QDiary.diary;
 import static konkuk.forcutbook.diary.domain.QDiaryImage.diaryImage;
-import static konkuk.forcutbook.domain.user.QUser.user;
+import static konkuk.forcutbook.user.QUser.user;
 import static konkuk.forcutbook.friend.domain.QFriend.friend;
 
 @RequiredArgsConstructor

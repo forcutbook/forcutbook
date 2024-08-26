@@ -1,4 +1,4 @@
-package konkuk.forcutbook.domain.user;
+package konkuk.forcutbook.user;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;

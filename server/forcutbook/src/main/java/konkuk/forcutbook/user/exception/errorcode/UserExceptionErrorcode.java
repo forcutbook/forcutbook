@@ -1,4 +1,4 @@
-package konkuk.forcutbook.domain.user.exception.errorcode;
+package konkuk.forcutbook.user.exception.errorcode;
 
 import konkuk.forcutbook.global.response.ResponseStatus;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,16 @@
-package konkuk.forcutbook.domain.user;
+package konkuk.forcutbook.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import konkuk.forcutbook.domain.user.api.*;
-import konkuk.forcutbook.domain.user.dto.GetUserInfoDTO;
-import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
-import konkuk.forcutbook.domain.user.exception.UserException;
-import konkuk.forcutbook.domain.user.exception.errorcode.UserExceptionErrorcode;
+import konkuk.forcutbook.user.api.*;
+import konkuk.forcutbook.user.api.ApiLoginRequest;
+import konkuk.forcutbook.user.api.ApiLoginResponse;
+import konkuk.forcutbook.user.api.ApiSignupRequest;
+import konkuk.forcutbook.user.api.ApiSignupResponse;
+import konkuk.forcutbook.user.dto.GetUserInfoDTO;
+import konkuk.forcutbook.user.dto.GetUserListDTO;
+import konkuk.forcutbook.user.exception.UserException;
+import konkuk.forcutbook.user.exception.errorcode.UserExceptionErrorcode;
 import konkuk.forcutbook.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

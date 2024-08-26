@@ -1,4 +1,4 @@
-package konkuk.forcutbook.domain.user.dto;
+package konkuk.forcutbook.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

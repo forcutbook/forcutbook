@@ -1,4 +1,4 @@
-package konkuk.forcutbook.domain.user.api;
+package konkuk.forcutbook.user.api;
 
 import lombok.Getter;
 import lombok.Setter;

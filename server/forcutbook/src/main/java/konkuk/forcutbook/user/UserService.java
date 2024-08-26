@@ -1,19 +1,18 @@
-package konkuk.forcutbook.domain.user;
+package konkuk.forcutbook.user;
 
 import konkuk.forcutbook.diary.repository.DiaryRepository;
-import konkuk.forcutbook.domain.user.api.ApiLoginRequest;
-import konkuk.forcutbook.domain.user.api.ApiSignupRequest;
-import konkuk.forcutbook.domain.user.dto.GetUserInfoDTO;
-import konkuk.forcutbook.domain.user.dto.GetUserListDTO;
-import konkuk.forcutbook.domain.user.exception.UserException;
-import konkuk.forcutbook.domain.user.exception.errorcode.UserExceptionErrorcode;
+import konkuk.forcutbook.user.api.ApiLoginRequest;
+import konkuk.forcutbook.user.api.ApiSignupRequest;
+import konkuk.forcutbook.user.dto.GetUserInfoDTO;
+import konkuk.forcutbook.user.dto.GetUserListDTO;
+import konkuk.forcutbook.user.exception.UserException;
+import konkuk.forcutbook.user.exception.errorcode.UserExceptionErrorcode;
 import konkuk.forcutbook.friend.FriendRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

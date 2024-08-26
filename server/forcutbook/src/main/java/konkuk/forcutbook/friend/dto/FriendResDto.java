@@ -1,6 +1,6 @@
 package konkuk.forcutbook.friend.dto;
 
-import konkuk.forcutbook.domain.user.User;
+import konkuk.forcutbook.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
 import lombok.Getter;
 

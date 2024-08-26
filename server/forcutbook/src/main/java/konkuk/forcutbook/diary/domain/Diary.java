@@ -1,7 +1,7 @@
 package konkuk.forcutbook.diary.domain;
 
 import jakarta.persistence.*;
-import konkuk.forcutbook.domain.user.User;
+import konkuk.forcutbook.user.User;
 import konkuk.forcutbook.global.domain.Status;
 import konkuk.forcutbook.global.domain.TimeEntity;
 import lombok.AccessLevel;

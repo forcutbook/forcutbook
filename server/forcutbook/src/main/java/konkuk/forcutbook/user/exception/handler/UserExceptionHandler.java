@@ -1,9 +1,8 @@
-package konkuk.forcutbook.domain.user.exception.handler;
+package konkuk.forcutbook.user.exception.handler;
 
-import konkuk.forcutbook.domain.user.exception.UserException;
+import konkuk.forcutbook.user.exception.UserException;
 import konkuk.forcutbook.global.response.BaseErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

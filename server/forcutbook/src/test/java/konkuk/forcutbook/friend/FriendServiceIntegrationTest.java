@@ -1,8 +1,8 @@
 package konkuk.forcutbook.friend;
 
 import jakarta.persistence.EntityManager;
-import konkuk.forcutbook.domain.user.User;
-import konkuk.forcutbook.domain.user.UserRepository;
+import konkuk.forcutbook.user.User;
+import konkuk.forcutbook.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.forcutbook.friend.dto.FriendResDto;
