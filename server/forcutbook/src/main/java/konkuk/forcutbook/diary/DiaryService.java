@@ -117,7 +117,7 @@ public class DiaryService {
     }
 
     public DiaryDetailResDto getDiary(Long userId, Long diaryId){
-        checkDiaryAuthority(userId, diaryId);
+        checkGetDiaryAuthority(userId, diaryId);
         Diary diary = findDiaryWithDiaryImage(diaryId);
 
         return DiaryDetailResDto.toDto(diary);
@@ -147,6 +147,17 @@ public class DiaryService {
 
     private Diary checkDiaryAuthority(Long userId, Long diaryId){
         Diary diary = diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElse(null);
+        if (diary == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_AUTHORITY_DIARY);
+        }
+        return diary;
+    }
+
+    private Diary checkGetDiaryAuthority(Long userId, Long diaryId){
+        Diary diary = diaryRepository.findByIdAndWriterIdAndStatus(diaryId, userId, Status.ACTIVE).orElse(null);
+        if (diary == null) {
+            diary = diaryRepository.checkIsWriterFriend(diaryId, userId).orElse(null);
+        }
         if (diary == null) {
             throw new DiaryException(DiaryExceptionErrorCode.NO_AUTHORITY_DIARY);
         }

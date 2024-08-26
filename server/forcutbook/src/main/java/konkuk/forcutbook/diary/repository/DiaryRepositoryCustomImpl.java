@@ -3,6 +3,8 @@ package konkuk.forcutbook.diary.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import konkuk.forcutbook.diary.domain.Diary;
+import konkuk.forcutbook.diary.domain.QDiary;
 import konkuk.forcutbook.diary.domain.QDiaryImage;
 import konkuk.forcutbook.diary.dto.DiaryFeedResDto;
 import konkuk.forcutbook.diary.dto.DiaryListEachResDto;
@@ -10,6 +12,7 @@ import konkuk.forcutbook.global.domain.Status;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static konkuk.forcutbook.diary.domain.QDiary.diary;
 import static konkuk.forcutbook.diary.domain.QDiaryImage.diaryImage;
@@ -73,5 +76,16 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                                 .and(diary.status.eq(Status.ACTIVE)))
                 .orderBy(diary.createdAt.desc())
                 .fetch();
+    }
+
+    @Override
+    public Optional<Diary> checkIsWriterFriend(Long diaryId, Long userId) {
+        Diary findDiary = query
+                .selectFrom(diary)
+                .join(friend).on(diary.writer.id.eq(friend.receiver.id))
+                .where(friend.sender.id.eq(userId)
+                        .and(diary.id.eq(diaryId)))
+                .fetchOne();
+        return Optional.of(findDiary);
     }
 }
