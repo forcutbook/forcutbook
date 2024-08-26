@@ -84,8 +84,9 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                 .selectFrom(diary)
                 .join(friend).on(diary.writer.id.eq(friend.receiver.id))
                 .where(friend.sender.id.eq(userId)
+                        .and(friend.isAccept.eq(true))
                         .and(diary.id.eq(diaryId)))
                 .fetchOne();
-        return Optional.of(findDiary);
+        return Optional.ofNullable(findDiary);
     }
 }
