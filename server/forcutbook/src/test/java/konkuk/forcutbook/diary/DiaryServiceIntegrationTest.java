@@ -3,6 +3,7 @@ package konkuk.forcutbook.diary;
 import jakarta.persistence.EntityManager;
 import konkuk.forcutbook.diary.domain.Diary;
 import konkuk.forcutbook.diary.dto.*;
+import konkuk.forcutbook.diary.exception.DiaryException;
 import konkuk.forcutbook.diary.repository.DiaryRepository;
 import konkuk.forcutbook.user.User;
 import konkuk.forcutbook.friend.domain.Friend;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @Transactional
@@ -215,6 +217,79 @@ class DiaryServiceIntegrationTest {
         assertThat(diaries.stream().map(DiaryFeedResDto::getTitle)).contains(diary1.getTitle(), diary2.getTitle());
         assertThat(diaries.stream().map(DiaryFeedResDto::getContent)).contains(diary1.getContent(), diary2.getContent());
         assertThat(diaries.stream().map(DiaryFeedResDto::getImageUrl)).contains("imageUrl1");
+    }
+
+    @Test
+    @DisplayName("특정 다이어리 조회 - 작성자 조회")
+    void getDiaryMine() {
+        //given
+        User user = createUser("me");
+        em.persist(user);
+
+        Diary diary = Diary.createDiary(user, "title!", "content", null);
+        em.persist(diary);
+
+        em.flush();
+        em.clear();
+
+        //when
+        DiaryDetailResDto result = diaryService.getDiary(user.getId(), diary.getId());
+
+        //then
+        assertThat(result.getDiaryId()).isEqualTo(diary.getId());
+        assertThat(result.getTitle()).isEqualTo(diary.getTitle());
+        assertThat(result.getContent()).isEqualTo(diary.getContent());
+    }
+
+    @Test
+    @DisplayName("특정 다이어리 조회 - 친구 관계 조회")
+    void getDiaryFriend() {
+        //given
+        User user = createUser("me");
+        em.persist(user);
+        User friend = createUser("friend");
+        em.persist(friend);
+
+        Friend friendShip = Friend.createFriend(user, friend);
+        friendShip.setAccept(true);
+        em.persist(friendShip);
+
+        Diary diary = Diary.createDiary(friend, "title!", "content", null);
+        em.persist(diary);
+
+        em.flush();
+        em.clear();
+
+        //when
+        DiaryDetailResDto result = diaryService.getDiary(user.getId(), diary.getId());
+
+        //then
+        assertThat(result.getDiaryId()).isEqualTo(diary.getId());
+        assertThat(result.getTitle()).isEqualTo(diary.getTitle());
+        assertThat(result.getContent()).isEqualTo(diary.getContent());
+    }
+
+    @Test
+    @DisplayName("특정 다이어리 조회 - 친구 관계 아님")
+    void getDiaryNotFriend() {
+        //given
+        User user = createUser("me");
+        em.persist(user);
+        User friend = createUser("friend");
+        em.persist(friend);
+
+        Friend friendShip = Friend.createFriend(user, friend);
+        friendShip.setAccept(false);
+        em.persist(friendShip);
+
+        Diary diary = Diary.createDiary(friend, "title!", "content", null);
+        em.persist(diary);
+
+        em.flush();
+        em.clear();
+
+        //when
+        assertThatThrownBy(() -> diaryService.getDiary(user.getId(), diary.getId())).isInstanceOf(DiaryException.class);
     }
 
     User createUser(String username){
