@@ -37,9 +37,11 @@ public class DiaryService {
 
     @Transactional
     public Long addDiary(Long userId, DiaryAddDto diaryAddDto) {
+        log.info("service>>");
         User user = findUser(userId);
 
         List<MultipartFile> imageFiles = diaryAddDto.getImages();
+        log.info("image FIle >> {}" ,imageFiles);
         List<String> imageUrls = (imageFiles == null) ? null : uploadImage(imageFiles);
 
         Diary diary = Diary.createDiary(user, diaryAddDto.getTitle(), diaryAddDto.getContent(), imageUrls);
@@ -48,6 +50,7 @@ public class DiaryService {
     }
 
     private List<String> uploadImage(List<MultipartFile> imageFiles) {
+        log.info("uploadImage>>");
         List<String> imageNames = new ArrayList<>();
         for (MultipartFile imageFile : imageFiles) {
             String fileExtension = getFileExtension(imageFile.getOriginalFilename());
