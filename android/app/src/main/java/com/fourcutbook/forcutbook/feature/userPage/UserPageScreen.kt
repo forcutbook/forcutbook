@@ -110,8 +110,9 @@ fun UserPageScreen(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier
-                                .size(40.dp)
-                                .align(Alignment.CenterHorizontally)
+                                .size(30.dp)
+                                .align(Alignment.CenterHorizontally),
+                            color = FcbTheme.colors.fcbDarkBeige
                         )
                     }
                 }

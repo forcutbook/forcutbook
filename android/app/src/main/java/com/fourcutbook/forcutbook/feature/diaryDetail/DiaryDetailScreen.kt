@@ -54,7 +54,8 @@ fun DiaryDetailScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(30.dp),
+                    color = FcbTheme.colors.fcbDarkBeige
                 )
             }
         }
