@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.data.repository
 
-import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.UserProfileMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.UserService
 import com.fourcutbook.forcutbook.domain.UserProfile
@@ -24,7 +23,6 @@ class DefaultUserSearchingRepository @Inject constructor(
             userId = userId,
             userName = userName
         )
-        Log.d("woogi", "fetchUsers: $response")
         if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
 
         val userProfiles = response

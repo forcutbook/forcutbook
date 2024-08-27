@@ -17,7 +17,9 @@ sealed interface UserPageUiState {
 
         data class Subscribed(
             override val userStats: UserStats,
-            val diaries: List<Diary>
-        ) : UserStatsLoaded
+            private val _diaries: List<Diary>
+        ) : UserStatsLoaded{
+            val diaries = _diaries.sortedByDescending { it.date }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.fourcutbook.forcutbook.data.repository
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.DiaryMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.DiaryService
 import com.fourcutbook.forcutbook.domain.Diary
@@ -24,9 +23,9 @@ class DefaultDiaryRepository @Inject constructor(
         run {
             val id = tokenRepository.fetchUserId().first()
                 ?: throw IllegalStateException("Cannot access on this contents.")
+
             val response = diaryService.fetchMyDiaries(id)
-            Log.d("woogi", "조회하려는 유저의 : $id")
-            Log.d("woogi", "fetchDiaries: $response")
+
             if (response.isSuccessful) {
                 val diaries = response.body()?.result
 
@@ -39,11 +38,11 @@ class DefaultDiaryRepository @Inject constructor(
     override suspend fun fetchUserDiaries(userId: Long): List<Diary> {
         val myId = tokenRepository.fetchUserId().firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
+
         val response = diaryService.fetchUserDiaries(
             userId = myId,
             friendId = userId
         )
-        Log.d("woogi", "fetchUserStats: $response")
         if (response.isSuccessful) {
             val diaries = response.body()?.result
 
@@ -56,11 +55,11 @@ class DefaultDiaryRepository @Inject constructor(
         run {
             val userId = tokenRepository.fetchUserId().first()
                 ?: throw IllegalStateException("Cannot access on this contents.")
+
             val response = diaryService.fetchDiaryDetails(
                 userId = userId,
                 diaryId = diaryId
             )
-
             if (response.isSuccessful) {
                 val diaryDetail = response.body()?.result
 
@@ -76,12 +75,13 @@ class DefaultDiaryRepository @Inject constructor(
                 .fetchUserId()
                 .first()
                 ?: throw IllegalStateException("Cannot access on this contents.")
+
             val imageFile = image.asRequestBody("image/*".toMediaTypeOrNull())
+
             val response = diaryService.postImage(
                 userId = userId,
                 images = MultipartBody.Part.createFormData("images", image.name, imageFile)
             )
-
             if (response.isSuccessful) {
                 val aiDiary = response.body()?.result
                 // todo: file을 다시 bitmap으로 바꾸지 않고 viewModel에서 bitmap을 유지한다던가 해야할듯
@@ -106,7 +106,7 @@ class DefaultDiaryRepository @Inject constructor(
                 content = contents,
                 image = listOf(MultipartBody.Part.createFormData("images", image.name, imageFile))
             )
-            Log.d("woogi", "postDiary: $response")
+            if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
         }
     }
 }

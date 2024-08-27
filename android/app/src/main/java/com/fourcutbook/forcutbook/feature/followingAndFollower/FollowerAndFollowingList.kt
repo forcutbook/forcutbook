@@ -20,20 +20,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.SubscribingStatus
 import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun FollowerAndFollowingList(
     userProfiles: List<UserProfile>,
-    onUserProfileClick: (userId: Long) -> Unit
+    onUserProfileClick: (userId: Long) -> Unit,
+    cancelButtonText: String,
+    onCancelButtonClick: (userId: Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -43,7 +42,9 @@ fun FollowerAndFollowingList(
         items(userProfiles) { userProfile ->
             FollowerAndFollowingItem(
                 userProfile = userProfile,
-                onUserProfileClick = { onUserProfileClick(userProfile.userId) }
+                onUserProfileClick = { onUserProfileClick(userProfile.userId) },
+                cancelButtonText = cancelButtonText,
+                onCancelButtonClick = onCancelButtonClick
             )
         }
     }
@@ -52,7 +53,9 @@ fun FollowerAndFollowingList(
 @Composable
 fun FollowerAndFollowingItem(
     userProfile: UserProfile,
-    onUserProfileClick: () -> Unit
+    onUserProfileClick: () -> Unit,
+    cancelButtonText: String,
+    onCancelButtonClick: (userId: Long) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -90,20 +93,17 @@ fun FollowerAndFollowingItem(
                 fontSize = 14.sp
             )
             Surface {
-                val text = if (userProfile.isSubscribing == SubscribingStatus.SUBSCRIBED) {
-                    stringResource(R.string.subscribing_cancel)
-                } else {
-                    stringResource(R.string.subscribing_request)
-                }
-
                 Text(
                     modifier = Modifier
                         .background(
                             shape = RoundedCornerShape(5.dp),
                             color = FcbTheme.colors.fcbDarkBeige
                         )
-                        .padding(vertical = 6.dp, horizontal = 4.dp),
-                    text = text,
+                        .padding(vertical = 6.dp, horizontal = 4.dp)
+                        .noRippleClickable {
+                            onCancelButtonClick(userProfile.userId)
+                        },
+                    text = cancelButtonText,
                     style = FcbTheme.typography.body,
                     fontSize = 12.sp
                 )

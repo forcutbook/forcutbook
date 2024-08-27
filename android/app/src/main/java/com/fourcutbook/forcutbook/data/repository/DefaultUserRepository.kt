@@ -1,6 +1,6 @@
 package com.fourcutbook.forcutbook.data.repository
 
-import com.fourcutbook.forcutbook.data.fixture.UserProfileFixture
+import android.util.Log
 import com.fourcutbook.forcutbook.data.mapper.UserProfileMapper.toDomain
 import com.fourcutbook.forcutbook.data.mapper.UserStatsMapper.toDomain
 import com.fourcutbook.forcutbook.data.service.UserService
@@ -39,25 +39,38 @@ class DefaultUserRepository @Inject constructor(
         val id = userId
             ?: tokenRepository.fetchUserId().firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
-
-        val response = userService.fetchSubscribingDiaries(id)
+        val response = userService.fetchFollowing(id)
 
         if (response.isSuccessful) {
-            val subscribingDiaries = response
+            val followings = response
                 .body()
                 ?.result
                 ?.toDomain()
                 ?: throw IOException("Response body is null.")
 
-            return subscribingDiaries
+            return followings
         }
         throw IOException("Request failed with code ${response.code()}!")
     }
 
-    override suspend fun fetchFollowers(userId: Long): List<UserProfile> {
-        run {
-            return UserProfileFixture.get()
+    override suspend fun fetchFollowers(userId: Long?): List<UserProfile> {
+        // todo: userId가 null인 경우 -> 나 자신을 조회, null이 아닌 경우 -> 해당 유저를 조회
+        val id = userId
+            ?: tokenRepository.fetchUserId().firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.fetchFollowers(id)
+
+        if (response.isSuccessful) {
+            val followers = response
+                .body()
+                ?.result
+                ?.toDomain()
+                ?: throw IOException("Response body is null.")
+
+            return followers
         }
+        throw IOException("Request failed with code ${response.code()}!")
     }
 
     override suspend fun postFollowingRequest(userId: Long) {
@@ -65,11 +78,11 @@ class DefaultUserRepository @Inject constructor(
             .fetchUserId()
             .firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
+
         val response = userService.postSubscribingRequest(
             userId = myId,
             friendId = userId
         )
-
         if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
     }
 
@@ -78,28 +91,29 @@ class DefaultUserRepository @Inject constructor(
             .fetchUserId()
             .firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
+
         val response = userService.deleteSubscribingRequest(
             userId = myId,
             friendId = userId
         )
-
         if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
     }
 
-    override suspend fun deleteFollower(userId: Long) {
+    override suspend fun deleteFollowing(userId: Long) {
         val myId = tokenRepository
             .fetchUserId()
             .firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
 
-        val response = userService.deleteSubscribingDiary(
+        val response = userService.deleteFollowing(
             userId = myId,
             friendId = userId
         )
+        Log.d("woogi", "deleteFollowing: $response")
         if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
     }
 
-    override suspend fun deleteSubscribingUser(userId: Long) {
+    override suspend fun postCancelFollower(userId: Long) {
     }
 
     override suspend fun postAcceptFollowingRequest(userId: Long) {
@@ -124,6 +138,19 @@ class DefaultUserRepository @Inject constructor(
         val response = userService.postDenyFollowingRequest(
             userId = myId,
             friendId = userId
+        )
+        if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
+    }
+
+    override suspend fun deleteFollower(friendId: Long) {
+        val myId = tokenRepository
+            .fetchUserId()
+            .firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.deleteFollower(
+            userId = myId,
+            friendId = friendId
         )
         if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
     }

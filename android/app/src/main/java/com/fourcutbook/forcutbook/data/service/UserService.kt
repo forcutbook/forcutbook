@@ -7,6 +7,7 @@ import com.fourcutbook.forcutbook.data.response.SubscribingResponse
 import com.fourcutbook.forcutbook.data.response.UserProfileResponse
 import com.fourcutbook.forcutbook.data.response.UserStatsResponse
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -38,16 +39,27 @@ interface UserService {
         @Path(value = "friendId") friendId: Long
     ): Response<BaseResponse<SubscribingResponse>>
 
-    @GET("/users/{userId}/friends/follower")
-    suspend fun fetchSubscribingDiaries(
+    @GET("/users/{userId}/friends/following")
+    suspend fun fetchFollowing(
         @Path(value = "userId") userId: Long
     ): Response<BaseResponse<SubscribingDiaryListResponse>>
 
-    @POST("/users/{userId}/friends/{friendId}/deleted")
-    suspend fun deleteSubscribingDiary(
+    @GET("/users/{userId}/friends/follower")
+    suspend fun fetchFollowers(
+        @Path(value = "userId") userId: Long
+    ): Response<BaseResponse<SubscribingDiaryListResponse>>
+
+    @DELETE("/users/{userId}/friends/{friendId}/following/deleted")
+    suspend fun deleteFollowing(
         @Path(value = "userId") userId: Long,
         @Path(value = "friendId") friendId: Long
-    ): Response<BaseResponse<DeleteSubscribingResponse>>
+    ): Response<BaseResponse<DeleteFollowerFollowingResponse>>
+
+    @DELETE("/users/{userId}/friends/{friendId}/follower/deleted")
+    suspend fun deleteFollower(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<DeleteFollowerFollowingResponse>>
 
     @POST("/users/{userId}/friends/{friendId}/accept")
     suspend fun postAcceptFollowingRequest(

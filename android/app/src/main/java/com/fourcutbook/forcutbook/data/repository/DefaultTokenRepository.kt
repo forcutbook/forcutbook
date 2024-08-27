@@ -57,7 +57,6 @@ class DefaultTokenRepository @Inject constructor(
 
     companion object {
 
-        private const val NO_ACCESSIBLE_USER = "There's no accessible user."
         private val USER_ID = longPreferencesKey("USER_ID")
         private val ACCESS_TOKEN: Preferences.Key<String> = stringPreferencesKey("ACCESS_TOKEN")
         private val REFRESH_TOKEN: Preferences.Key<String> = stringPreferencesKey("REFRESH_TOKEN")

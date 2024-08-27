@@ -57,7 +57,7 @@ fun NotificationRoute(
 
                 is NotificationEvent.Denied -> onShowSnackBar(context.getString(R.string.deny_following_request))
 
-                is NotificationEvent.Error -> onShowSnackBar(context.getString(R.string.error_description))
+                is NotificationEvent.Error -> onShowSnackBar(context.getString(R.string.common_error_description))
             }
         }
     }

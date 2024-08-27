@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.userPage
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -97,11 +96,10 @@ fun UserPageScreen(
                 )
                 UserStatsRow(
                     userStats = userStats,
-                    onSubscribedUserClick = onFollowerCountClick,
-                    onSubscribingUserClick = onFollowingCountClick
+                    onFollowerCountClick = onFollowerCountClick,
+                    onFollowingCountClick = onFollowingCountClick
                 )
             }
-            Log.d("woogi", "userPageScreen: $uiState")
             when (uiState) {
                 is UserPageUiState.UserStatsLoaded.Loading -> {
                     Column(
@@ -179,8 +177,8 @@ fun UserPageScreen(
 fun UserStatsRow(
     modifier: Modifier = Modifier,
     userStats: UserStats,
-    onSubscribingUserClick: () -> Unit = {},
-    onSubscribedUserClick: () -> Unit = {}
+    onFollowingCountClick: () -> Unit = {},
+    onFollowerCountClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -188,18 +186,18 @@ fun UserStatsRow(
             .padding(top = FcbTheme.padding.basicVerticalPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        UserPageSubscribingCount(
+        FollowingFollowerCount(
             modifier = Modifier.padding(start = FcbTheme.padding.basicHorizontalPadding),
             typeOfCount = R.string.subscribing_diary_description,
             count = userStats.subscribingDiaryCount,
-            onClick = onSubscribingUserClick
+            onClick = onFollowingCountClick
         )
-        UserPageSubscribingCount(
+        FollowingFollowerCount(
             typeOfCount = R.string.subscribing_user_description,
             count = userStats.subscribingUserCount,
-            onClick = onSubscribedUserClick
+            onClick = onFollowerCountClick
         )
-        UserPageSubscribingCount(
+        FollowingFollowerCount(
             modifier = Modifier.padding(end = FcbTheme.padding.basicHorizontalPadding),
             typeOfCount = R.string.count_of_diaries,
             count = userStats.diaryCount
@@ -208,7 +206,7 @@ fun UserStatsRow(
 }
 
 @Composable
-fun UserPageSubscribingCount(
+fun FollowingFollowerCount(
     modifier: Modifier = Modifier,
     @StringRes typeOfCount: Int,
     count: Int,
@@ -267,7 +265,7 @@ fun UserPageSubscribeScreenPreview() {
                 userId = 0,
                 subscribingStatus = SubscribingStatus.SUBSCRIBED
             ),
-            diaries = DiaryFixture.get()
+            _diaries = DiaryFixture.get()
         )
     )
 }

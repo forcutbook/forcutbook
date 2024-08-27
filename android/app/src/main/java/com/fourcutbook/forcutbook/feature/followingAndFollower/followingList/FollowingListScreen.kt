@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,18 +31,29 @@ import com.fourcutbook.forcutbook.feature.followingAndFollower.FollowerAndFollow
 @Composable
 fun FollowingListRoute(
     userId: Long?,
-    followingListViewModel: FollowingListViewModel = hiltViewModel(),
+    viewModel: FollowingListViewModel = hiltViewModel(),
     onUserProfileClick: (userId: Long) -> Unit,
     onShowSnackBar: (message: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val uiState: FollowingListUiState by followingListViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: FollowingListUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    viewModel.fetchFollowings(userId)
 
-    followingListViewModel.fetchFollowings(userId)
+    LaunchedEffect(key1 = null) {
+        viewModel.event.collect { event ->
+            val message = when (event) {
+                is FollowingListEvent.FollowingCanceled -> context.getString(R.string.following_list_cancel_following)
 
+                is FollowingListEvent.Error -> context.getString(R.string.common_error_description)
+            }
+            onShowSnackBar(message)
+        }
+    }
     FollowingListScreen(
         uiState = uiState,
         onUserProfileClick = onUserProfileClick,
+        onFollowingCancelClick = viewModel::deleteFollowing,
         onBackClick = onBackPressed
     )
 }
@@ -50,6 +63,7 @@ fun FollowingListScreen(
     modifier: Modifier = Modifier,
     uiState: FollowingListUiState,
     onUserProfileClick: (userId: Long) -> Unit = {},
+    onFollowingCancelClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
@@ -65,7 +79,9 @@ fun FollowingListScreen(
                 )
                 FollowerAndFollowingList(
                     userProfiles = uiState.value,
-                    onUserProfileClick = onUserProfileClick
+                    onUserProfileClick = onUserProfileClick,
+                    cancelButtonText = stringResource(id = R.string.following_cancel),
+                    onCancelButtonClick = onFollowingCancelClick
                 )
             }
         }

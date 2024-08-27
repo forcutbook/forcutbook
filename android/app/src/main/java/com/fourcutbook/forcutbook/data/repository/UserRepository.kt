@@ -9,17 +9,19 @@ interface UserRepository {
 
     suspend fun fetchFollowings(userId: Long? = null): List<UserProfile>
 
-    suspend fun fetchFollowers(userId: Long): List<UserProfile>
+    suspend fun fetchFollowers(userId: Long? = null): List<UserProfile>
 
     suspend fun postFollowingRequest(userId: Long)
 
     suspend fun deleteFollowingRequest(userId: Long)
 
-    suspend fun deleteFollower(userId: Long)
+    suspend fun deleteFollowing(userId: Long)
 
-    suspend fun deleteSubscribingUser(userId: Long)
+    suspend fun postCancelFollower(userId: Long)
 
     suspend fun postAcceptFollowingRequest(userId: Long)
 
     suspend fun postDenyFollowingRequest(userId: Long)
+
+    suspend fun deleteFollower(friendId: Long)
 }
