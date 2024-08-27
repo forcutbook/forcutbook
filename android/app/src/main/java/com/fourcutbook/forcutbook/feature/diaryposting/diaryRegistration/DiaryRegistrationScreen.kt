@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,14 +24,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
-import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingUiState
-import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingViewModel
+import com.fourcutbook.forcutbook.feature.diaryposting.DiaryRegistrationViewModel
 import com.fourcutbook.forcutbook.util.DiaryFixture
 import com.fourcutbook.forcutbook.util.toFile
 import java.io.File
@@ -40,38 +42,59 @@ import java.io.File
  */
 @Composable
 fun DiaryRegistrationRoute(
-    diaryPostingViewModel: DiaryPostingViewModel,
+    title: String,
+    contents: String,
+    filePath: String,
+    viewModel: DiaryRegistrationViewModel = hiltViewModel(),
     onDiaryRegistered: () -> Unit = {},
     onBackPressed: () -> Unit = {},
     onShowSnackBar: (message: String) -> Unit = {}
 ) {
     // todo: State 모르고 지금 쓰고 있음, collectAsStateWithLifecycle()~~~~~~~~~~~
-    val uiState by diaryPostingViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // todo: 모르는거
+    LaunchedEffect(key1 = null) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is DiaryRegistrationEvent.Registered -> {
+                    onBackPressed()
+                    onDiaryRegistered()
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     DiaryRegistrationScreen(
         uiState = uiState,
-        onDiaryRegistry = diaryPostingViewModel::postDiary,
-        onDiaryRegistered = onDiaryRegistered,
-        onBackPressed = onBackPressed,
-        onShowSnackBar = onShowSnackBar
+        onDiaryRegistry = viewModel::postDiary,
+        onInitDiary = {
+            viewModel.updateDiary(
+                title = title,
+                contents = contents,
+                imageBitmap = BitmapFactory.decodeFile(filePath),
+                imageFile = File(filePath)
+            )
+        },
+        onBackPressed = onBackPressed
     )
 }
 
 @Composable
 fun DiaryRegistrationScreen(
     modifier: Modifier = Modifier,
-    uiState: DiaryPostingUiState,
+    uiState: DiaryRegistrationUiState,
+    onInitDiary: () -> Unit = {},
     onDiaryRegistry: (diary: Diary, image: File) -> Unit = { _, _ -> },
-    onDiaryRegistered: () -> Unit = {},
-    onDiaryRegistryCancel: () -> Unit = {},
-    onBackPressed: () -> Unit = {},
-    onShowSnackBar: (message: String) -> Unit = {}
+    onBackPressed: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
     when (uiState) {
-        is DiaryPostingUiState.IncludingImage.ImageUploaded -> {
+        is DiaryRegistrationUiState.Default -> onInitDiary()
+
+        is DiaryRegistrationUiState.ReadyForRegistry -> {
             Column(
                 modifier = modifier
                     .padding(
@@ -110,8 +133,6 @@ fun DiaryRegistrationScreen(
                 )
             }
         }
-
-        is DiaryPostingUiState.Registered -> onDiaryRegistered()
 
         else -> {}
     }
@@ -189,6 +210,6 @@ fun DiaryRegistrationButton(onDiaryRegistry: () -> Unit = {}) {
 fun DiaryRegistrationPreview() {
     DiaryRegistrationScreen(
         modifier = Modifier.background(FcbTheme.colors.fcbGray),
-        uiState = DiaryPostingUiState.IncludingImage.ImageUploaded(DiaryFixture.get().first())
+        uiState = DiaryRegistrationUiState.ReadyForRegistry(DiaryFixture.get().first())
     )
 }

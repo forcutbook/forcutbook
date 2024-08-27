@@ -91,14 +91,18 @@ fun MainScreen(
             navController = navController,
             startDestination = startDestination
         ) {
-            loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
+            loginNavGraph(
+                navigateToHome = navController::navigateToDiaryFeed
+            )
 
             diaryFeedNavGraph(
                 onDiaryClick = navController::navigateToDiaryDetail,
                 onNotificationClick = navController::navigateToNotification
             )
 
-            diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
+            diaryImageUploadingNavGraph(
+                onImageUploadButtonClick = navController::navigateToDiaryRegistration
+            )
 
             diaryRegistrationNavGraph(
                 navController = navController,

@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.feature.searching
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -194,12 +195,7 @@ fun UserProfileItem(
 
                         Text(
                             modifier = Modifier
-                                .background(
-                                    shape = RoundedCornerShape(5.dp),
-                                    color = FcbTheme.colors.fcbDarkBeige
-                                )
-                                .padding(vertical = 6.dp, horizontal = 4.dp)
-                                .noRippleClickable {
+                                .clickable {
                                     when (userProfile.isSubscribing) {
                                         SubscribingStatus.NONE -> onFollowingRequestClick()
 
@@ -207,7 +203,12 @@ fun UserProfileItem(
 
                                         else -> {}
                                     }
-                                },
+                                }
+                                .background(
+                                    shape = RoundedCornerShape(5.dp),
+                                    color = FcbTheme.colors.fcbDarkBeige
+                                )
+                                .padding(vertical = 6.dp, horizontal = 4.dp),
                             text = text,
                             style = FcbTheme.typography.body,
                             fontSize = 12.sp

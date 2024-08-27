@@ -66,6 +66,8 @@ class UserSearchingViewModel @Inject constructor(
         viewModelScope.launch {
             flow {
                 emit(userRepository.postFollowingRequest(userId))
+            }.catch {
+                _event.emit(UserSearchingEvent.Error)
             }.collect {
                 /* todo: for refetching userProfiles. need to improve */
                 _searchingNickname.value = ""
@@ -82,6 +84,8 @@ class UserSearchingViewModel @Inject constructor(
         viewModelScope.launch {
             flow {
                 emit(userRepository.deleteFollowingRequest(userId))
+            }.catch {
+                _event.emit(UserSearchingEvent.Error)
             }.collect {
                 /* todo: for refetching userProfiles. need to improve */
                 _searchingNickname.value = ""
