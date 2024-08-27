@@ -18,4 +18,8 @@ interface UserRepository {
     suspend fun deleteFollower(userId: Long)
 
     suspend fun deleteSubscribingUser(userId: Long)
+
+    suspend fun postAcceptFollowingRequest(userId: Long)
+
+    suspend fun postDenyFollowingRequest(userId: Long)
 }

@@ -37,7 +37,7 @@ interface DiaryService {
     suspend fun postImage(
         @Path(value = "userId") userId: Long,
         // todo: 명세서에는 images이지만 image로 변경 건의
-        @Part image: List<MultipartBody.Part>
+        @Part images: MultipartBody.Part
     ): Response<BaseResponse<AIDiaryResponse>>
 
     @Multipart

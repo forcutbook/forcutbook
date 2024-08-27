@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 data class FriendRequestNotificationResponse(
     @SerialName("userId")
     val userId: Long,
-    @SerialName("userNickname")
-    val userNickname: String,
-    @SerialName("profileImgUrl")
-    val profileImgUrl: String
+    @SerialName("userName")
+    val userNickname: String
+//    @SerialName("profileImgUrl")
+//    val profileImgUrl: String
 )

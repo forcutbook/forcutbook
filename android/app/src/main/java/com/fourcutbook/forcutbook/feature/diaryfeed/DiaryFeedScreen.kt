@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.feature.diaryfeed
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,9 +60,15 @@ fun DiaryFeedScreen(
 ) {
     when (uiState) {
         is DiaryFeedUiState.Feed -> {
+            Log.d("woogi", "DiaryFeedScreen: ${uiState.isNotificationExist}")
             Column(modifier = Modifier.fillMaxSize()) {
                 FcbTopAppBarWithIcon(
                     title = stringResource(id = R.string.header_of_home_screen),
+                    iconResource = if (uiState.isNotificationExist) {
+                        painterResource(id = R.drawable.ic_notification_exist)
+                    } else {
+                        painterResource(id = R.drawable.ic_notification_none)
+                    },
                     onIconClick = onNotificationClick
                 )
                 DiariesColumn(
@@ -158,7 +166,7 @@ fun DiaryItem(
 @Composable
 fun DiaryFeedPreview() {
     DiaryFeedScreen(
-        uiState = DiaryFeedUiState.Feed(DiaryFixture.get())
+        uiState = DiaryFeedUiState.Feed(DiaryFixture.get(), true)
     )
 }
 

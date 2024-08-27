@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe
+package com.fourcutbook.forcutbook.feature.followingAndFollower
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +31,7 @@ import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
-fun SubscribeList(
+fun FollowerAndFollowingList(
     userProfiles: List<UserProfile>,
     onUserProfileClick: (userId: Long) -> Unit
 ) {
@@ -41,7 +41,7 @@ fun SubscribeList(
             .padding(top = FcbTheme.padding.basicVerticalPadding)
     ) {
         items(userProfiles) { userProfile ->
-            SubscribeItem(
+            FollowerAndFollowingItem(
                 userProfile = userProfile,
                 onUserProfileClick = { onUserProfileClick(userProfile.userId) }
             )
@@ -50,13 +50,13 @@ fun SubscribeList(
 }
 
 @Composable
-fun SubscribeItem(
+fun FollowerAndFollowingItem(
     userProfile: UserProfile,
     onUserProfileClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .padding(vertical = FcbTheme.padding.smallVerticalPadding)
+            .padding(vertical = FcbTheme.padding.smallVerticalPadding01)
             .background(shape = RoundedCornerShape(5.dp), color = FcbTheme.colors.fcbWhite)
             .fillMaxWidth()
             .wrapContentHeight(),

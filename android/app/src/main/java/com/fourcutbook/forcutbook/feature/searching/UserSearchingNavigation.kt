@@ -18,7 +18,8 @@ fun NavGraphBuilder.userSearchingNavGraph(
     composable(route = FcbRoute.UserSearchingRoute.value) {
         UserSearchingRoute(
             onUserProfileClick = onUserProfileClick,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onShowSnackBar = onShowSnackBar
         )
     }
 }

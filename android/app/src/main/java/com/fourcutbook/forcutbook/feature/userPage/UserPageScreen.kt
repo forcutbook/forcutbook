@@ -127,7 +127,7 @@ fun UserPageScreen(
                     )
                     Text(
                         modifier = Modifier
-                            .padding(top = FcbTheme.padding.smallVerticalPadding)
+                            .padding(top = FcbTheme.padding.smallVerticalPadding01)
                             .align(Alignment.CenterHorizontally),
                         text = stringResource(R.string.request_subscribing_wanna_read_diary),
                         style = FcbTheme.typography.body02,
@@ -146,7 +146,7 @@ fun UserPageScreen(
                                 color = FcbTheme.colors.fcbLightBeige02,
                                 shape = RoundedCornerShape(5.dp)
                             )
-                            .padding(vertical = FcbTheme.padding.smallVerticalPadding)
+                            .padding(vertical = FcbTheme.padding.smallVerticalPadding01)
                             .noRippleClickable {
                                 when (uiState.userStats.subscribingStatus) {
                                     SubscribingStatus.NONE -> onFollowingRequestButtonClick()
@@ -226,7 +226,7 @@ fun UserPageSubscribingCount(
         Text(
             modifier = Modifier
                 .noRippleClickable { onClick() }
-                .padding(top = FcbTheme.padding.smallVerticalPadding),
+                .padding(top = FcbTheme.padding.smallVerticalPadding01),
             fontSize = 25.sp,
             style = FcbTheme.typography.title,
             text = count.toString()

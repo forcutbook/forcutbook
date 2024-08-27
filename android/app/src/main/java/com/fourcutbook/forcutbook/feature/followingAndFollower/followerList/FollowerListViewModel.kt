@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary
+package com.fourcutbook.forcutbook.feature.followingAndFollower.followerList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,25 +12,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SubscribingDiaryViewModel @Inject constructor(
+class FollowerListViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<SubscribingDiaryUiState> =
-        MutableStateFlow(SubscribingDiaryUiState.Default)
-    val uiState: StateFlow<SubscribingDiaryUiState>
+    private val _uiState: MutableStateFlow<FollowerListUiState> =
+        MutableStateFlow(FollowerListUiState.Default)
+    val uiState: StateFlow<FollowerListUiState>
         get() = _uiState.asStateFlow()
 
     init {
-        fetchFollowings()
+        fetchSubscribingDiaries()
     }
 
-    fun fetchFollowings(userId: Long? = null) {
+    fun fetchSubscribingDiaries(userId: Long? = 1) {
         viewModelScope.launch {
             flow {
                 emit(userRepository.fetchFollowings(userId))
             }.collect { userProfiles ->
-                _uiState.value = SubscribingDiaryUiState.SubscribingDiaries(userProfiles)
+                _uiState.value = FollowerListUiState.SubscribedUsers(userProfiles)
             }
         }
     }

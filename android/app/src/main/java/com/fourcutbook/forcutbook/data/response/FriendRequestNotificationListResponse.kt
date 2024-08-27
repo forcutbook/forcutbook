@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FriendRequestNotificationsResponse(
+data class FriendRequestNotificationListResponse(
     @SerialName("data")
-    val notifications: List<FriendRequestNotificationResponse>
+    val value: List<FriendRequestNotificationResponse>
 )

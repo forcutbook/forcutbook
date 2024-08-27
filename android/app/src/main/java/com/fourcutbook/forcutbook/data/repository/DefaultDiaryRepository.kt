@@ -43,6 +43,7 @@ class DefaultDiaryRepository @Inject constructor(
             userId = myId,
             friendId = userId
         )
+        Log.d("woogi", "fetchUserStats: $response")
         if (response.isSuccessful) {
             val diaries = response.body()?.result
 
@@ -78,7 +79,7 @@ class DefaultDiaryRepository @Inject constructor(
             val imageFile = image.asRequestBody("image/*".toMediaTypeOrNull())
             val response = diaryService.postImage(
                 userId = userId,
-                image = listOf(MultipartBody.Part.createFormData("image", image.name, imageFile))
+                images = MultipartBody.Part.createFormData("images", image.name, imageFile)
             )
 
             if (response.isSuccessful) {

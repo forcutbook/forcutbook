@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,6 +57,7 @@ fun FcbTopAppBarWithBackButton(
 fun FcbTopAppBarWithIcon(
     modifier: Modifier = Modifier,
     title: String,
+    iconResource: Painter,
     onIconClick: () -> Unit = {}
 ) {
     Row(
@@ -81,7 +83,7 @@ fun FcbTopAppBarWithIcon(
                 .wrapContentWidth()
                 .height(FcbTheme.shame.iconSize)
                 .noRippleClickable { onIconClick() },
-            painter = painterResource(id = R.drawable.ic_alarm),
+            painter = painterResource(id = R.drawable.ic_notification_none),
             contentDescription = null
         )
     }

@@ -4,7 +4,7 @@ import com.fourcutbook.forcutbook.domain.Diary
 
 sealed interface DiaryFeedUiState {
 
-    data class Feed(private val _diaries: List<Diary>) : DiaryFeedUiState {
+    data class Feed(private val _diaries: List<Diary>, val isNotificationExist: Boolean) : DiaryFeedUiState {
         val diaries = _diaries.sortedByDescending { it.date }
     }
 

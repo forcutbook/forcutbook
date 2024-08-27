@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe.subscribeduser
+package com.fourcutbook.forcutbook.feature.followingAndFollower.followerList
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,22 +11,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.feature.subscribe.SubscribeList
-import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.SubscribingDiaryTopAppBar
+import com.fourcutbook.forcutbook.feature.followingAndFollower.FollowerAndFollowingList
+import com.fourcutbook.forcutbook.feature.followingAndFollower.followingList.FollowingListTopAppBar
 
 @Composable
-fun SubscribedUserRoute(
-    subscribedUserViewModel: SubscribedUserViewModel = hiltViewModel(),
+fun FollowerListRoute(
+    followerListViewModel: FollowerListViewModel = hiltViewModel(),
     userId: Long?,
     onProfileClick: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
-    val uiState by subscribedUserViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by followerListViewModel.uiState.collectAsStateWithLifecycle()
 
-    subscribedUserViewModel.fetchSubscribingDiaries(userId)
+    followerListViewModel.fetchSubscribingDiaries(userId)
 
-    SubscribedUserScreen(
+    FollowerListScreen(
         uiState = uiState,
         onProfileClick = onProfileClick,
         onBackClick = onBackPressed
@@ -34,24 +34,24 @@ fun SubscribedUserRoute(
 }
 
 @Composable
-fun SubscribedUserScreen(
+fun FollowerListScreen(
     modifier: Modifier = Modifier,
-    uiState: SubscribedUserUiState,
+    uiState: FollowerListUiState,
     onProfileClick: (userId: Long) -> Unit,
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
-        is SubscribedUserUiState.SubscribedUsers -> {
+        is FollowerListUiState.SubscribedUsers -> {
             Column(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(top = FcbTheme.padding.basicVerticalPadding)
             ) {
-                SubscribingDiaryTopAppBar(
+                FollowingListTopAppBar(
                     header = stringResource(R.string.header_of_subscribed_user),
                     onBackClick = onBackClick
                 )
-                SubscribeList(
+                FollowerAndFollowingList(
                     userProfiles = uiState.value,
                     onUserProfileClick = onProfileClick
                 )

@@ -12,12 +12,14 @@ fun NavController.navigateToNotification(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.notificationNavGraph(
     onProfileImgClick: (userId: Long) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onShowSnackBar: (message: String) -> Unit
 ) {
     composable(route = FcbRoute.NotificationRoute.value) {
         NotificationRoute(
             onBackClick = onBackClick,
-            onProfileImgClick = onProfileImgClick
+            onProfileImgClick = onProfileImgClick,
+            onShowSnackBar = onShowSnackBar
         )
     }
 }

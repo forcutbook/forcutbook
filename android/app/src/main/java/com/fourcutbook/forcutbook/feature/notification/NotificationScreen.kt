@@ -18,11 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,15 +42,31 @@ import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun NotificationRoute(
-    notificationViewModel: NotificationViewModel = hiltViewModel(),
+    viewModel: NotificationViewModel = hiltViewModel(),
     onProfileImgClick: (userId: Long) -> Unit = {},
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onShowSnackBar: (message: String) -> Unit
 ) {
-    val uiState: NotificationUiState by notificationViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: NotificationUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = null) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is NotificationEvent.Accepted -> onShowSnackBar(context.getString(R.string.accept_following_request))
+
+                is NotificationEvent.Denied -> onShowSnackBar(context.getString(R.string.deny_following_request))
+
+                is NotificationEvent.Error -> onShowSnackBar(context.getString(R.string.error_description))
+            }
+        }
+    }
 
     NotificationScreen(
         notificationUiState = uiState,
         onUserProfileClick = onProfileImgClick,
+        onAcceptButtonClick = viewModel::postAcceptFollowingRequest,
+        onDenyButtonClick = viewModel::postDenyFollowingRequest,
         onBackClick = onBackClick
     )
 }
@@ -58,6 +76,8 @@ fun NotificationScreen(
     modifier: Modifier = Modifier,
     notificationUiState: NotificationUiState,
     onUserProfileClick: (userId: Long) -> Unit = {},
+    onAcceptButtonClick: (userId: Long) -> Unit = {},
+    onDenyButtonClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     Column(
@@ -71,7 +91,9 @@ fun NotificationScreen(
         )
         NotificationList(
             notifications = notificationUiState.friendRequestNotifications,
-            onUserProfileClick = onUserProfileClick
+            onUserProfileClick = onUserProfileClick,
+            onAcceptButtonClick = onAcceptButtonClick,
+            onDenyButtonClick = onDenyButtonClick
         )
     }
 }
@@ -79,7 +101,9 @@ fun NotificationScreen(
 @Composable
 fun NotificationList(
     notifications: List<FriendRequestNotification>,
-    onUserProfileClick: (userId: Long) -> Unit = {}
+    onUserProfileClick: (userId: Long) -> Unit,
+    onAcceptButtonClick: (userId: Long) -> Unit,
+    onDenyButtonClick: (userId: Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -89,7 +113,9 @@ fun NotificationList(
         items(notifications) { notification ->
             NotificationItem(
                 notification = notification,
-                onUserProfileClick = onUserProfileClick
+                onUserProfileClick = onUserProfileClick,
+                onAcceptButtonClick = onAcceptButtonClick,
+                onDenyButtonClick = onDenyButtonClick
             )
         }
     }
@@ -98,11 +124,13 @@ fun NotificationList(
 @Composable
 fun NotificationItem(
     notification: FriendRequestNotification,
-    onUserProfileClick: (userId: Long) -> Unit = {}
+    onUserProfileClick: (userId: Long) -> Unit = {},
+    onAcceptButtonClick: (userId: Long) -> Unit = {},
+    onDenyButtonClick: (userId: Long) -> Unit = {}
 ) {
     Row(
         modifier = Modifier
-            .padding(vertical = FcbTheme.padding.smallVerticalPadding)
+            .padding(vertical = FcbTheme.padding.smallVerticalPadding01)
             .background(shape = RoundedCornerShape(5.dp), color = FcbTheme.colors.fcbWhite)
             .fillMaxWidth()
             .wrapContentHeight(),
@@ -137,10 +165,12 @@ fun NotificationItem(
             )
             Row {
                 FriendRequestAcceptOrDeclineButton(
-                    modifier = Modifier.background(
-                        shape = RoundedCornerShape(5.dp),
-                        color = FcbTheme.colors.fcbLightBeige
-                    ),
+                    modifier = Modifier
+                        .background(
+                            shape = RoundedCornerShape(5.dp),
+                            color = FcbTheme.colors.fcbLightBeige
+                        )
+                        .noRippleClickable { onAcceptButtonClick(notification.userId) },
                     description = stringResource(R.string.friend_request_accept)
                 )
                 FriendRequestAcceptOrDeclineButton(
@@ -149,7 +179,8 @@ fun NotificationItem(
                         .background(
                             shape = RoundedCornerShape(5.dp),
                             color = FcbTheme.colors.fcbDarkBeige
-                        ),
+                        )
+                        .noRippleClickable { onDenyButtonClick(notification.userId) },
                     description = stringResource(R.string.friend_request_decline)
                 )
             }

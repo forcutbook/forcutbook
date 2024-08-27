@@ -1,6 +1,7 @@
 package com.fourcutbook.forcutbook.data.service
 
 import com.fourcutbook.forcutbook.data.response.BaseResponse
+import com.fourcutbook.forcutbook.data.response.SubscribingAcceptOrDenyResponse
 import com.fourcutbook.forcutbook.data.response.SubscribingDiaryListResponse
 import com.fourcutbook.forcutbook.data.response.SubscribingResponse
 import com.fourcutbook.forcutbook.data.response.UserProfileResponse
@@ -47,4 +48,16 @@ interface UserService {
         @Path(value = "userId") userId: Long,
         @Path(value = "friendId") friendId: Long
     ): Response<BaseResponse<DeleteSubscribingResponse>>
+
+    @POST("/users/{userId}/friends/{friendId}/accept")
+    suspend fun postAcceptFollowingRequest(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<SubscribingAcceptOrDenyResponse>>
+
+    @POST("/users/{userId}/friends/{friendId}/deny")
+    suspend fun postDenyFollowingRequest(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<SubscribingAcceptOrDenyResponse>>
 }

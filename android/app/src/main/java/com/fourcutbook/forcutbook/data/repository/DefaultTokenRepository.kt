@@ -40,7 +40,7 @@ class DefaultTokenRepository @Inject constructor(
     }
 
     override fun fetchUserId(): Flow<Long?> = tokenDataStore.data.map { preferences ->
-        4
+        5
     }
 
     override suspend fun postUserId(id: Long) {

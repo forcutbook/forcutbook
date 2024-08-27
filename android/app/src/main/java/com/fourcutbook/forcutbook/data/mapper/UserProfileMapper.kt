@@ -15,7 +15,8 @@ object UserProfileMapper {
     fun SubscribingDiaryListResponse.toDomain(): List<UserProfile> = value.map {
         UserProfile(
             userId = it.userId,
-            profileImageUrl = it.profileImageUrl,
+            // todo: 이미지 추가
+            profileImageUrl = "todo: 이미지 추가",
             nickname = it.nickname,
             isSubscribing = SubscribingStatus.REQUESTED
         )

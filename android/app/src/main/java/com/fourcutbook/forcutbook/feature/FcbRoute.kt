@@ -46,13 +46,13 @@ sealed interface FcbRoute {
         override val value: String = "USER_PAGE"
     }
 
-    data object SubscribingDiaryRoute : FcbRoute {
+    data object FollowingListRoute : FcbRoute {
 
         override val headerRes: Int = R.string.header_of_subscribing_diary
         override val value: String = "SUBSCRIBING_DIARY"
     }
 
-    data object SubscribedUserRoute : FcbRoute {
+    data object FollowerListRoute : FcbRoute {
 
         override val headerRes: Int = R.string.header_of_subscribing_diary
         override val value: String = "SUBSCRIBED_DIARY"

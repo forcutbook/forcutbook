@@ -116,7 +116,7 @@ fun UserPageSubscribingCount(
         Text(
             modifier = Modifier
                 .noRippleClickable { onClick() }
-                .padding(top = FcbTheme.padding.smallVerticalPadding),
+                .padding(top = FcbTheme.padding.smallVerticalPadding01),
             fontSize = 25.sp,
             style = FcbTheme.typography.title,
             text = count.toString()

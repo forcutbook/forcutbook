@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,21 +47,35 @@ import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun UserSearchingRoute(
-    userSearchingViewModel: UserSearchingViewModel = hiltViewModel(),
+    viewModel: UserSearchingViewModel = hiltViewModel(),
     onUserProfileClick: (userId: Long) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onShowSnackBar: (message: String) -> Unit
 ) {
-    val uiState by userSearchingViewModel.uiState.collectAsStateWithLifecycle()
-    val searchingNickname by userSearchingViewModel.searchingNickname.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val searchingNickname by viewModel.searchingNickname.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = null) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is UserSearchingEvent.FollowingRequest -> onShowSnackBar(context.getString(R.string.success_following_request))
+
+                is UserSearchingEvent.FollowingRequestCancel -> onShowSnackBar(context.getString(R.string.success_cancel_following_request))
+
+                is UserSearchingEvent.Error -> onShowSnackBar(context.getString(R.string.error_description))
+            }
+        }
+    }
 
     UserSearchingScreen(
         modifier = Modifier,
         uiState = uiState,
         searchingNickname = searchingNickname,
-        onFollowingRequestClick = userSearchingViewModel::postFollowing,
-        onFollowingRequestCancelClick = userSearchingViewModel::postFollowingRequestCancel,
+        onFollowingRequestClick = viewModel::postFollowing,
+        onFollowingRequestCancelClick = viewModel::postFollowingRequestCancel,
         onUserProfileClick = onUserProfileClick,
-        onSearch = userSearchingViewModel::enterNickname,
+        onSearch = viewModel::enterNickname,
         onBackClick = onBackClick
     )
 }
@@ -94,12 +110,13 @@ fun UserSearchingScreen(
                     isFocused = focusState.isFocused
                 },
             value = searchingNickname,
+            isFocused = isFocused,
             onValueChange = onSearch
         )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = FcbTheme.padding.smallVerticalPadding)
+                .padding(top = FcbTheme.padding.smallVerticalPadding01)
         ) {
             items(uiState.userProfiles) { userProfile ->
                 UserProfileItem(
@@ -133,7 +150,7 @@ fun UserProfileItem(
 ) {
     Row(
         modifier = Modifier
-            .padding(vertical = FcbTheme.padding.smallVerticalPadding)
+            .padding(vertical = FcbTheme.padding.smallVerticalPadding02)
             .background(shape = RoundedCornerShape(5.dp), color = FcbTheme.colors.fcbWhite)
             .fillMaxWidth()
             .wrapContentHeight(),

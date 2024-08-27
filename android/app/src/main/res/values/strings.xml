@@ -24,4 +24,9 @@
     <string name="description_of_request_subscribing">구독</string>
     <string name="descripion_of_requesting_status">요청중</string>
     <string name="request_subscribing_wanna_read_diary">일기를 보려면 구독 신청하세요.</string>
+    <string name="accept_following_request">구독 신청을 수락했습니다.</string>
+    <string name="deny_following_request">구독 신청을 거절했습니다.</string>
+    <string name="error_description">잘못된 요청입니다.</string>
+    <string name="success_following_request">구독 요청에 성공했습니다.</string>
+    <string name="success_cancel_following_request">구독 요청을 취소했습니다.</string>
 </resources>

@@ -4,7 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FriendRequestNotificationsResponse(
-    @SerialName("data")
-    val notifications: List<FriendRequestNotificationResponse>
+data class SubscribingAcceptOrDenyResponse(
+    @SerialName("id")
+    val id: Long,
+    @SerialName("status")
+    val status: String
 )

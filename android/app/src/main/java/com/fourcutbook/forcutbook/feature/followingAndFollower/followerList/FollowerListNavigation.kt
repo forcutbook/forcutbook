@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe.subscribeduser
+package com.fourcutbook.forcutbook.feature.followingAndFollower.followerList
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,25 +10,25 @@ import com.fourcutbook.forcutbook.feature.FcbRoute
 
 const val USER_ID = "USER_ID"
 
-fun NavController.navigateToSubscribedUser(
+fun NavController.navigateToFollowerList(
     userId: Long? = null,
     navOptions: NavOptions? = null
 ) {
-    navigate("${FcbRoute.SubscribedUserRoute.value}/$userId", navOptions)
+    navigate("${FcbRoute.FollowerListRoute.value}/$userId", navOptions)
 }
 
-fun NavGraphBuilder.subscribedUserNavGraph(
+fun NavGraphBuilder.followerListNavGraph(
     onUserProfileClick: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(
-        route = "${FcbRoute.SubscribedUserRoute.value}/{$USER_ID}",
+        route = "${FcbRoute.FollowerListRoute.value}/{$USER_ID}",
         arguments = listOf(navArgument(USER_ID) { type = NavType.LongType })
     ) { navBackStackEntry ->
         val userId = navBackStackEntry.arguments?.getLong(USER_ID)
 
-        SubscribedUserRoute(
+        FollowerListRoute(
             userId = userId,
             onProfileClick = onUserProfileClick,
             onShowSnackBar = onShowSnackBar,

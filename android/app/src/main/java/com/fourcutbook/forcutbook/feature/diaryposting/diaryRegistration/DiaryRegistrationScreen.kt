@@ -134,7 +134,7 @@ fun DiaryTitle(
 fun DiaryImage(image: Bitmap) {
     Image(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .size(120.dp)
             .clip(RoundedCornerShape(5.dp)),
         bitmap = image.asImageBitmap(),
@@ -146,7 +146,7 @@ fun DiaryImage(image: Bitmap) {
 fun DiaryImage(imageUrl: String) {
     AsyncImage(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .size(120.dp)
             .clip(RoundedCornerShape(5.dp)),
         model = imageUrl,
@@ -159,7 +159,7 @@ fun DiaryImage(imageUrl: String) {
 fun DiaryContents(contents: String) {
     Text(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .fillMaxWidth(),
         style = FcbTheme.typography.body,
         text = contents
@@ -171,7 +171,7 @@ fun DiaryRegistrationButton(onDiaryRegistry: () -> Unit = {}) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = FcbTheme.padding.smallVerticalPadding),
+            .padding(top = FcbTheme.padding.smallVerticalPadding01),
         onClick = { onDiaryRegistry() },
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(containerColor = FcbTheme.colors.fcbDarkBeige)

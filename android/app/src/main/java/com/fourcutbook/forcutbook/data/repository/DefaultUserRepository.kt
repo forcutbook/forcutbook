@@ -18,10 +18,11 @@ class DefaultUserRepository @Inject constructor(
 ) : UserRepository {
 
     override suspend fun fetchUserStats(userId: Long?): UserStats {
-        val myId = tokenRepository.fetchUserId().first() ?: throw IllegalStateException("Cannot access on this contents")
+        val myId = tokenRepository.fetchUserId().first()
+            ?: throw IllegalStateException("Cannot access on this contents")
         val response = userService.fetchUserStats(
             userId = myId,
-            friendId = userId ?: throw IllegalStateException("Cannot access on this contents")
+            friendId = userId ?: myId
         )
 
         if (response.isSuccessful) {
@@ -99,5 +100,31 @@ class DefaultUserRepository @Inject constructor(
     }
 
     override suspend fun deleteSubscribingUser(userId: Long) {
+    }
+
+    override suspend fun postAcceptFollowingRequest(userId: Long) {
+        val myId = tokenRepository
+            .fetchUserId()
+            .firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.postAcceptFollowingRequest(
+            userId = myId,
+            friendId = userId
+        )
+        if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
+    }
+
+    override suspend fun postDenyFollowingRequest(userId: Long) {
+        val myId = tokenRepository
+            .fetchUserId()
+            .firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.postDenyFollowingRequest(
+            userId = myId,
+            friendId = userId
+        )
+        if (!response.isSuccessful) throw IOException("Request failed with code ${response.code()}!")
     }
 }

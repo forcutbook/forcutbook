@@ -70,6 +70,7 @@ class UserSearchingViewModel @Inject constructor(
                 /* todo: for refetching userProfiles. need to improve */
                 _searchingNickname.value = ""
                 _searchingNickname.value = searchingNickname
+                _event.emit(UserSearchingEvent.FollowingRequest)
             }
         }
     }
@@ -85,6 +86,7 @@ class UserSearchingViewModel @Inject constructor(
                 /* todo: for refetching userProfiles. need to improve */
                 _searchingNickname.value = ""
                 _searchingNickname.value = searchingNickname
+                _event.emit(UserSearchingEvent.FollowingRequestCancel)
             }
         }
     }

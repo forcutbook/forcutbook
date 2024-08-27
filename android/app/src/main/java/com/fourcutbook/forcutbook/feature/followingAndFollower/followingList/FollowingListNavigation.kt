@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary
+package com.fourcutbook.forcutbook.feature.followingAndFollower.followingList
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,25 +10,25 @@ import com.fourcutbook.forcutbook.feature.FcbRoute
 
 const val USER_ID = "USER_ID"
 
-fun NavController.navigateToSubscribingDiary(
+fun NavController.navigateToFollowingList(
     userId: Long? = null,
     navOptions: NavOptions? = null
 ) {
-    navigate("${FcbRoute.SubscribingDiaryRoute.value}/$userId", navOptions)
+    navigate("${FcbRoute.FollowingListRoute.value}/$userId", navOptions)
 }
 
-fun NavGraphBuilder.subscribingDiaryNavGraph(
+fun NavGraphBuilder.followingListNavGraph(
     onUserProfileClick: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
     onShowSnackBar: (message: String) -> Unit
 ) {
     composable(
-        route = "${FcbRoute.SubscribingDiaryRoute.value}/{$USER_ID}",
+        route = "${FcbRoute.FollowingListRoute.value}/{$USER_ID}",
         arguments = listOf(navArgument(USER_ID) { type = NavType.LongType })
     ) { navBackStackEntry ->
         val userId = navBackStackEntry.arguments?.getLong(USER_ID)
 
-        SubscribingDiaryRoute(
+        FollowingListRoute(
             userId = userId,
             onUserProfileClick = onUserProfileClick,
             onShowSnackBar = onShowSnackBar,

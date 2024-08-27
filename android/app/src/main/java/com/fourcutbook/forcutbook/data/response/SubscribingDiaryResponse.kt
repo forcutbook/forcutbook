@@ -10,8 +10,8 @@ data class SubscribingDiaryResponse(
     val userId: Long,
     @SerialName("userName")
     val nickname: String,
-    @SerialName("profileImageUrl")
-    val profileImageUrl: String,
+//    @SerialName("profileImageUrl")
+//    val profileImageUrl: String,
     @SerialName("createdAt")
     val createdAt: LocalDateTime
 )

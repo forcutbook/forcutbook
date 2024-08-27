@@ -9,9 +9,9 @@ object NotificationMapper {
         notifications.map { friendRequestNotification ->
             FriendRequestNotification(
                 userId = friendRequestNotification.userId,
-                profileImgUrl = friendRequestNotification.profileImgUrl,
+                profileImgUrl = "friendRequestNotification.profileImgUrl",
                 // todo: nickname 생길 시 변경
-                userNickname = friendRequestNotification.userId.toString()
+                userNickname = friendRequestNotification.userNickname
             )
         }
 }

@@ -1,4 +1,4 @@
-package com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary
+package com.fourcutbook.forcutbook.feature.followingAndFollower.followingList
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,21 +24,21 @@ import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.data.fixture.UserProfileFixture
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.subscribe.SubscribeList
+import com.fourcutbook.forcutbook.feature.followingAndFollower.FollowerAndFollowingList
 
 @Composable
-fun SubscribingDiaryRoute(
+fun FollowingListRoute(
     userId: Long?,
-    subscribingDiaryViewModel: SubscribingDiaryViewModel = hiltViewModel(),
+    followingListViewModel: FollowingListViewModel = hiltViewModel(),
     onUserProfileClick: (userId: Long) -> Unit,
     onShowSnackBar: (message: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val uiState: SubscribingDiaryUiState by subscribingDiaryViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: FollowingListUiState by followingListViewModel.uiState.collectAsStateWithLifecycle()
 
-    subscribingDiaryViewModel.fetchFollowings(userId)
+    followingListViewModel.fetchFollowings(userId)
 
-    SubscribingDiaryScreen(
+    FollowingListScreen(
         uiState = uiState,
         onUserProfileClick = onUserProfileClick,
         onBackClick = onBackPressed
@@ -46,24 +46,24 @@ fun SubscribingDiaryRoute(
 }
 
 @Composable
-fun SubscribingDiaryScreen(
+fun FollowingListScreen(
     modifier: Modifier = Modifier,
-    uiState: SubscribingDiaryUiState,
+    uiState: FollowingListUiState,
     onUserProfileClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
-        is SubscribingDiaryUiState.SubscribingDiaries -> {
+        is FollowingListUiState.FollowingList -> {
             Column(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(top = FcbTheme.padding.basicVerticalPadding)
             ) {
-                SubscribingDiaryTopAppBar(
-                    header = stringResource(id = FcbRoute.SubscribingDiaryRoute.headerRes),
+                FollowingListTopAppBar(
+                    header = stringResource(id = FcbRoute.FollowingListRoute.headerRes),
                     onBackClick = onBackClick
                 )
-                SubscribeList(
+                FollowerAndFollowingList(
                     userProfiles = uiState.value,
                     onUserProfileClick = onUserProfileClick
                 )
@@ -76,7 +76,7 @@ fun SubscribingDiaryScreen(
 }
 
 @Composable
-fun SubscribingDiaryTopAppBar(
+fun FollowingListTopAppBar(
     header: String,
     onBackClick: () -> Unit
 ) {
@@ -104,10 +104,10 @@ fun SubscribingDiaryTopAppBar(
 
 @Preview(widthDp = 320, heightDp = 640)
 @Composable
-fun SubscribingScreenPreview() {
-    SubscribingDiaryScreen(
+fun FollowingListScreenPreview() {
+    FollowingListScreen(
         modifier = Modifier.background(FcbTheme.colors.fcbGray),
-        uiState = SubscribingDiaryUiState.SubscribingDiaries(
+        uiState = FollowingListUiState.FollowingList(
             value = UserProfileFixture.get()
         )
     )
