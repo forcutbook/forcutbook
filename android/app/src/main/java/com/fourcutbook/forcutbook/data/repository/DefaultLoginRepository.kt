@@ -6,7 +6,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class DefaultLoginRepository @Inject constructor(
-    private val userRepository: UserRepository,
+    private val tokenRepository: TokenRepository,
     private val loginService: LoginService
 ) : LoginRepository {
 
@@ -20,9 +20,11 @@ class DefaultLoginRepository @Inject constructor(
             )
 
             if (response.isSuccessful) {
-                return response.body()?.let {
-                    userRepository.postUserId(it.userId)
-                } ?: throw IOException("Request body is null.")
+                return response
+                    .body()
+                    ?.result
+                    ?.let { tokenRepository.postUserId(it.userId) }
+                    ?: throw IOException("Request body is null.")
             }
             throw IOException("Request failed with code ${response.code()}!")
         }

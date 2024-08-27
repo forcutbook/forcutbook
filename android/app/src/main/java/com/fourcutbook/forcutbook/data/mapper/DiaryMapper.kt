@@ -16,6 +16,7 @@ object DiaryMapper {
             title = it.title,
             contents = it.content,
             date = it.date.toJavaLocalDateTime(),
+            imageUrl = it.imageUrl,
             image = null
         )
     }

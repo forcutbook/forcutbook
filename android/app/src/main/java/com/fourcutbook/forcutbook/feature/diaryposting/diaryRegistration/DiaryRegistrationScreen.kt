@@ -1,11 +1,10 @@
 package com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration
 
 import android.graphics.Bitmap
-import androidx.activity.compose.BackHandler
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,28 +12,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.feature.FcbRoute
-import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingUiState
-import com.fourcutbook.forcutbook.feature.diaryposting.DiaryPostingViewModel
+import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
+import com.fourcutbook.forcutbook.feature.diaryposting.DiaryRegistrationViewModel
 import com.fourcutbook.forcutbook.util.DiaryFixture
 import com.fourcutbook.forcutbook.util.toFile
 import java.io.File
@@ -45,53 +42,77 @@ import java.io.File
  */
 @Composable
 fun DiaryRegistrationRoute(
-    diaryPostingViewModel: DiaryPostingViewModel,
-    navigateToHomeScreen: () -> Unit = {},
+    title: String,
+    contents: String,
+    filePath: String,
+    viewModel: DiaryRegistrationViewModel = hiltViewModel(),
+    onDiaryRegistered: () -> Unit = {},
     onBackPressed: () -> Unit = {},
     onShowSnackBar: (message: String) -> Unit = {}
 ) {
     // todo: State 모르고 지금 쓰고 있음, collectAsStateWithLifecycle()~~~~~~~~~~~
-    val uiState by diaryPostingViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // todo: 모르는거
-    BackHandler(onBack = onBackPressed)
+    LaunchedEffect(key1 = null) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is DiaryRegistrationEvent.Registered -> {
+                    onBackPressed()
+                    onDiaryRegistered()
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     DiaryRegistrationScreen(
         uiState = uiState,
-        onDiaryRegistry = diaryPostingViewModel::postDiary,
-        navigateToHomeScreen = navigateToHomeScreen,
-        onBackPressed = {
-            onBackPressed()
-            diaryPostingViewModel.tryImageUploading()
+        onDiaryRegistry = viewModel::postDiary,
+        onInitDiary = {
+            viewModel.updateDiary(
+                title = title,
+                contents = contents,
+                imageBitmap = BitmapFactory.decodeFile(filePath),
+                imageFile = File(filePath)
+            )
         },
-        onShowSnackBar = onShowSnackBar
+        onBackPressed = onBackPressed
     )
 }
 
 @Composable
 fun DiaryRegistrationScreen(
     modifier: Modifier = Modifier,
-    uiState: DiaryPostingUiState,
+    uiState: DiaryRegistrationUiState,
+    onInitDiary: () -> Unit = {},
     onDiaryRegistry: (diary: Diary, image: File) -> Unit = { _, _ -> },
-    navigateToHomeScreen: () -> Unit = {},
-    onBackPressed: () -> Unit = {},
-    onShowSnackBar: (message: String) -> Unit = {}
+    onBackPressed: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
     when (uiState) {
-        is DiaryPostingUiState.ImageUploaded -> {
+        is DiaryRegistrationUiState.Default -> onInitDiary()
+
+        is DiaryRegistrationUiState.ReadyForRegistry -> {
             Column(
                 modifier = modifier
                     .padding(
-                        top = FcbTheme.padding.smallVerticalPadding,
+                        top = FcbTheme.padding.basicVerticalPadding,
                         start = FcbTheme.padding.basicHorizontalPadding,
                         end = FcbTheme.padding.basicHorizontalPadding
                     )
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                DiaryRegistrationTopAppBar(onBackPressed)
-                DiaryTitle(title = uiState.diary.title)
+                FcbTopAppBarWithBackButton(
+                    title = stringResource(id = R.string.header_of_diary_registration_screen),
+                    onBackClick = onBackPressed
+                )
+                DiaryTitle(
+                    modifier = Modifier.padding(top = FcbTheme.padding.basicVerticalPadding),
+                    title = uiState.diary.title
+                )
                 DiaryContents(contents = uiState.diary.contents)
 
                 uiState.diary
@@ -113,42 +134,17 @@ fun DiaryRegistrationScreen(
             }
         }
 
-        is DiaryPostingUiState.Registered -> navigateToHomeScreen()
-
         else -> {}
     }
 }
 
 @Composable
-fun DiaryRegistrationTopAppBar(onBackPressed: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(
-            modifier = Modifier.size(20.dp),
-            onClick = onBackPressed
-        ) {
-            Image(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = null
-            )
-        }
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = FcbTheme.padding.basicHorizontalPadding),
-            style = FcbTheme.typography.heading,
-            // todo: 일관성 없는 코드.. 어느 곳에서는 Scaffold로 처리하고...
-            text = stringResource(FcbRoute.DiaryRegistrationRoute.header)
-        )
-    }
-}
-
-@Composable
-fun DiaryTitle(title: String) {
+fun DiaryTitle(
+    modifier: Modifier = Modifier,
+    title: String
+) {
     Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = FcbTheme.padding.basicVerticalPadding),
+        modifier = modifier.fillMaxWidth(),
         style = FcbTheme.typography.title,
         // todo: 일관성 없는 코드.. 어느 곳에서는 Scaffold로 처리하고...
         text = title
@@ -159,7 +155,7 @@ fun DiaryTitle(title: String) {
 fun DiaryImage(image: Bitmap) {
     Image(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .size(120.dp)
             .clip(RoundedCornerShape(5.dp)),
         bitmap = image.asImageBitmap(),
@@ -171,7 +167,7 @@ fun DiaryImage(image: Bitmap) {
 fun DiaryImage(imageUrl: String) {
     AsyncImage(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .size(120.dp)
             .clip(RoundedCornerShape(5.dp)),
         model = imageUrl,
@@ -184,7 +180,7 @@ fun DiaryImage(imageUrl: String) {
 fun DiaryContents(contents: String) {
     Text(
         modifier = Modifier
-            .padding(top = FcbTheme.padding.smallVerticalPadding)
+            .padding(top = FcbTheme.padding.smallVerticalPadding01)
             .fillMaxWidth(),
         style = FcbTheme.typography.body,
         text = contents
@@ -196,7 +192,7 @@ fun DiaryRegistrationButton(onDiaryRegistry: () -> Unit = {}) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = FcbTheme.padding.smallVerticalPadding),
+            .padding(top = FcbTheme.padding.smallVerticalPadding01),
         onClick = { onDiaryRegistry() },
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(containerColor = FcbTheme.colors.fcbDarkBeige)
@@ -214,6 +210,6 @@ fun DiaryRegistrationButton(onDiaryRegistry: () -> Unit = {}) {
 fun DiaryRegistrationPreview() {
     DiaryRegistrationScreen(
         modifier = Modifier.background(FcbTheme.colors.fcbGray),
-        uiState = DiaryPostingUiState.ImageUploaded(DiaryFixture.get().first())
+        uiState = DiaryRegistrationUiState.ReadyForRegistry(DiaryFixture.get().first())
     )
 }

@@ -1,32 +1,29 @@
 package com.fourcutbook.forcutbook.feature.main
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.feature.FcbBottomNavigation
 import com.fourcutbook.forcutbook.feature.FcbRoute
@@ -37,17 +34,24 @@ import com.fourcutbook.forcutbook.feature.diaryfeed.navigateToDiaryFeed
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryImageUploading.diaryImageUploadingNavGraph
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.diaryRegistrationNavGraph
 import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.navigateToDiaryRegistration
+import com.fourcutbook.forcutbook.feature.followingAndFollower.followerList.followerListNavGraph
+import com.fourcutbook.forcutbook.feature.followingAndFollower.followerList.navigateToFollowerList
+import com.fourcutbook.forcutbook.feature.followingAndFollower.followingList.followingListNavGraph
+import com.fourcutbook.forcutbook.feature.followingAndFollower.followingList.navigateToFollowingList
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
-import com.fourcutbook.forcutbook.feature.mypage.navigateToMyPage
-import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.navigateToSubscribedUser
-import com.fourcutbook.forcutbook.feature.subscribe.subscribeduser.subscribedUserNavGraph
-import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.navigateToSubscribingDiary
-import com.fourcutbook.forcutbook.feature.subscribe.subscribingdiary.subscribingDiaryNavGraph
+import com.fourcutbook.forcutbook.feature.notification.navigateToNotification
+import com.fourcutbook.forcutbook.feature.notification.notificationNavGraph
+import com.fourcutbook.forcutbook.feature.searching.userSearchingNavGraph
+import com.fourcutbook.forcutbook.feature.userPage.navigateToUserPage
+import com.fourcutbook.forcutbook.feature.userPage.userPageNavGraph
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
+fun MainScreen(
+    navController: NavHostController = rememberNavController(),
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
     val onShowSnackBar: (message: String) -> Unit = { message ->
@@ -55,13 +59,23 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             snackBarHostState.showSnackbar(message)
         }
     }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val startDestination = when (uiState) {
+        is MainUiState.SignedIn -> FcbRoute.DiaryFeed.value
+        is MainUiState.NotSignedIn -> FcbRoute.LoginRoute.value
+    }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { FcbTopAppBar(currentRoute = FcbRoute.find(currentRoute)) },
-        bottomBar = { FcbBottomNavigation(navController = navController) }
+        modifier = Modifier
+            .fillMaxSize()
+            .background(FcbTheme.colors.fcbGray),
+        bottomBar = { FcbBottomNavigation(navController = navController) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) {
+                MainSnackBar(it.visuals.message)
+            }
+        }
     ) { contentPadding ->
 
         NavHost(
@@ -75,41 +89,73 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 )
                 .fillMaxSize(),
             navController = navController,
-            startDestination = FcbRoute.LoginRoute.value
+            startDestination = startDestination
         ) {
-            loginNavGraph(navigateToHome = navController::navigateToDiaryFeed)
+            loginNavGraph(
+                navigateToHome = navController::navigateToDiaryFeed
+            )
 
-            diaryFeedNavGraph(navigateToDiaryDetails = navController::navigateToDiaryDetail)
+            diaryFeedNavGraph(
+                onDiaryClick = navController::navigateToDiaryDetail,
+                onNotificationClick = navController::navigateToNotification
+            )
 
-            diaryImageUploadingNavGraph(navigateToDiaryScreen = navController::navigateToDiaryRegistration)
+            diaryImageUploadingNavGraph(
+                onImageUploadButtonClick = navController::navigateToDiaryRegistration
+            )
 
             diaryRegistrationNavGraph(
                 navController = navController,
-                navigateToHomeScreen = navController::navigateToDiaryFeed,
+                onDiaryRegistered = navController::navigateToDiaryFeed,
                 onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
 
-            diaryDetailNavGraph(
-                onBackPressed = navController::popBackStack
+            diaryDetailNavGraph(onBackPressed = navController::popBackStack)
+
+            myPageNavGraph(
+                onSubscribingUserClick = navController::navigateToFollowingList,
+                onSubscribedUserClick = navController::navigateToFollowerList,
+                onDiaryClick = navController::navigateToDiaryDetail,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            followingListNavGraph(
+                onUserProfileClick = navController::navigateToUserPage,
+                onBackPressed = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            followerListNavGraph(
+                onUserProfileClick = navController::navigateToUserPage,
+                onBackPressed = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
+            )
+
+            notificationNavGraph(
+                onProfileImgClick = navController::navigateToUserPage,
+                onBackClick = navController::popBackStack,
+                onShowSnackBar = onShowSnackBar
             )
 
             myPageNavGraph(
-                navController = navController,
-                navigateToSubscribingDiary = navController::navigateToSubscribingDiary,
-                navigateToSubscribedUser = navController::navigateToSubscribedUser,
+                onSubscribingUserClick = navController::navigateToFollowingList,
+                onSubscribedUserClick = navController::navigateToFollowerList,
+                onDiaryClick = navController::navigateToDiaryDetail,
                 onShowSnackBar = onShowSnackBar
             )
 
-            subscribingDiaryNavGraph(
-                navigateToUserPage = navController::navigateToMyPage,
-                onBackPressed = navController::popBackStack,
+            userPageNavGraph(
+                onFollowingCountClick = navController::navigateToFollowingList,
+                onFollowerCountClick = navController::navigateToFollowerList,
+                onDiaryClick = navController::navigateToDiaryDetail,
+                onBackClick = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
 
-            subscribedUserNavGraph(
-                navigateToUserPage = navController::navigateToMyPage,
-                onBackPressed = navController::popBackStack,
+            userSearchingNavGraph(
+                onUserProfileClick = navController::navigateToUserPage,
+                onBackClick = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
         }
@@ -117,40 +163,29 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 }
 
 @Composable
-fun FcbTopAppBar(
-    modifier: Modifier = Modifier,
-    currentRoute: FcbRoute?
-) {
-    Row(
+fun MainSnackBar(message: String) {
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(
-                top = FcbTheme.padding.basicVerticalPadding,
                 start = FcbTheme.padding.basicHorizontalPadding,
-                end = FcbTheme.padding.basicHorizontalPadding
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
+                end = FcbTheme.padding.basicHorizontalPadding,
+                bottom = FcbTheme.padding.smallVerticalPadding01
+            )
+            .background(
+                color = FcbTheme.colors.fcbWhite,
+                shape = RoundedCornerShape(5.dp)
+            )
+            .fillMaxWidth()
     ) {
         Text(
+            modifier = Modifier
+                .padding(vertical = 6.dp)
+                .fillMaxWidth(),
+            text = message,
             textAlign = TextAlign.Center,
-            modifier = modifier.wrapContentWidth(),
-            style = FcbTheme.typography.heading,
-            text = currentRoute
-                ?.header
-                ?.let { rid -> stringResource(id = rid) }
-                ?: stringResource(id = R.string.string_header_of_home_screen)
+            style = FcbTheme.typography.body,
+            fontSize = 14.sp
         )
-
-        if (currentRoute is FcbRoute.DiaryFeed) {
-            Icon(
-                modifier = modifier
-                    .wrapContentWidth()
-                    .height(FcbTheme.shame.iconSize),
-                painter = painterResource(id = R.drawable.ic_alarm),
-                contentDescription = null
-            )
-        }
     }
 }
 
@@ -158,4 +193,10 @@ fun FcbTopAppBar(
 @Composable
 fun MainPreview() {
     MainScreen()
+}
+
+@Preview(widthDp = 360, heightDp = 640)
+@Composable
+fun MainSnackBarPreview() {
+    MainSnackBar("잘못된 요청입니다.")
 }

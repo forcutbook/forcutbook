@@ -15,8 +15,8 @@ fun Bitmap.toFile(context: Context): File {
         imgFile.createNewFile()
         val out = FileOutputStream(imgFile)
 
-        compress(Bitmap.CompressFormat.JPEG, 100, out)
-        out.close()
+        compress(Bitmap.CompressFormat.JPEG, 10, out)
+        out.flush()
 
         return imgFile
     }.onFailure { e ->

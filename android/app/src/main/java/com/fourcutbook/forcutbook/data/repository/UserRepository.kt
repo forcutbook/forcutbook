@@ -1,13 +1,25 @@
 package com.fourcutbook.forcutbook.data.repository
 
-import kotlinx.coroutines.flow.Flow
+import com.fourcutbook.forcutbook.domain.UserProfile
+import com.fourcutbook.forcutbook.domain.UserStats
 
 interface UserRepository {
 
-    // todo: client에서 userId를 계속 가지고 있어야한다..?
-    fun fetchUserId(): Flow<Long>
+    suspend fun fetchUserStats(userId: Long? = null): UserStats
 
-    suspend fun postUserId(id: Long)
+    suspend fun fetchFollowings(userId: Long? = null): List<UserProfile>
 
-    suspend fun postDelete()
+    suspend fun fetchFollowers(userId: Long): List<UserProfile>
+
+    suspend fun postFollowingRequest(userId: Long)
+
+    suspend fun deleteFollowingRequest(userId: Long)
+
+    suspend fun deleteFollower(userId: Long)
+
+    suspend fun deleteSubscribingUser(userId: Long)
+
+    suspend fun postAcceptFollowingRequest(userId: Long)
+
+    suspend fun postDenyFollowingRequest(userId: Long)
 }
