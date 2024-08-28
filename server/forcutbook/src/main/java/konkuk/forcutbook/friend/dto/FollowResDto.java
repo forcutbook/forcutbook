@@ -11,7 +11,7 @@ public class FollowResDto {
     private Long userId;
     private String userName;
     private String imageUrl;
-    private FriendStatus status;
+    private String status;
     private LocalDateTime createdAt;
 
     @QueryProjection
@@ -19,7 +19,7 @@ public class FollowResDto {
         this.userId = userId;
         this.userName = userName;
         this.imageUrl = imageUrl;
-        this.status = isAccept ? FriendStatus.FOLLOWING : FriendStatus.UNFOLLOING;
+        this.status = isAccept ? FriendStatus.FOLLOWING.getMessage() : FriendStatus.UNFOLLOING.getMessage();
         this.createdAt = createdAt;
     }
 }
