@@ -71,10 +71,21 @@ public class FriendService {
     }
 
     @Transactional
-    public Long deleteFriend(Long userId, Long friendId) {
+    public Long deleteFollowing(Long userId, Long friendId) {
         //검증 로직
         checkExistUser(userId, friendId);
         Friend friendShip = checkIsFriendShip(userId, friendId);
+
+        //서비스 로직
+        friendRepository.delete(friendShip);
+        return friendShip.getId();
+    }
+
+    @Transactional
+    public Long deleteFollower(Long userId, Long friendId) {
+        //검증 로직
+        checkExistUser(userId, friendId);
+        Friend friendShip = checkIsFriendShip(friendId, userId);
 
         //서비스 로직
         friendRepository.delete(friendShip);
@@ -134,8 +145,8 @@ public class FriendService {
         }
     }
 
-    private Friend checkIsFriendShip(Long userId, Long friendId){
-        Friend friend = friendRepository.findBySenderIdAndReceiverId(userId, friendId).orElseThrow();
+    private Friend checkIsFriendShip(Long senderId, Long receiverId){
+        Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow();
         if (!friend.isAccept()){
             throw new FriendException(FriendExceptionErrorCode.NO_SUCH_FRIEND);
         }

@@ -52,10 +52,19 @@ public class FriendController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{friendId}/deleted")
-    public ResponseEntity<BaseResponse> deleteFriend(@PathVariable Long userId,
+    @DeleteMapping("/{friendId}/following/deleted")
+    public ResponseEntity<BaseResponse> deleteFollowing(@PathVariable Long userId,
                                                       @PathVariable Long friendId){
-        Long id = friendService.deleteFriend(userId, friendId);
+        Long id = friendService.deleteFollowing(userId, friendId);
+
+        BaseResponse<Object> response = new BaseResponse<>(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{friendId}/follower/deleted")
+    public ResponseEntity<BaseResponse> deleteFollower(@PathVariable Long userId,
+                                                        @PathVariable Long friendId){
+        Long id = friendService.deleteFollower(userId, friendId);
 
         BaseResponse<Object> response = new BaseResponse<>(id);
         return ResponseEntity.ok(response);
