@@ -59,7 +59,7 @@ class FriendCustomRepositoryImplTest {
         assertThat(result).extracting("userId").contains(following1.getId(), following2.getId());
         assertThat(result).extracting("userName").contains(following1.getUserName(), following2.getUserName());
         assertThat(result).extracting("imageUrl").contains(following1.getImageUrl(), following2.getImageUrl());
-        assertThat(result).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING);
+        assertThat(result).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING.getMessage());
     }
 
     User createUser(String username){

@@ -271,7 +271,7 @@ class FriendServiceIntegrationTest {
         assertThat(data).extracting("userId").contains(follower1.getId(), follower2.getId());
         assertThat(data).extracting("userName").contains(follower1.getUserName(), follower2.getUserName());
         assertThat(data).extracting("imageUrl").contains(follower1.getImageUrl(), follower2.getImageUrl());
-        assertThat(data).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING);
+        assertThat(data).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING.getMessage());
     }
 
     @Test
@@ -316,7 +316,7 @@ class FriendServiceIntegrationTest {
         assertThat(data).extracting("userId").contains(following1.getId(), following2.getId());
         assertThat(data).extracting("userName").contains(following1.getUserName(), following2.getUserName());
         assertThat(data).extracting("imageUrl").contains(following1.getImageUrl(), following2.getImageUrl());
-        assertThat(data).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING);
+        assertThat(data).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING.getMessage());
     }
 
     User createUser(String username){
