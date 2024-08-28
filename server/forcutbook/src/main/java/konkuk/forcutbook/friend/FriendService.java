@@ -106,7 +106,8 @@ public class FriendService {
 
     public FollowListResDto getFollowerList(Long userId, Long friendId) {
         //검증 로직
-        checkExistUser(userId, friendId);
+        User user = findUser(userId);
+        checkExistUser(friendId);
         if (userId != friendId){
             checkIsFriendShip(userId, friendId);
         }
@@ -114,12 +115,13 @@ public class FriendService {
         //서비스 로직
         List<FollowResDto> followerListDto = friendRepository.findFollowerListDto(userId, friendId);
 
-        return new FollowListResDto(userId, followerListDto);
+        return new FollowListResDto(user, followerListDto);
     }
 
     public FollowListResDto getFollowingList(Long userId, Long friendId) {
         //검증 로직
-        checkExistUser(userId, friendId);
+        User user = findUser(userId);
+        checkExistUser(friendId);
         if (userId != friendId){
             checkIsFriendShip(userId, friendId);
         }
@@ -127,7 +129,7 @@ public class FriendService {
         //서비스 로직
         List<FollowResDto> followingListDto = friendRepository.findFollowingListDto(userId, friendId);
 
-        return new FollowListResDto(userId, followingListDto);
+        return new FollowListResDto(user, followingListDto);
     }
 
 
