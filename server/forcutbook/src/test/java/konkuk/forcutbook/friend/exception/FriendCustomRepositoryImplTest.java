@@ -1,11 +1,11 @@
 package konkuk.forcutbook.friend.exception;
 
 import jakarta.persistence.EntityManager;
-import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.friend.FriendRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FollowResDto;
 import konkuk.forcutbook.friend.dto.FriendStatus;
+import konkuk.forcutbook.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
