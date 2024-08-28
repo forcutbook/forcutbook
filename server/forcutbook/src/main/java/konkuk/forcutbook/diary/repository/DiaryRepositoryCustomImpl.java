@@ -29,6 +29,9 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
         QDiaryImage diaryImageSub = new QDiaryImage("diaryImageSub");
         return query
                 .select(Projections.constructor(DiaryListEachResDto.class,
+                        diary.writer.id.as("userId"),
+                        diary.writer.userName,
+                        diary.writer.imageUrl.as("userProfile"),
                         diary.id.as("diaryId"),
                         diary.title,
                         diary.content,

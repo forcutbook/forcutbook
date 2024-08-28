@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface FriendRepository extends JpaRepository<Friend, Long> {
+public interface FriendRepository extends JpaRepository<Friend, Long>, FriendCustomRepository {
     boolean existsBySenderIdAndReceiverId(Long senderId, Long receiverId);
+
     boolean existsBySenderIdAndReceiverIdAndIsAccept(Long senderId, Long receiverId, boolean isAccept);
+
     Optional<Friend> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
 
     @EntityGraph(attributePaths = {"sender"})
@@ -19,5 +21,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     List<Friend> findBySenderIdAndIsAccept(Long senderId, boolean isAccept);
 
     Long countBySenderIdAndIsAccept(Long senderId, boolean isAccept);
+
     Long countByReceiverIdAndIsAccept(Long receiverId, boolean isAccept);
 }

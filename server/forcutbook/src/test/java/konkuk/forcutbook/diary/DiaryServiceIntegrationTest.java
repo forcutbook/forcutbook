@@ -134,6 +134,9 @@ class DiaryServiceIntegrationTest {
         assertThat(results.getUserId()).isEqualTo(user1.getId());
 
         List<DiaryListEachResDto> diaries = results.getDiaries();
+        assertThat(diaries).extracting("userId").contains(user1.getId());
+        assertThat(diaries).extracting("userName").contains(user1.getUserName());
+        assertThat(diaries).extracting("userProfile").contains(user1.getImageUrl());
         assertThat(diaries.stream().map(DiaryListEachResDto::getDiaryId)).contains(diary1.getId(), diary2.getId());
         assertThat(diaries.stream().map(DiaryListEachResDto::getTitle)).contains(diary1.getTitle(), diary2.getTitle());
         assertThat(diaries.stream().map(DiaryListEachResDto::getContent)).contains(diary1.getContent(), diary2.getContent());
