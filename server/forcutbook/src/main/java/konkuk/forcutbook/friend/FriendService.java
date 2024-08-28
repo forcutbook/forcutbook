@@ -3,6 +3,8 @@ package konkuk.forcutbook.friend;
 import konkuk.forcutbook.domain.user.User;
 import konkuk.forcutbook.domain.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
+import konkuk.forcutbook.friend.dto.FollowListResDto;
+import konkuk.forcutbook.friend.dto.FollowResDto;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.forcutbook.friend.exception.FriendException;
 import konkuk.forcutbook.friend.exception.errorcode.FriendExceptionErrorCode;
@@ -112,15 +114,16 @@ public class FriendService {
         return FriendListResDto.toDtoBySender(friends);
     }
 
-    public FriendListResDto getFollowingList(Long userId) {
+    public FollowListResDto getFollowingList(Long userId, Long friendId) {
         //검증 로직
         checkExistUser(userId);
 
         //서비스 로직
-        List<Friend> friends = friendRepository.findBySenderIdAndIsAccept(userId, true);
+        List<FollowResDto> followingListDto = friendRepository.findFollowingListDto(userId, friendId);
 
-        return FriendListResDto.toDtoByReceiver(friends);
+        return new FollowListResDto(userId, followingListDto);
     }
+
 
     private User findUser(Long userId){
         User user = userRepository.findById(userId).orElse(null);

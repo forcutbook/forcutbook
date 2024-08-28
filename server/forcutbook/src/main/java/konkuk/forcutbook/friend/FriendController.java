@@ -1,5 +1,7 @@
 package konkuk.forcutbook.friend;
 
+import konkuk.forcutbook.friend.dto.FollowListResDto;
+import konkuk.forcutbook.friend.dto.FollowResDto;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.forcutbook.friend.dto.FriendStatus;
 import konkuk.forcutbook.global.response.BaseResponse;
@@ -79,8 +81,9 @@ public class FriendController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/follower")
-    public ResponseEntity<BaseResponse> getFollowerList(@PathVariable Long userId){
+    @GetMapping("/{friendId}/follower")
+    public ResponseEntity<BaseResponse> getFollowerList(@PathVariable Long userId,
+                                                        @PathVariable Long friendId){
         FriendListResDto resultDto = friendService.getFollowerList(userId);
 
         BaseResponse<FriendListResDto> response = new BaseResponse<>(resultDto);
@@ -88,10 +91,11 @@ public class FriendController {
     }
 
     @GetMapping("/following")
-    public ResponseEntity<BaseResponse> getFollowingList(@PathVariable Long userId){
-        FriendListResDto resultDto = friendService.getFollowingList(userId);
+    public ResponseEntity<BaseResponse> getFollowingList(@PathVariable Long userId,
+                                                         @PathVariable Long friendId){
+        FollowListResDto resultDto = friendService.getFollowingList(userId, friendId);
 
-        BaseResponse<FriendListResDto> response = new BaseResponse<>(resultDto);
+        BaseResponse<FollowListResDto> response = new BaseResponse<>(resultDto);
         return ResponseEntity.ok(response);
     }
 }
