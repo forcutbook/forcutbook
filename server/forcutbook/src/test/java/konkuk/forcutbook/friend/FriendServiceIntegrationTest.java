@@ -233,35 +233,45 @@ class FriendServiceIntegrationTest {
     @DisplayName("팔로워 목록 조회")
     void getFollowerList() {
         //given
-        User sender1 = createUser("sender1");
-        User sender2 = createUser("sender2");
-        User waitSender = createUser("waitSender");
-        User receiver = createUser("receiver");
-        userRepository.save(sender1);
-        userRepository.save(sender2);
-        userRepository.save(waitSender);
-        userRepository.save(receiver);
+        User user = createUser("user");
+        User friend = createUser("friend");
+        User follower1 = createUser("follower1");
+        User follower2 = createUser("follower2");
+        em.persist(user);
+        em.persist(friend);
+        em.persist(follower1);
+        em.persist(follower2);
 
-        Friend friend1 = Friend.createFriend(sender1, receiver);
-        friend1.setAccept(true);
-        friendRepository.save(friend1);
+        Friend friendShip1 = Friend.createFriend(user, friend);
+        friendShip1.setAccept(true);
+        em.persist(friendShip1);
 
-        Friend friend2 = Friend.createFriend(sender2, receiver);
-        friend2.setAccept(true);
-        friendRepository.save(friend2);
+        Friend friendShip2 = Friend.createFriend(follower1, friend);
+        friendShip2.setAccept(true);
+        em.persist(friendShip2);
 
-        Friend waitFriend = Friend.createFriend(waitSender, receiver);
-        friendRepository.save(waitFriend);
+        Friend friendShip3 = Friend.createFriend(follower2, friend);
+        friendShip3.setAccept(true);
+        em.persist(friendShip3);
+
+        Friend friendShip4 = Friend.createFriend(user, follower1);
+        friendShip4.setAccept(true);
+        em.persist(friendShip4);
+
+        em.flush();
+        em.clear();
 
         //when
-        FriendListResDto dto = friendService.getFollowerList(receiver.getId());
+        FollowListResDto result = friendService.getFollowerList(user.getId(), friend.getId());
 
         //then
-        List<FriendResDto> data = dto.getData();
-        assertThat(data.size()).isEqualTo(2);
-        assertThat(data).extracting("userId").contains(sender1.getId(), sender2.getId());
-        assertThat(data).extracting("userName").contains(sender1.getUserName(), sender2.getUserName());
-//        assertThat(data).extracting("createdAt").contains(friend1.getCreatedAt(), friend2.getCreatedAt());
+        assertThat(result.getUserId()).isEqualTo(user.getId());
+
+        List<FollowResDto> data = result.getData();
+        assertThat(data).extracting("userId").contains(follower1.getId(), follower2.getId());
+        assertThat(data).extracting("userName").contains(follower1.getUserName(), follower2.getUserName());
+        assertThat(data).extracting("imageUrl").contains(follower1.getImageUrl(), follower2.getImageUrl());
+        assertThat(data).extracting("status").contains(FriendStatus.FOLLOWING, FriendStatus.UNFOLLOING);
     }
 
     @Test

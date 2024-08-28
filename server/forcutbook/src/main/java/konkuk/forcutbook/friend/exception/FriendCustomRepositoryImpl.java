@@ -37,4 +37,24 @@ public class FriendCustomRepositoryImpl implements FriendCustomRepository {
                         friend.isAccept.isTrue())
                 .fetch();
     }
+
+    @Override
+    public List<FollowResDto> findFollowerListDto(Long userId, Long friendId) {
+        QFriend subFriend = new QFriend("subFriend");
+        return query
+                .select(Projections.constructor(FollowResDto.class,
+                        friend.sender.id.as("userId"),
+                        friend.sender.userName,
+                        friend.sender.imageUrl,
+                        subFriend.isAccept,
+                        friend.createdAt
+                ))
+                .from(friend)
+                .leftJoin(subFriend)
+                .on(friend.sender.id.eq(subFriend.receiver.id),
+                        subFriend.sender.id.eq(userId))
+                .where(friend.receiver.id.eq(friendId),
+                        friend.isAccept.isTrue())
+                .fetch();
+    }
 }

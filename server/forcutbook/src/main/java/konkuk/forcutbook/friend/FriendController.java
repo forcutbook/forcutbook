@@ -84,9 +84,9 @@ public class FriendController {
     @GetMapping("/{friendId}/follower")
     public ResponseEntity<BaseResponse> getFollowerList(@PathVariable Long userId,
                                                         @PathVariable Long friendId){
-        FriendListResDto resultDto = friendService.getFollowerList(userId);
+        FollowListResDto resultDto = friendService.getFollowerList(userId, friendId);
 
-        BaseResponse<FriendListResDto> response = new BaseResponse<>(resultDto);
+        BaseResponse<FollowListResDto> response = new BaseResponse<>(resultDto);
         return ResponseEntity.ok(response);
     }
 
