@@ -6,6 +6,7 @@ import konkuk.forcutbook.user.UserRepository;
 import konkuk.forcutbook.friend.domain.Friend;
 import konkuk.forcutbook.friend.dto.FriendListResDto;
 import konkuk.forcutbook.friend.dto.FriendResDto;
+import konkuk.forcutbook.friend.exception.FriendException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,8 +131,8 @@ class FriendServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("친구 삭제")
-    void deleteFriend() {
+    @DisplayName("팔로잉 삭제")
+    void deleteFollowing() {
         //given
         User user = createUser("user");
         User friend = createUser("friend");
@@ -146,12 +147,57 @@ class FriendServiceIntegrationTest {
         em.clear();
 
         //when
-        Long friendShipId = friendService.deleteFriend(user.getId(), friend.getId());
+        Long friendShipId = friendService.deleteFollowing(user.getId(), friend.getId());
         em.flush();
         em.clear();
 
         //then
         assertThatThrownBy(() -> friendRepository.findById(friendShipId).orElseThrow()).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("팔로워 삭제")
+    void deleteFollower() {
+        //given
+        User user = createUser("user");
+        User friend = createUser("friend");
+        userRepository.save(user);
+        userRepository.save(friend);
+
+        Friend friendShip = Friend.createFriend(friend, user);
+        friendShip.setAccept(true);
+        friendRepository.save(friendShip);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Long friendShipId = friendService.deleteFollower(user.getId(), friend.getId());
+        em.flush();
+        em.clear();
+
+        //then
+        assertThatThrownBy(() -> friendRepository.findById(friendShipId).orElseThrow()).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("팔로워 삭제 - 친구 관계x")
+    void deleteFollowerNotFriend() {
+        //given
+        User user = createUser("user");
+        User friend = createUser("friend");
+        userRepository.save(user);
+        userRepository.save(friend);
+
+        Friend friendShip = Friend.createFriend(friend, user);
+        friendShip.setAccept(false);
+        friendRepository.save(friendShip);
+
+        em.flush();
+        em.clear();
+
+        //when
+        assertThatThrownBy(() -> friendService.deleteFollower(user.getId(), friend.getId())).isInstanceOf(FriendException.class);
     }
 
     @Test
