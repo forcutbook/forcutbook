@@ -1,12 +1,10 @@
-package com.fourcutbook.forcutbook.feature.diaryposting
+package com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryRegistrationEvent
-import com.fourcutbook.forcutbook.feature.diaryposting.diaryRegistration.DiaryRegistrationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +43,7 @@ class DiaryRegistrationViewModel @Inject constructor(
     ) {
         _uiState.value = DiaryRegistrationUiState.ReadyForRegistry(
             Diary(
-                id = 5474,
+                diaryId = 5474,
                 title = title,
                 contents = contents,
                 date = LocalDateTime.now(),

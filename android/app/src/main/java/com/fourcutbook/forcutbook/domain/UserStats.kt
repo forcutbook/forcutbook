@@ -6,5 +6,5 @@ data class UserStats(
     val subscribingDiaryCount: Int,
     val subscribingUserCount: Int,
     val diaryCount: Int,
-    val subscribingStatus: SubscribingStatus
+    val followingStatus: FollowingStatus
 )

@@ -12,7 +12,9 @@ object DiaryMapper {
 
     fun DiariesResponse.toDomain(): List<Diary> = diaries.map {
         Diary(
-            id = it.diaryId,
+            userId = it.userId,
+            nickname = it.nickname,
+            diaryId = it.diaryId,
             title = it.title,
             contents = it.content,
             date = it.date.toJavaLocalDateTime(),
@@ -22,7 +24,7 @@ object DiaryMapper {
     }
 
     fun AIDiaryResponse.toDomain(image: Bitmap): Diary = Diary(
-        id = -1,
+        diaryId = -1,
         title = title,
         contents = content,
         date = LocalDateTime.now(),
@@ -30,7 +32,8 @@ object DiaryMapper {
     )
 
     fun DiaryDetailResponse.toDomain(): Diary = Diary(
-        id = diaryId,
+        userId = -1,
+        diaryId = diaryId,
         title = title,
         contents = contents,
         date = date.toJavaLocalDateTime(),

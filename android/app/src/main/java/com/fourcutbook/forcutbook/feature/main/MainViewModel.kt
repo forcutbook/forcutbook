@@ -1,6 +1,5 @@
 package com.fourcutbook.forcutbook.feature.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.TokenRepository
@@ -22,9 +21,9 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            tokenRepository.fetchUserId()
+            tokenRepository
+                .fetchUserId()
                 .collect { userId ->
-                    Log.d("woogi", "$userId")
                     userId?.let {
                         _uiState.value = MainUiState.SignedIn
                     }

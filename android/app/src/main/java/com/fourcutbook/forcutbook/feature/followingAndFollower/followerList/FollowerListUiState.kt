@@ -4,9 +4,14 @@ import com.fourcutbook.forcutbook.domain.UserProfile
 
 sealed interface FollowerListUiState {
 
-    data object Default : FollowerListUiState
+    data object Empty : FollowerListUiState
 
-    data class SubscribedUsers(
+    sealed interface FollowerList : FollowerListUiState {
+
         val value: List<UserProfile>
-    ) : FollowerListUiState
+
+        data class MyFollower(override val value: List<UserProfile>) : FollowerList
+
+        data class Other(override val value: List<UserProfile>) : FollowerList
+    }
 }

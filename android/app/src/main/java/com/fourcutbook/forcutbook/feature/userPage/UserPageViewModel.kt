@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
 import com.fourcutbook.forcutbook.data.repository.UserRepository
 import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.FollowingStatus
 import com.fourcutbook.forcutbook.domain.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +49,7 @@ class UserPageViewModel @Inject constructor(
                 }.collect { diaries ->
                     _uiState.value = UserPageUiState.UserStatsLoaded.Subscribed(
                         userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats,
-                        diaries = diaries
+                        _diaries = diaries
                     )
                 }
         }
@@ -62,7 +62,7 @@ class UserPageViewModel @Inject constructor(
             }.collect {
                 _uiState.value = UserPageUiState.UserStatsLoaded.NotSubscribed(
                     userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats.copy(
-                        subscribingStatus = SubscribingStatus.REQUESTED
+                        followingStatus = FollowingStatus.REQUESTED
                     )
                 )
             }
@@ -76,7 +76,7 @@ class UserPageViewModel @Inject constructor(
             }.collect {
                 _uiState.value = UserPageUiState.UserStatsLoaded.NotSubscribed(
                     userStats = (_uiState.value as UserPageUiState.UserStatsLoaded).userStats.copy(
-                        subscribingStatus = SubscribingStatus.NONE
+                        followingStatus = FollowingStatus.NONE
                     )
                 )
             }

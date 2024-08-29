@@ -1,7 +1,7 @@
 package com.fourcutbook.forcutbook.feature.diaryfeed
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,16 +40,17 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun DiaryFeedRoute(
-    diaryFeedViewModel: DiaryFeedViewModel = hiltViewModel(),
-    navigateToDiaryDetail: (diaryId: Long) -> Unit = { },
+    viewModel: DiaryFeedViewModel = hiltViewModel(),
+    navigateToDiaryDetail: (diaryId: Long) -> Unit = {},
     navigateToNotification: () -> Unit = {}
 ) {
-    val uiState by diaryFeedViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DiaryFeedScreen(
         uiState = uiState,
         onDiaryClick = navigateToDiaryDetail,
-        onNotificationClick = navigateToNotification
+        onNotificationClick = navigateToNotification,
+        onDiariesRefresh = viewModel::fetchDiaries
     )
 }
 
@@ -54,14 +58,31 @@ fun DiaryFeedRoute(
 fun DiaryFeedScreen(
     modifier: Modifier = Modifier,
     uiState: DiaryFeedUiState,
-    onBackClick: () -> Unit = {},
     onDiaryClick: (diaryId: Long) -> Unit = {},
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    onDiariesRefresh: () -> Unit = {}
 ) {
+    val scrollState = rememberScrollState()
+
     when (uiState) {
-        is DiaryFeedUiState.Feed -> {
-            Log.d("woogi", "DiaryFeedScreen: ${uiState.isNotificationExist}")
-            Column(modifier = Modifier.fillMaxSize()) {
+        is DiaryFeedUiState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .align(Alignment.CenterHorizontally),
+                    color = FcbTheme.colors.fcbDarkBeige02
+                )
+            }
+        }
+
+        is DiaryFeedUiState.DiaryFeed -> {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 FcbTopAppBarWithIcon(
                     title = stringResource(id = R.string.header_of_home_screen),
                     iconResource = if (uiState.isNotificationExist) {
@@ -73,7 +94,8 @@ fun DiaryFeedScreen(
                 )
                 DiariesColumn(
                     diaries = uiState.diaries,
-                    onDiaryClick = onDiaryClick
+                    onDiaryClick = onDiaryClick,
+                    onDiariesRefresh = onDiariesRefresh
                 )
             }
         }
@@ -87,12 +109,20 @@ fun DiaryFeedScreen(
 fun DiariesColumn(
     modifier: Modifier = Modifier,
     diaries: List<Diary>,
-    onDiaryClick: (diaryId: Long) -> Unit = {}
+    onDiaryClick: (diaryId: Long) -> Unit = {},
+    onDiariesRefresh: () -> Unit = {}
 ) {
+    val scrollState = rememberLazyListState()
+
+    if (scrollState.isScrollInProgress && !scrollState.canScrollBackward) {
+        onDiariesRefresh()
+    }
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = FcbTheme.padding.basicVerticalPadding)
+            .padding(top = FcbTheme.padding.basicVerticalPadding),
+        state = scrollState
     ) {
         itemsIndexed(diaries) { index, diary ->
             DiaryItem(
@@ -126,7 +156,7 @@ fun DiaryItem(
                 shape = RoundedCornerShape(5.dp)
             )
             .padding(12.dp)
-            .noRippleClickable { onClick(diary.id) },
+            .noRippleClickable { onClick(diary.diaryId) },
         verticalAlignment = Alignment.CenterVertically
 
     ) {
@@ -148,7 +178,7 @@ fun DiaryItem(
                 Text(
                     modifier = Modifier.padding(start = 20.dp),
                     style = FcbTheme.typography.footer,
-                    text = "woogie" // todo: 닉네임 추가
+                    text = diary.nickname // todo: 닉네임 추가
                 )
             }
             Text(
@@ -166,7 +196,7 @@ fun DiaryItem(
 @Composable
 fun DiaryFeedPreview() {
     DiaryFeedScreen(
-        uiState = DiaryFeedUiState.Feed(DiaryFixture.get(), true)
+        uiState = DiaryFeedUiState.DiaryFeed(DiaryFixture.get(), true)
     )
 }
 

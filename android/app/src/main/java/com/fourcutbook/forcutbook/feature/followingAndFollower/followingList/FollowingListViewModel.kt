@@ -46,15 +46,54 @@ class FollowingListViewModel @Inject constructor(
         }
     }
 
-    fun deleteFollowing(userId: Long) {
+    /**
+     * userIdOfFollowing: user id that you request following
+     * userIdOfUserPage: user id of owner of follower list page you are seeing. null means my page
+     */
+    fun postFollowingRequest(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
         viewModelScope.launch {
             flow {
-                emit(userRepository.deleteFollowing(userId))
+                emit(userRepository.postFollowingRequest(userIdOfFollowing))
+            }.catch {
+                _event.emit(FollowingListEvent.Error)
+            }.collect {
+                _event.emit(FollowingListEvent.FollowingRequested)
+                fetchFollowings(userIdOfPageOwner)
+            }
+        }
+    }
+
+    fun postFollowingRequestCancel(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowingRequest(userIdOfFollowing))
+            }.catch {
+                _event.emit(FollowingListEvent.Error)
+            }.collect {
+                _event.emit(FollowingListEvent.FollowingRequestCanceled)
+                fetchFollowings(userIdOfPageOwner)
+            }
+        }
+    }
+
+    fun deleteFollowing(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowing(userIdOfFollowing))
             }.catch {
                 _event.emit(FollowingListEvent.Error)
             }.collect {
                 _event.emit(FollowingListEvent.FollowingCanceled)
-                fetchFollowings()
+                fetchFollowings(userIdOfPageOwner)
             }
         }
     }

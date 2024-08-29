@@ -5,16 +5,14 @@ import com.fourcutbook.forcutbook.domain.UserStats
 
 sealed interface MyPageUiState {
 
-    val userStats: UserStats?
-
-    data object Default : MyPageUiState {
-        override val userStats: UserStats? = null
-    }
-
-    data class Loading(override val userStats: UserStats) : MyPageUiState
+    data object Empty : MyPageUiState
 
     data class MyPage(
-        override val userStats: UserStats,
-        val diaries: List<Diary>
-    ) : MyPageUiState
+        val userStats: UserStats,
+        private val _diaries: List<Diary>
+    ) : MyPageUiState {
+        val diaries = _diaries.sortedByDescending { it.date }
+    }
+
+    data object Loading : MyPageUiState
 }

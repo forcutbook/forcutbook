@@ -20,19 +20,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
+import com.fourcutbook.forcutbook.domain.FollowingStatus
 import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun FollowerAndFollowingList(
     userProfiles: List<UserProfile>,
+    isForFollowerCancel: Boolean,
     onUserProfileClick: (userId: Long) -> Unit,
-    cancelButtonText: String,
-    onCancelButtonClick: (userId: Long) -> Unit
+    onRequestFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelRequestFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelFollowerButtonClick: (userId: Long) -> Unit = {}
 ) {
     LazyColumn(
         modifier = Modifier
@@ -42,9 +48,22 @@ fun FollowerAndFollowingList(
         items(userProfiles) { userProfile ->
             FollowerAndFollowingItem(
                 userProfile = userProfile,
-                onUserProfileClick = { onUserProfileClick(userProfile.userId) },
-                cancelButtonText = cancelButtonText,
-                onCancelButtonClick = onCancelButtonClick
+                isForFollowerCancel = isForFollowerCancel,
+                onUserProfileClick = {
+                    onUserProfileClick(userProfile.userId)
+                },
+                onRequestFollowingButtonClick = {
+                    onRequestFollowingButtonClick(userProfile.userId)
+                },
+                onCancelRequestFollowingButtonClick = {
+                    onCancelRequestFollowingButtonClick(userProfile.userId)
+                },
+                onCancelFollowingButtonClick = {
+                    onCancelFollowingButtonClick(userProfile.userId)
+                },
+                onCancelFollowerButtonClick = {
+                    onCancelFollowerButtonClick(userProfile.userId)
+                }
             )
         }
     }
@@ -53,9 +72,12 @@ fun FollowerAndFollowingList(
 @Composable
 fun FollowerAndFollowingItem(
     userProfile: UserProfile,
+    isForFollowerCancel: Boolean,
     onUserProfileClick: () -> Unit,
-    cancelButtonText: String,
-    onCancelButtonClick: (userId: Long) -> Unit
+    onRequestFollowingButtonClick: () -> Unit,
+    onCancelRequestFollowingButtonClick: () -> Unit,
+    onCancelFollowingButtonClick: () -> Unit,
+    onCancelFollowerButtonClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -92,22 +114,69 @@ fun FollowerAndFollowingItem(
                 style = FcbTheme.typography.body,
                 fontSize = 14.sp
             )
-            Surface {
-                Text(
-                    modifier = Modifier
-                        .background(
-                            shape = RoundedCornerShape(5.dp),
-                            color = FcbTheme.colors.fcbDarkBeige
-                        )
-                        .padding(vertical = 6.dp, horizontal = 4.dp)
-                        .noRippleClickable {
-                            onCancelButtonClick(userProfile.userId)
-                        },
-                    text = cancelButtonText,
-                    style = FcbTheme.typography.body,
-                    fontSize = 12.sp
+            if (isForFollowerCancel) {
+                FollowerCancelButton(onCancelButtonClick = onCancelFollowerButtonClick)
+            } else {
+                FollowingRequestButton(
+                    status = userProfile.followingStatus,
+                    onRequestFollowingButtonClick = onRequestFollowingButtonClick,
+                    onCancelRequestFollowingButtonClick = onCancelRequestFollowingButtonClick,
+                    onCancelFollowingButtonClick = onCancelFollowingButtonClick
                 )
             }
         }
+    }
+}
+
+@Composable
+fun FollowingRequestButton(
+    status: FollowingStatus,
+    onRequestFollowingButtonClick: () -> Unit,
+    onCancelRequestFollowingButtonClick: () -> Unit,
+    onCancelFollowingButtonClick: () -> Unit
+) {
+    val text = when (status) {
+        FollowingStatus.NONE -> stringResource(id = R.string.subscribing_request)
+        FollowingStatus.SUBSCRIBED -> stringResource(id = R.string.following_cancel)
+        FollowingStatus.REQUESTED -> stringResource(id = R.string.descripion_of_requesting_status)
+    }
+
+    Surface {
+        Text(
+            modifier = Modifier
+                .background(
+                    shape = RoundedCornerShape(5.dp),
+                    color = FcbTheme.colors.fcbDarkBeige
+                )
+                .padding(vertical = 6.dp, horizontal = 4.dp)
+                .noRippleClickable {
+                    when (status) {
+                        FollowingStatus.NONE -> onRequestFollowingButtonClick()
+                        FollowingStatus.SUBSCRIBED -> onCancelFollowingButtonClick()
+                        FollowingStatus.REQUESTED -> onCancelRequestFollowingButtonClick()
+                    }
+                },
+            text = text,
+            style = FcbTheme.typography.body,
+            fontSize = 12.sp
+        )
+    }
+}
+
+@Composable
+fun FollowerCancelButton(onCancelButtonClick: () -> Unit) {
+    Surface {
+        Text(
+            modifier = Modifier
+                .background(
+                    shape = RoundedCornerShape(5.dp),
+                    color = FcbTheme.colors.fcbDarkBeige
+                )
+                .padding(vertical = 6.dp, horizontal = 4.dp)
+                .noRippleClickable { onCancelButtonClick() },
+            text = stringResource(id = R.string.follower_list_delete_follower),
+            style = FcbTheme.typography.body,
+            fontSize = 12.sp
+        )
     }
 }

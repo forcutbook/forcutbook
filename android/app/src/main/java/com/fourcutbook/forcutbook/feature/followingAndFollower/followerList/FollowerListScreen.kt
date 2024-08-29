@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.feature.followingAndFollower.followerList
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,22 +28,45 @@ fun FollowerListRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    viewModel.fetchFollowers(userId)
-
+    if (uiState is FollowerListUiState.Empty) {
+        viewModel.fetchFollowers(userId)
+    }
     LaunchedEffect(key1 = null) {
         viewModel.event.collect { event ->
             val message = when (event) {
                 is FollowerListEvent.Canceled -> context.getString(R.string.follower_list_follower_cancel)
 
                 is FollowerListEvent.Error -> context.getString(R.string.common_error_description)
+
+                else -> ""
             }
-            onShowSnackBar(message)
+            if (message.isNotEmpty()) onShowSnackBar(message)
         }
     }
     FollowerListScreen(
         uiState = uiState,
         onProfileClick = onProfileClick,
-        onFollowerCancelClick = viewModel::deleteFollower,
+        onRequestFollowingButtonClick = { followingId ->
+            viewModel.postFollowingRequest(
+                userIdOfFollowing = followingId,
+                userIdOfPageOwner = userId
+            )
+        },
+        onCancelRequestFollowingButtonClick = { followingId ->
+            viewModel.postFollowingRequestCancel(
+                userIdOfFollowing = followingId,
+                userIdOfPageOwner = userId
+            )
+        },
+        onCancelFollowingButtonClick = { followingId ->
+            viewModel.deleteFollowing(
+                userIdOfFollowing = followingId,
+                userIdOfPageOwner = userId
+            )
+        },
+        onCancelFollowerButtonClick = { followerId ->
+            viewModel.deleteFollower(followerId)
+        },
         onBackClick = onBackPressed
     )
 }
@@ -52,11 +76,15 @@ fun FollowerListScreen(
     modifier: Modifier = Modifier,
     uiState: FollowerListUiState,
     onProfileClick: (userId: Long) -> Unit,
-    onFollowerCancelClick: (userId: Long) -> Unit,
+    onRequestFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelRequestFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelFollowingButtonClick: (userId: Long) -> Unit,
+    onCancelFollowerButtonClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
-        is FollowerListUiState.SubscribedUsers -> {
+        is FollowerListUiState.FollowerList -> {
+            Log.d("woogi", "FollowerListScreen: ${uiState is FollowerListUiState.FollowerList.MyFollower}")
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -69,8 +97,11 @@ fun FollowerListScreen(
                 FollowerAndFollowingList(
                     userProfiles = uiState.value,
                     onUserProfileClick = onProfileClick,
-                    cancelButtonText = stringResource(R.string.following_cancel),
-                    onCancelButtonClick = onFollowerCancelClick
+                    isForFollowerCancel = uiState is FollowerListUiState.FollowerList.MyFollower,
+                    onRequestFollowingButtonClick = onRequestFollowingButtonClick,
+                    onCancelRequestFollowingButtonClick = onCancelRequestFollowingButtonClick,
+                    onCancelFollowingButtonClick = onCancelFollowingButtonClick,
+                    onCancelFollowerButtonClick = onCancelFollowerButtonClick
                 )
             }
         }

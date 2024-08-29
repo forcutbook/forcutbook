@@ -15,6 +15,7 @@ fun NavController.navigateToMyPage(
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.myPageNavGraph(
+    myPageViewModel: MyPageViewModel,
     onSubscribingUserClick: (userId: Long) -> Unit,
     onSubscribedUserClick: (userId: Long) -> Unit,
     onDiaryClick: (diaryId: Long) -> Unit,
@@ -22,6 +23,7 @@ fun NavGraphBuilder.myPageNavGraph(
 ) {
     composable(route = FcbRoute.MyPageRoute.value) {
         MyPageRoute(
+            viewModel = myPageViewModel,
             onSubscribingUserClick = onSubscribingUserClick,
             onSubscribedUserClick = onSubscribedUserClick,
             onDiaryClick = onDiaryClick

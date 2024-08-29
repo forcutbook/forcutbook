@@ -1,6 +1,6 @@
 package com.fourcutbook.forcutbook.domain
 
-enum class SubscribingStatus {
+enum class FollowingStatus {
     REQUESTED,
     SUBSCRIBED,
     NONE;

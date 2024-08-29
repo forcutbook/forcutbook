@@ -36,10 +36,21 @@ class DefaultUserRepository @Inject constructor(
 
     override suspend fun fetchFollowings(userId: Long?): List<UserProfile> {
         // todo: userId가 null인 경우 -> 나 자신을 조회, null이 아닌 경우 -> 해당 유저를 조회
-        val id = userId
-            ?: tokenRepository.fetchUserId().firstOrNull()
+        val myId = tokenRepository
+            .fetchUserId()
+            .firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
-        val response = userService.fetchFollowing(id)
+
+        val friendId = userId
+            ?: tokenRepository
+                .fetchUserId()
+                .firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.fetchFollowings(
+            userId = myId,
+            friendId = friendId
+        )
 
         if (response.isSuccessful) {
             val followings = response
@@ -55,11 +66,21 @@ class DefaultUserRepository @Inject constructor(
 
     override suspend fun fetchFollowers(userId: Long?): List<UserProfile> {
         // todo: userId가 null인 경우 -> 나 자신을 조회, null이 아닌 경우 -> 해당 유저를 조회
-        val id = userId
-            ?: tokenRepository.fetchUserId().firstOrNull()
+        val myId = tokenRepository
+            .fetchUserId()
+            .firstOrNull()
             ?: throw IllegalStateException("Cannot access on this contents")
 
-        val response = userService.fetchFollowers(id)
+        val friendId = userId
+            ?: tokenRepository
+                .fetchUserId()
+                .firstOrNull()
+            ?: throw IllegalStateException("Cannot access on this contents")
+
+        val response = userService.fetchFollowers(
+            userId = myId,
+            friendId = friendId
+        )
 
         if (response.isSuccessful) {
             val followers = response

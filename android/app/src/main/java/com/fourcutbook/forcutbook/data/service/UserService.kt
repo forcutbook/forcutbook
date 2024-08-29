@@ -1,8 +1,9 @@
 package com.fourcutbook.forcutbook.data.service
 
 import com.fourcutbook.forcutbook.data.response.BaseResponse
+import com.fourcutbook.forcutbook.data.response.FollowerListResponse
+import com.fourcutbook.forcutbook.data.response.FollowingListResponse
 import com.fourcutbook.forcutbook.data.response.SubscribingAcceptOrDenyResponse
-import com.fourcutbook.forcutbook.data.response.SubscribingDiaryListResponse
 import com.fourcutbook.forcutbook.data.response.SubscribingResponse
 import com.fourcutbook.forcutbook.data.response.UserProfileResponse
 import com.fourcutbook.forcutbook.data.response.UserStatsResponse
@@ -39,15 +40,17 @@ interface UserService {
         @Path(value = "friendId") friendId: Long
     ): Response<BaseResponse<SubscribingResponse>>
 
-    @GET("/users/{userId}/friends/following")
-    suspend fun fetchFollowing(
-        @Path(value = "userId") userId: Long
-    ): Response<BaseResponse<SubscribingDiaryListResponse>>
+    @GET("/users/{userId}/friends/{friendId}/following")
+    suspend fun fetchFollowings(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<FollowingListResponse>>
 
-    @GET("/users/{userId}/friends/follower")
+    @GET("/users/{userId}/friends/{friendId}/follower")
     suspend fun fetchFollowers(
-        @Path(value = "userId") userId: Long
-    ): Response<BaseResponse<SubscribingDiaryListResponse>>
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<FollowerListResponse>>
 
     @DELETE("/users/{userId}/friends/{friendId}/following/deleted")
     suspend fun deleteFollowing(

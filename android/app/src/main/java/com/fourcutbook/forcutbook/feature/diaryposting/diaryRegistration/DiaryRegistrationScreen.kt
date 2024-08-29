@@ -31,7 +31,6 @@ import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
 import com.fourcutbook.forcutbook.domain.Diary
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
-import com.fourcutbook.forcutbook.feature.diaryposting.DiaryRegistrationViewModel
 import com.fourcutbook.forcutbook.util.DiaryFixture
 import com.fourcutbook.forcutbook.util.toFile
 import java.io.File

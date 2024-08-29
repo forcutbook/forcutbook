@@ -1,7 +1,7 @@
 package com.fourcutbook.forcutbook.data.mapper
 
 import com.fourcutbook.forcutbook.data.response.UserStatsResponse
-import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.FollowingStatus
 import com.fourcutbook.forcutbook.domain.UserStats
 
 object UserStatsMapper {
@@ -17,13 +17,13 @@ object UserStatsMapper {
         subscribingDiaryCount = subscribingDiaryCount,
         subscribingUserCount = subscribingUserCount,
         diaryCount = diaryCount,
-        subscribingStatus = subscribingStatus.toSubscribingStatus()
+        followingStatus = subscribingStatus.toSubscribingStatus()
     )
 
-    private fun String.toSubscribingStatus(): SubscribingStatus = when (this) {
-        SUBSCRIBING -> SubscribingStatus.SUBSCRIBED
-        REQUESTING -> SubscribingStatus.REQUESTED
-        NONE -> SubscribingStatus.NONE
+    private fun String.toSubscribingStatus(): FollowingStatus = when (this) {
+        SUBSCRIBING -> FollowingStatus.SUBSCRIBED
+        REQUESTING -> FollowingStatus.REQUESTED
+        NONE -> FollowingStatus.NONE
         else -> throw IllegalArgumentException(CANNOT_FIND_OUT)
     }
 }

@@ -19,20 +19,32 @@ class DefaultDiaryRepository @Inject constructor(
     private val diaryService: DiaryService
 ) : DiaryRepository {
 
-    override suspend fun fetchMyDiaries(): List<Diary> {
-        run {
-            val id = tokenRepository.fetchUserId().first()
-                ?: throw IllegalStateException("Cannot access on this contents.")
+    override suspend fun fetchAllDiaries(): List<Diary> {
+        val id = tokenRepository.fetchUserId().first()
+            ?: throw IllegalStateException("Cannot access on this contents.")
 
-            val response = diaryService.fetchMyDiaries(id)
+        val response = diaryService.fetchAllDiaries(id)
 
-            if (response.isSuccessful) {
-                val diaries = response.body()?.result
+        if (response.isSuccessful) {
+            val diaries = response.body()?.result
 
-                return diaries?.toDomain() ?: throw IOException("Response body is null.")
-            }
-            throw IOException("Request failed with code ${response.code()}!")
+            return diaries?.toDomain() ?: throw IOException("Response body is null.")
         }
+        throw IOException("Request failed with code ${response.code()}!")
+    }
+
+    override suspend fun fetchMyDiaries(): List<Diary> {
+        val id = tokenRepository.fetchUserId().first()
+            ?: throw IllegalStateException("Cannot access on this contents.")
+
+        val response = diaryService.fetchMyDiaries(id)
+
+        if (response.isSuccessful) {
+            val diaries = response.body()?.result
+
+            return diaries?.toDomain() ?: throw IOException("Response body is null.")
+        }
+        throw IOException("Request failed with code ${response.code()}!")
     }
 
     override suspend fun fetchUserDiaries(userId: Long): List<Diary> {

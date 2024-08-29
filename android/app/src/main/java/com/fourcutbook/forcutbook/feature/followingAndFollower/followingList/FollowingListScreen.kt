@@ -46,14 +46,33 @@ fun FollowingListRoute(
                 is FollowingListEvent.FollowingCanceled -> context.getString(R.string.following_list_cancel_following)
 
                 is FollowingListEvent.Error -> context.getString(R.string.common_error_description)
+
+                else -> ""
             }
-            onShowSnackBar(message)
+            if (message.isNotEmpty()) onShowSnackBar(message)
         }
     }
     FollowingListScreen(
         uiState = uiState,
         onUserProfileClick = onUserProfileClick,
-        onFollowingCancelClick = viewModel::deleteFollowing,
+        onRequestFollowingButtonClick = { followingUserId ->
+            viewModel.postFollowingRequest(
+                userIdOfFollowing = followingUserId,
+                userIdOfPageOwner = userId
+            )
+        },
+        onCancelFollowingButtonClick = { followingUserId ->
+            viewModel.deleteFollowing(
+                userIdOfFollowing = followingUserId,
+                userIdOfPageOwner = userId
+            )
+        },
+        onCancelRequestFollowingButtonClick = { followingUserId ->
+            viewModel.postFollowingRequestCancel(
+                userIdOfFollowing = followingUserId,
+                userIdOfPageOwner = userId
+            )
+        },
         onBackClick = onBackPressed
     )
 }
@@ -63,7 +82,9 @@ fun FollowingListScreen(
     modifier: Modifier = Modifier,
     uiState: FollowingListUiState,
     onUserProfileClick: (userId: Long) -> Unit = {},
-    onFollowingCancelClick: (userId: Long) -> Unit = {},
+    onRequestFollowingButtonClick: (userId: Long) -> Unit = {},
+    onCancelRequestFollowingButtonClick: (userId: Long) -> Unit = {},
+    onCancelFollowingButtonClick: (userId: Long) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     when (uiState) {
@@ -80,8 +101,10 @@ fun FollowingListScreen(
                 FollowerAndFollowingList(
                     userProfiles = uiState.value,
                     onUserProfileClick = onUserProfileClick,
-                    cancelButtonText = stringResource(id = R.string.following_cancel),
-                    onCancelButtonClick = onFollowingCancelClick
+                    isForFollowerCancel = false,
+                    onRequestFollowingButtonClick = onRequestFollowingButtonClick,
+                    onCancelRequestFollowingButtonClick = onCancelRequestFollowingButtonClick,
+                    onCancelFollowingButtonClick = onCancelFollowingButtonClick
                 )
             }
         }

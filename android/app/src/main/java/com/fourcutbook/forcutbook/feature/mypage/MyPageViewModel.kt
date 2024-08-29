@@ -1,60 +1,57 @@
 package com.fourcutbook.forcutbook.feature.mypage
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.DiaryRepository
 import com.fourcutbook.forcutbook.data.repository.UserRepository
-import com.fourcutbook.forcutbook.domain.Diary
-import com.fourcutbook.forcutbook.domain.UserStats
+import com.fourcutbook.forcutbook.feature.diaryfeed.DiaryFeedEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val diaryRepository: DiaryRepository
+    private val diaryRepository: DiaryRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<MyPageUiState> =
-        MutableStateFlow(MyPageUiState.Default)
-    val uiState: StateFlow<MyPageUiState>
-        get() = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<MyPageUiState> = MutableStateFlow(
+        MyPageUiState.Empty
+    )
+    val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
 
-    private fun fetchMyDiaries(): Flow<List<Diary>> =
-        flow { emit(diaryRepository.fetchMyDiaries()) }
-
-    private fun fetchUserStats(): Flow<UserStats> =
-        flow { emit(userRepository.fetchUserStats()) }
+    private val _event: MutableSharedFlow<DiaryFeedEvent> = MutableSharedFlow()
+    val event: SharedFlow<DiaryFeedEvent>
+        get() = _event.asSharedFlow()
 
     init {
-        fetchUserInfo()
+        fetchMyDiaries()
     }
 
-    fun fetchUserInfo() {
+    fun fetchMyDiaries() {
         viewModelScope.launch {
-            fetchMyDiaries()
-                .onStart {
-                    fetchUserStats().collect { userStats ->
-                        _uiState.value = MyPageUiState.Loading(userStats)
-                    }
-                }.catch {
-                    Log.d("woogi", "fetchUserInfo: $it")
-                }.collect { diaries ->
-                    Log.d("woogi", "fetchUserInfo: $diaries")
-                    _uiState.value = MyPageUiState.MyPage(
-                        userStats = (_uiState.value as MyPageUiState.Loading).userStats,
-                        diaries = diaries
-                    )
-                }
+            flow {
+                emit(diaryRepository.fetchMyDiaries())
+            }.onStart {
+                _uiState.value = MyPageUiState.Loading
+            }.zip(flowOf(userRepository.fetchUserStats())) { myDiaries, userStats ->
+                MyPageUiState.MyPage(
+                    userStats = userStats,
+                    _diaries = myDiaries
+                )
+            }.collect { uiState ->
+                _uiState.value = uiState
+            }
         }
     }
 }

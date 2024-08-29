@@ -28,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.FollowingStatus
 import com.fourcutbook.forcutbook.domain.UserStats
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
 import com.fourcutbook.forcutbook.feature.diaryfeed.DiariesColumn
@@ -132,9 +132,9 @@ fun UserPageScreen(
                         style = FcbTheme.typography.body02,
                         fontWeight = SemiBold
                     )
-                    val buttonDescription = when (uiState.userStats.subscribingStatus) {
-                        SubscribingStatus.NONE -> "구독 신청"
-                        SubscribingStatus.REQUESTED -> "구독 신청 취소"
+                    val buttonDescription = when (uiState.userStats.followingStatus) {
+                        FollowingStatus.NONE -> "구독 신청"
+                        FollowingStatus.REQUESTED -> "구독 신청 취소"
                         else -> "구독 신청"
                     }
                     Text(
@@ -147,9 +147,9 @@ fun UserPageScreen(
                             )
                             .padding(vertical = FcbTheme.padding.smallVerticalPadding01)
                             .noRippleClickable {
-                                when (uiState.userStats.subscribingStatus) {
-                                    SubscribingStatus.NONE -> onFollowingRequestButtonClick()
-                                    SubscribingStatus.REQUESTED -> onFollowingRequestCancelButtonClick()
+                                when (uiState.userStats.followingStatus) {
+                                    FollowingStatus.NONE -> onFollowingRequestButtonClick()
+                                    FollowingStatus.REQUESTED -> onFollowingRequestCancelButtonClick()
                                     else -> {}
                                 }
                             },
@@ -245,7 +245,7 @@ fun UserPageNotSubscribedScreenPreview() {
                 subscribingDiaryCount = 10,
                 subscribingUserCount = 10,
                 diaryCount = 15,
-                subscribingStatus = SubscribingStatus.NONE
+                followingStatus = FollowingStatus.NONE
             )
         )
     )
@@ -263,7 +263,7 @@ fun UserPageSubscribeScreenPreview() {
                 subscribingUserCount = 10,
                 diaryCount = 15,
                 userId = 0,
-                subscribingStatus = SubscribingStatus.SUBSCRIBED
+                followingStatus = FollowingStatus.SUBSCRIBED
             ),
             _diaries = DiaryFixture.get()
         )
@@ -282,7 +282,7 @@ fun UserPageLoadingScreenPreview() {
                 subscribingUserCount = 10,
                 diaryCount = 15,
                 userId = 0,
-                subscribingStatus = SubscribingStatus.SUBSCRIBED
+                followingStatus = FollowingStatus.SUBSCRIBED
             )
         )
     )

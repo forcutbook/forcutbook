@@ -9,7 +9,7 @@ object DiaryFixture {
 
     fun get(): List<Diary> = listOf(
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "고기를 먹었다.",
             contents = "오늘은 친구들과 함께 삼겹살을 먹었다..",
             date = LocalDateTime.of(
@@ -18,7 +18,7 @@ object DiaryFixture {
             )
         ),
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "호수에 산책을 갔다.",
             contents = "가족들과 함께 집 뒤에 있는 호수에..",
             date = LocalDateTime.of(
@@ -27,7 +27,7 @@ object DiaryFixture {
             )
         ),
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "커피를 마셨다",
             contents = "자몽 허니 블랙티를 마셨다..",
             date = LocalDateTime.of(
@@ -36,7 +36,7 @@ object DiaryFixture {
             )
         ),
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "고기를 먹었다.",
             contents = "오늘은 친구들과 함께 삼겹살을 먹었다..",
             date = LocalDateTime.of(
@@ -45,7 +45,7 @@ object DiaryFixture {
             )
         ),
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "호수에 산책을 갔다.",
             contents = "가족들과 함께 집 뒤에 있는 호수에..",
             date = LocalDateTime.of(
@@ -54,7 +54,7 @@ object DiaryFixture {
             )
         ),
         Diary(
-            id = -1,
+            diaryId = -1,
             title = "커피를 마셨다",
             contents = "자몽 허니 블랙티를 마셨다..",
             date = LocalDateTime.of(

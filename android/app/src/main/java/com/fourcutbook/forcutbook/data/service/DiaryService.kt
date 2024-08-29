@@ -15,6 +15,11 @@ import retrofit2.http.Path
 
 interface DiaryService {
 
+    @GET("/users/{userId}/diaries/feed")
+    suspend fun fetchAllDiaries(
+        @Path(value = "userId") userId: Long
+    ): Response<BaseResponse<DiariesResponse>>
+
     @GET("/users/{userId}/diaries")
     suspend fun fetchMyDiaries(
         @Path(value = "userId") userId: Long

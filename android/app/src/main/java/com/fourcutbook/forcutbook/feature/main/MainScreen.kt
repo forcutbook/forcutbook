@@ -39,6 +39,7 @@ import com.fourcutbook.forcutbook.feature.followingAndFollower.followerList.navi
 import com.fourcutbook.forcutbook.feature.followingAndFollower.followingList.followingListNavGraph
 import com.fourcutbook.forcutbook.feature.followingAndFollower.followingList.navigateToFollowingList
 import com.fourcutbook.forcutbook.feature.login.navigation.loginNavGraph
+import com.fourcutbook.forcutbook.feature.mypage.MyPageViewModel
 import com.fourcutbook.forcutbook.feature.mypage.myPageNavGraph
 import com.fourcutbook.forcutbook.feature.notification.navigateToNotification
 import com.fourcutbook.forcutbook.feature.notification.notificationNavGraph
@@ -50,7 +51,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
@@ -59,13 +61,12 @@ fun MainScreen(
             snackBarHostState.showSnackbar(message)
         }
     }
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
 
     val startDestination = when (uiState) {
         is MainUiState.SignedIn -> FcbRoute.DiaryFeed.value
         is MainUiState.NotSignedIn -> FcbRoute.LoginRoute.value
     }
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +107,10 @@ fun MainScreen(
 
             diaryRegistrationNavGraph(
                 navController = navController,
-                onDiaryRegistered = navController::navigateToDiaryFeed,
+                onDiaryRegistered = {
+                    myPageViewModel.fetchMyDiaries()
+                    navController.navigateToDiaryFeed()
+                },
                 onBackPressed = navController::popBackStack,
                 onShowSnackBar = onShowSnackBar
             )
@@ -114,6 +118,7 @@ fun MainScreen(
             diaryDetailNavGraph(onBackPressed = navController::popBackStack)
 
             myPageNavGraph(
+                myPageViewModel = myPageViewModel,
                 onSubscribingUserClick = navController::navigateToFollowingList,
                 onSubscribedUserClick = navController::navigateToFollowerList,
                 onDiaryClick = navController::navigateToDiaryDetail,
@@ -135,13 +140,6 @@ fun MainScreen(
             notificationNavGraph(
                 onProfileImgClick = navController::navigateToUserPage,
                 onBackClick = navController::popBackStack,
-                onShowSnackBar = onShowSnackBar
-            )
-
-            myPageNavGraph(
-                onSubscribingUserClick = navController::navigateToFollowingList,
-                onSubscribedUserClick = navController::navigateToFollowerList,
-                onDiaryClick = navController::navigateToDiaryDetail,
                 onShowSnackBar = onShowSnackBar
             )
 

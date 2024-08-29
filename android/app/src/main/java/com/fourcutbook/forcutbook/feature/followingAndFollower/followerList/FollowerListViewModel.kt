@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.feature.followingAndFollower.followerList
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourcutbook.forcutbook.data.repository.UserRepository
@@ -21,7 +22,7 @@ class FollowerListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<FollowerListUiState> =
-        MutableStateFlow(FollowerListUiState.Default)
+        MutableStateFlow(FollowerListUiState.Empty)
     val uiState: StateFlow<FollowerListUiState>
         get() = _uiState.asStateFlow()
 
@@ -34,6 +35,9 @@ class FollowerListViewModel @Inject constructor(
         fetchFollowers()
     }
 
+    /**
+     * null means fetch my followers
+     */
     fun fetchFollowers(userId: Long? = null) {
         viewModelScope.launch {
             flow {
@@ -41,7 +45,64 @@ class FollowerListViewModel @Inject constructor(
             }.catch {
                 _event.emit(FollowerListEvent.Error)
             }.collect { userProfiles ->
-                _uiState.value = FollowerListUiState.SubscribedUsers(userProfiles)
+                Log.d("woogi", "fetchFollowers: $userId")
+                userId?.let {
+                    _uiState.value = FollowerListUiState.FollowerList.Other(userProfiles)
+                } ?: run {
+                    _uiState.value = FollowerListUiState.FollowerList.MyFollower(userProfiles)
+                }
+            }
+        }
+    }
+
+    /**
+     * userIdOfFollowing: user id that you request following
+     * userIdOfUserPage: user id of owner of follower list page you are seeing. null means my page
+     */
+    fun postFollowingRequest(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.postFollowingRequest(userIdOfFollowing))
+            }.catch {
+                _event.emit(FollowerListEvent.Error)
+            }.collect {
+                _event.emit(FollowerListEvent.FollowingRequested)
+                fetchFollowers(userIdOfPageOwner)
+            }
+        }
+    }
+
+    fun postFollowingRequestCancel(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowingRequest(userIdOfFollowing))
+            }.catch {
+                _event.emit(FollowerListEvent.Error)
+            }.collect {
+                _event.emit(FollowerListEvent.FollowingRequested)
+                fetchFollowers(userIdOfPageOwner)
+            }
+        }
+    }
+
+    fun deleteFollowing(
+        userIdOfFollowing: Long,
+        userIdOfPageOwner: Long? = null
+    ) {
+        viewModelScope.launch {
+            flow {
+                emit(userRepository.deleteFollowing(userIdOfFollowing))
+            }.catch {
+                _event.emit(FollowerListEvent.Error)
+            }.collect {
+                _event.emit(FollowerListEvent.FollowingCanceled)
+                fetchFollowers(userIdOfPageOwner)
             }
         }
     }
@@ -50,6 +111,8 @@ class FollowerListViewModel @Inject constructor(
         viewModelScope.launch {
             flow {
                 emit(userRepository.deleteFollower(friendId))
+            }.catch {
+                _event.emit(FollowerListEvent.Error)
             }.collect {
                 _event.emit(FollowerListEvent.Canceled)
                 fetchFollowers()

@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.SubscribingStatus
+import com.fourcutbook.forcutbook.domain.FollowingStatus
 import com.fourcutbook.forcutbook.domain.UserProfile
 import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithBackButton
 import com.fourcutbook.forcutbook.util.NicknameSearchingTextField
@@ -184,45 +184,58 @@ fun UserProfileItem(
                 style = FcbTheme.typography.body,
                 fontSize = 14.sp
             )
-            Surface {
-                when (userProfile.isSubscribing) {
-                    SubscribingStatus.REQUESTED, SubscribingStatus.NONE -> {
-                        val text = when (userProfile.isSubscribing) {
-                            SubscribingStatus.NONE -> stringResource(R.string.description_of_request_subscribing)
-                            SubscribingStatus.REQUESTED -> stringResource(R.string.descripion_of_requesting_status)
-                            else -> ""
+            UserRelationButton(
+                followingStatus = userProfile.followingStatus,
+                onFollowingRequestClick = onFollowingRequestClick,
+                onFollowingRequestCancelClick = onFollowingRequestCancelClick
+            )
+        }
+    }
+}
+
+@Composable
+fun UserRelationButton(
+    followingStatus: FollowingStatus,
+    onFollowingRequestClick: () -> Unit,
+    onFollowingRequestCancelClick: () -> Unit
+) {
+    val text = when (followingStatus) {
+        FollowingStatus.NONE -> stringResource(R.string.description_of_request_subscribing)
+        FollowingStatus.REQUESTED -> stringResource(R.string.descripion_of_requesting_status)
+        else -> ""
+    }
+
+    Surface {
+        when (followingStatus) {
+            FollowingStatus.REQUESTED, FollowingStatus.NONE -> {
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            when (followingStatus) {
+                                FollowingStatus.NONE -> onFollowingRequestClick()
+
+                                FollowingStatus.REQUESTED -> onFollowingRequestCancelClick()
+
+                                else -> {}
+                            }
                         }
-
-                        Text(
-                            modifier = Modifier
-                                .clickable {
-                                    when (userProfile.isSubscribing) {
-                                        SubscribingStatus.NONE -> onFollowingRequestClick()
-
-                                        SubscribingStatus.REQUESTED -> onFollowingRequestCancelClick()
-
-                                        else -> {}
-                                    }
-                                }
-                                .background(
-                                    shape = RoundedCornerShape(5.dp),
-                                    color = FcbTheme.colors.fcbDarkBeige
-                                )
-                                .padding(vertical = 6.dp, horizontal = 4.dp),
-                            text = text,
-                            style = FcbTheme.typography.body,
-                            fontSize = 12.sp
+                        .background(
+                            shape = RoundedCornerShape(5.dp),
+                            color = FcbTheme.colors.fcbDarkBeige
                         )
-                    }
+                        .padding(vertical = 6.dp, horizontal = 4.dp),
+                    text = text,
+                    style = FcbTheme.typography.body,
+                    fontSize = 12.sp
+                )
+            }
 
-                    SubscribingStatus.SUBSCRIBED -> {
-                        Icon(
-                            tint = FcbTheme.colors.fcbLightBeige,
-                            painter = painterResource(id = R.drawable.ic_checked),
-                            contentDescription = null
-                        )
-                    }
-                }
+            FollowingStatus.SUBSCRIBED -> {
+                Icon(
+                    tint = FcbTheme.colors.fcbLightBeige,
+                    painter = painterResource(id = R.drawable.ic_checked),
+                    contentDescription = null
+                )
             }
         }
     }
@@ -239,19 +252,19 @@ fun UserSearchingScreenPreview() {
                     userId = 8513,
                     profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
                     nickname = "woogie",
-                    isSubscribing = SubscribingStatus.REQUESTED
+                    followingStatus = FollowingStatus.REQUESTED
                 ),
                 UserProfile(
                     userId = 8513,
                     profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
                     nickname = "woogie",
-                    isSubscribing = SubscribingStatus.NONE
+                    followingStatus = FollowingStatus.NONE
                 ),
                 UserProfile(
                     userId = 8513,
                     profileImageUrl = "https://forcutbook-diary-images.s3.ap-northeast-2.amazonaws.com/d284c5b5-e80c-49e5-9ff5-f60d0fef685d.jpg",
                     nickname = "woogie",
-                    isSubscribing = SubscribingStatus.SUBSCRIBED
+                    followingStatus = FollowingStatus.SUBSCRIBED
                 )
             )
         ),
