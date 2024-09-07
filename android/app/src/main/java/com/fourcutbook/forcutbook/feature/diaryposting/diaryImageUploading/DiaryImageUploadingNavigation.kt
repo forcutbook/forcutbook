@@ -11,11 +11,13 @@ fun NavController.navigateToDiaryImageUploading(navOptions: NavOptions? = null) 
 }
 
 fun NavGraphBuilder.diaryImageUploadingNavGraph(
-    navigateToDiaryScreen: () -> Unit
+    onImageUploadButtonClick: (
+        title: String,
+        contents: String,
+        filePath: String
+    ) -> Unit
 ) {
     composable(route = FcbRoute.DiaryImageUploadingRoute.value) {
-        DiaryImageUploadingRoute {
-            navigateToDiaryScreen()
-        }
+        DiaryImageUploadingRoute(onImageUploaded = onImageUploadButtonClick)
     }
 }

@@ -2,12 +2,14 @@ package com.fourcutbook.forcutbook.feature.mypage
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,32 +19,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.forcutbook.forcutbook.R
 import com.fourcutbook.forcutbook.design.FcbTheme
-import com.fourcutbook.forcutbook.domain.SubscribingCount
-import com.fourcutbook.forcutbook.domain.UserInfo
+import com.fourcutbook.forcutbook.domain.FollowingStatus
+import com.fourcutbook.forcutbook.domain.UserStats
+import com.fourcutbook.forcutbook.feature.FcbTopAppBarWithOnlyTitle
 import com.fourcutbook.forcutbook.feature.diaryfeed.DiariesColumn
 import com.fourcutbook.forcutbook.util.DiaryFixture
+import com.fourcutbook.forcutbook.util.noRippleClickable
 
 @Composable
 fun MyPageRoute(
-    modifier: Modifier = Modifier,
-    myPageViewModel: MyPageViewModel = hiltViewModel(),
-    navigateToSubscribingDiaryScreen: () -> Unit = {},
-    navigateToSubscribedUserScreen: () -> Unit = {},
-    navigateToDiaryDetailScreen: (diaryId: Long) -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    viewModel: MyPageViewModel,
+    onSubscribingUserClick: (userId: Long) -> Unit = {},
+    onSubscribedUserClick: (userId: Long) -> Unit = {},
+    onDiaryClick: (diaryId: Long) -> Unit = {}
 ) {
-    val uiState: MyPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: MyPageUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyPageScreen(
         modifier = Modifier,
         uiState = uiState,
-        navigateToSubscribingDiaryScreen = navigateToSubscribingDiaryScreen,
-        navigateToSubscribedUserScreen = navigateToSubscribedUserScreen,
-        onDiaryClick = navigateToDiaryDetailScreen
+        onSubscribingUserClick = onSubscribingUserClick,
+        onSubscribedUserClick = onSubscribedUserClick,
+        onDiaryClick = onDiaryClick,
+        onDiariesRefresh = viewModel::fetchMyDiaries
     )
 }
 
@@ -50,50 +52,65 @@ fun MyPageRoute(
 fun MyPageScreen(
     modifier: Modifier = Modifier,
     uiState: MyPageUiState,
-    navigateToSubscribingDiaryScreen: () -> Unit = {},
-    navigateToSubscribedUserScreen: () -> Unit = {},
-    onDiaryClick: (diaryId: Long) -> Unit = {}
+    onSubscribingUserClick: (userId: Long) -> Unit = {},
+    onSubscribedUserClick: (userId: Long) -> Unit = {},
+    onDiaryClick: (diaryId: Long) -> Unit = {},
+    onDiariesRefresh: () -> Unit = {}
 ) {
-    when (uiState) {
-        is MyPageUiState.MyInfo -> {
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = FcbTheme.padding.basicVerticalPadding)
-            ) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = FcbTheme.padding.basicVerticalPadding)
+    ) {
+        FcbTopAppBarWithOnlyTitle(title = stringResource(id = R.string.header_of_my_page))
+        when (uiState) {
+            is MyPageUiState.MyPage -> {
                 Row(
-                    modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(top = FcbTheme.padding.basicVerticalPadding),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     UserPageSubscribingCount(
+                        modifier = Modifier.padding(start = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.subscribing_diary_description,
-                        count = uiState.info
-                            .subscribingCount
-                            .subscribingDiaryCount,
-                        onClick = navigateToSubscribingDiaryScreen
+                        count = uiState.userStats.subscribingDiaryCount,
+                        onClick = { onSubscribingUserClick(uiState.userStats.userId) }
                     )
                     UserPageSubscribingCount(
-                        modifier = Modifier.padding(start = 25.dp),
                         typeOfCount = R.string.subscribing_user_description,
-                        count = uiState.info
-                            .subscribingCount
-                            .subscribingUserCount,
-                        onClick = navigateToSubscribedUserScreen
+                        count = uiState.userStats.subscribingUserCount,
+                        onClick = { onSubscribedUserClick(uiState.userStats.userId) }
                     )
                     UserPageSubscribingCount(
-                        modifier = Modifier.padding(start = 25.dp),
+                        modifier = Modifier.padding(end = FcbTheme.padding.basicHorizontalPadding),
                         typeOfCount = R.string.count_of_diaries,
-                        count = uiState.info.diaryCount
+                        count = uiState.userStats.diaryCount
                     )
                 }
                 DiariesColumn(
-                    diaries = uiState.info.diaries,
-                    onDiaryClick = onDiaryClick
+                    diaries = uiState.diaries,
+                    onDiaryClick = onDiaryClick,
+                    onDiariesRefresh = onDiariesRefresh
                 )
             }
-        }
 
-        else -> {
+            is MyPageUiState.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .align(Alignment.CenterHorizontally),
+                        color = FcbTheme.colors.fcbDarkBeige02
+                    )
+                }
+            }
+
+            else -> {
+            }
         }
     }
 }
@@ -109,17 +126,16 @@ fun UserPageSubscribingCount(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // todo: style 정의
         Text(
-            modifier = Modifier.clickable { onClick() },
+            modifier = Modifier.noRippleClickable { onClick() },
             fontSize = 14.sp,
             style = FcbTheme.typography.heading,
             text = stringResource(typeOfCount)
         )
         Text(
             modifier = Modifier
-                .clickable { onClick() }
-                .padding(top = FcbTheme.padding.smallVerticalPadding),
+                .noRippleClickable { onClick() }
+                .padding(top = FcbTheme.padding.smallVerticalPadding01),
             fontSize = 25.sp,
             style = FcbTheme.typography.title,
             text = count.toString()
@@ -132,14 +148,16 @@ fun UserPageSubscribingCount(
 fun UserPageScreenPreview() {
     MyPageScreen(
         modifier = Modifier.background(color = FcbTheme.colors.fcbGray),
-        uiState = MyPageUiState.MyInfo(
-            info = UserInfo(
-                diaries = DiaryFixture.get(),
-                subscribingCount = SubscribingCount(
-                    subscribingDiaryCount = 4442,
-                    subscribingUserCount = 4953
-                )
-            )
+        uiState = MyPageUiState.MyPage(
+            userStats = UserStats(
+                nickname = "woogi",
+                userId = 6586,
+                subscribingDiaryCount = 7826,
+                subscribingUserCount = 5941,
+                diaryCount = 5388,
+                followingStatus = FollowingStatus.SUBSCRIBED
+            ),
+            _diaries = DiaryFixture.get()
         )
     )
 }

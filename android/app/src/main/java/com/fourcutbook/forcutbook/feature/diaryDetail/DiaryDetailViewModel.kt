@@ -17,7 +17,7 @@ class DiaryDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<DiaryDetailUiState> =
-        MutableStateFlow(DiaryDetailUiState.Default)
+        MutableStateFlow(DiaryDetailUiState.Loading)
     val uiState: StateFlow<DiaryDetailUiState>
         get() = _uiState.asStateFlow()
 

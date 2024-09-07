@@ -1,5 +1,6 @@
 package com.fourcutbook.forcutbook.data.service
 
+import com.fourcutbook.forcutbook.data.response.BaseResponse
 import com.fourcutbook.forcutbook.data.response.DiariesResponse
 import com.fourcutbook.forcutbook.data.response.DiaryDetailResponse
 import com.fourcutbook.forcutbook.data.response.DiaryRegistrationResponse
@@ -14,24 +15,35 @@ import retrofit2.http.Path
 
 interface DiaryService {
 
-    @GET("/users/{userId}/diaries")
-    suspend fun fetchDiaries(
+    @GET("/users/{userId}/diaries/feed")
+    suspend fun fetchAllDiaries(
         @Path(value = "userId") userId: Long
-    ): Response<DiariesResponse>
+    ): Response<BaseResponse<DiariesResponse>>
+
+    @GET("/users/{userId}/diaries")
+    suspend fun fetchMyDiaries(
+        @Path(value = "userId") userId: Long
+    ): Response<BaseResponse<DiariesResponse>>
+
+    @GET("/users/{userId}/diaries/friends/{friendId}")
+    suspend fun fetchUserDiaries(
+        @Path(value = "userId") userId: Long,
+        @Path(value = "friendId") friendId: Long
+    ): Response<BaseResponse<DiariesResponse>>
 
     @GET("/users/{userId}/diaries/{diaryId}")
     suspend fun fetchDiaryDetails(
         @Path(value = "userId") userId: Long,
         @Path(value = "diaryId") diaryId: Long
-    ): Response<DiaryDetailResponse>
+    ): Response<BaseResponse<DiaryDetailResponse>>
 
     @Multipart
     @POST("/users/{userId}/diaries/aiCreate")
     suspend fun postImage(
         @Path(value = "userId") userId: Long,
         // todo: 명세서에는 images이지만 image로 변경 건의
-        @Part image: List<MultipartBody.Part>
-    ): Response<AIDiaryResponse>
+        @Part images: MultipartBody.Part
+    ): Response<BaseResponse<AIDiaryResponse>>
 
     @Multipart
     @POST("/users/{userId}/diaries")
@@ -39,7 +51,6 @@ interface DiaryService {
         @Path("userId") userId: Long,
         @Part("title") title: RequestBody,
         @Part("content") content: RequestBody,
-        @Part image: List<MultipartBody.Part>,
-        @Part("friends") friends: RequestBody
-    ): Response<DiaryRegistrationResponse>
+        @Part image: List<MultipartBody.Part>
+    ): Response<BaseResponse<DiaryRegistrationResponse>>
 }

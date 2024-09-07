@@ -6,14 +6,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DiaryResponse(
+    @SerialName("userId")
+    val userId: Long,
+    @SerialName("userName")
+    val nickname: String,
     @SerialName("diaryId")
     val diaryId: Long,
     @SerialName("title")
     val title: String,
     @SerialName("content")
     val content: String,
-    @SerialName("isImage")
-    val includeImage: Boolean,
+    @SerialName("imageUrl")
+    val imageUrl: String,
     @SerialName("createdAt")
     val date: LocalDateTime
 )

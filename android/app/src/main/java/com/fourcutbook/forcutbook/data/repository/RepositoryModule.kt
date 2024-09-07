@@ -20,9 +20,17 @@ interface RepositoryModule {
 
     @Binds
     @Singleton
-    fun bindsUserRepository(userRepository: DefaultUserRepository): UserRepository
+    fun bindsUserRepository(userRepository: DefaultTokenRepository): TokenRepository
 
     @Binds
     @Singleton
-    fun bindsUserInfoRepository(userInfoRepository: DefaultUserInfoRepository): UserInfoRepository
+    fun bindsUserInfoRepository(userInfoRepository: DefaultUserRepository): UserRepository
+
+    @Binds
+    @Singleton
+    fun bindsNotificationRepository(notificationRepository: DefaultNotificationRepository): NotificationRepository
+
+    @Binds
+    @Singleton
+    fun bindsUserSearchingRepository(userSearchingRepository: DefaultUserSearchingRepository): UserSearchingRepository
 }

@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import java.time.LocalDateTime
 
 data class Diary(
-    val id: Long,
+    val userId: Long = -1,
+    val nickname: String = "",
+    val diaryId: Long,
     val title: String,
     val contents: String,
     val date: LocalDateTime,

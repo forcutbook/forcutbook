@@ -4,7 +4,7 @@ import com.fourcutbook.forcutbook.domain.Diary
 
 sealed interface DiaryDetailUiState {
 
-    data object Default : DiaryDetailUiState
+    data object Loading : DiaryDetailUiState
 
     data class DiaryDetail(val diary: Diary) : DiaryDetailUiState
 }
