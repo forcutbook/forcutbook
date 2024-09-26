@@ -7,6 +7,10 @@ spring:
     hikari:
       data-source-properties:
         serverTimezone: Asia/Seoul
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
 
   jpa:
     hibernate:
@@ -30,6 +34,12 @@ aws:
 hugging-face:
   api:
     key: ${HUGGING_FACE_API_KEY}
+
+clova:
+  studio:
+    host : https://clovastudio.stream.ntruss.com
+    apiKey: ${CLOVA_API_KEY}
+    apiKeyPrimaryVal : ${CLOVA_API_KEY_PRIMARY_VAL}
 
 
 ---

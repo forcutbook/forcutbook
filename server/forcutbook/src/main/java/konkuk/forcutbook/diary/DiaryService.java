@@ -1,5 +1,7 @@
 package konkuk.forcutbook.diary;
 
+import konkuk.forcutbook.api.clova.ClovaResponse;
+import konkuk.forcutbook.api.clova.ClovaStudioApi;
 import konkuk.forcutbook.api.huggingface.FileConversion;
 import konkuk.forcutbook.api.huggingface.HuggingFaceResultDto;
 import konkuk.forcutbook.api.huggingface.ImageToTextApiProvider;
@@ -35,6 +37,7 @@ public class DiaryService {
     private final FriendRepository friendRepository;
     private final S3ServiceProvider s3ServiceProvider;
     private final ImageToTextApiProvider imageToTextApiProvider;
+    private final ClovaStudioApi clovaStudioApi;
 
     @Value("${aws.s3.imageUrlPrefix}")
     private String imageUrlPrefix;
@@ -71,8 +74,10 @@ public class DiaryService {
 
         List<byte[]> imageByteList = FileConversion.multipartFileToBinary(imageFiles);
         HuggingFaceResultDto imageToText = imageToTextApiProvider.query(imageByteList.get(0));
+        ClovaResponse clovaResponse = clovaStudioApi.execute(imageToText.getGenerated_text());
 
-        return new AiDiaryResDto("AI title", imageToText.getGenerated_text());
+        String[] diary = clovaResponse.getMessage().getContent().split("\n\n");
+        return new AiDiaryResDto(diary[0], diary[1]);
     }
 
     @Transactional
