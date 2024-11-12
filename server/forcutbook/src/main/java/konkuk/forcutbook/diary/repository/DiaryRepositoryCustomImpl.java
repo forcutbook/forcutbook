@@ -92,4 +92,15 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom{
                 .fetchOne();
         return Optional.ofNullable(findDiary);
     }
+
+    @Override
+    public String findRecentDiary(Long userId) {
+        return query
+                .select(diary.content)
+                .from(diary)
+                .where(diary.writer.id.eq(userId))
+                .orderBy(diary.createdAt.desc())
+                .limit(1)
+                .fetchFirst();
+    }
 }
