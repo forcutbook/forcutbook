@@ -77,7 +77,25 @@ public class DiaryService {
         ClovaResponse clovaResponse = clovaStudioApi.execute(imageToText.getGenerated_text());
 
         String[] diary = clovaResponse.getMessage().getContent().split("\n\n");
-        return new AiDiaryResDto(diary[0], diary[1]);
+        return new AiDiaryResDto(diary[0].replace("제목 : ", ""), diary[1]);
+    }
+
+    public AiDiaryResDto createAiDiaryWithPast(Long userId, DiaryAddDto diaryAddDto) {
+        List<MultipartFile> imageFiles = diaryAddDto.getImages();
+
+        if (imageFiles == null) {
+            throw new DiaryException(DiaryExceptionErrorCode.NO_DIARY_CREATE_IMAGE);
+        }
+
+        List<byte[]> imageByteList = FileConversion.multipartFileToBinary(imageFiles);
+        HuggingFaceResultDto imageToText = imageToTextApiProvider.query(imageByteList.get(0));
+
+        String recentDiary = diaryRepository.findRecentDiary(userId);
+        recentDiary = recentDiary == null ? "과거 기록이 없어" : recentDiary;
+        ClovaResponse clovaResponse = clovaStudioApi.execute(imageToText.getGenerated_text(), recentDiary);
+
+        String[] diary = clovaResponse.getMessage().getContent().split("\n\n");
+        return new AiDiaryResDto(diary[0].replace("제목 : ", ""), diary[1]);
     }
 
     @Transactional

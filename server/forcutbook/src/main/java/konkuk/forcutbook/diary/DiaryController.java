@@ -35,6 +35,15 @@ public class DiaryController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/aiCreate/past")
+    public ResponseEntity<BaseResponse> createAiDiaryWithPast(@PathVariable Long userId,
+                                                      @ModelAttribute DiaryAddDto diaryAddDto){
+        AiDiaryResDto resultDto = diaryService.createAiDiaryWithPast(userId, diaryAddDto);
+
+        BaseResponse<AiDiaryResDto> response = new BaseResponse<>(resultDto);
+        return ResponseEntity.ok(response);
+    }
+
     @PatchMapping("/{diaryId}")
     public ResponseEntity<BaseResponse> updateDiary(@PathVariable Long userId,
                                                      @PathVariable Long diaryId,

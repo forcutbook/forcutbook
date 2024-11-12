@@ -11,4 +11,5 @@ public interface DiaryRepositoryCustom {
     List<DiaryListEachResDto> findDiaryListDtoByWriterId(Long userId);
     List<DiaryFeedResDto> findDiaryListForFeed(Long userId);
     Optional<Diary> checkIsWriterFriend(Long diaryId, Long userId);
+    String  findRecentDiary(Long userId);
 }
